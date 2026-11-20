@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#ff4fa3"/><stop offset="0.42" stop-color="#a23dff"/><stop offset="1" stop-color="#2a6bff"/>
+  </linearGradient>
+  <radialGradient id="bgGlow" cx="0.3" cy="0.12" r="0.7">
+    <stop offset="0" stop-color="#ffffff" stop-opacity="0.45"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+  </radialGradient>
+  <linearGradient id="glassDark" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#2a1a6b" stop-opacity="0.78"/><stop offset="1" stop-color="#140b3f" stop-opacity="0.82"/>
+  </linearGradient>
+  <linearGradient id="glassBlue" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#4a5bff" stop-opacity="0.72"/><stop offset="1" stop-color="#7a3cff" stop-opacity="0.78"/>
+  </linearGradient>
+  <linearGradient id="edge" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#ffd1ef"/><stop offset="0.5" stop-color="#b99cff"/><stop offset="1" stop-color="#7fb4ff"/>
+  </linearGradient>
+  <linearGradient id="gloss" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#ffffff" stop-opacity="0.32"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+  </linearGradient>
+  <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff0a8"/><stop offset="1" stop-color="#f5b335"/></linearGradient>
+  <radialGradient id="sun" cx="0.4" cy="0.35" r="0.8"><stop offset="0" stop-color="#fff6b0"/><stop offset="0.6" stop-color="#ffc83d"/><stop offset="1" stop-color="#ff9d1c"/></radialGradient>
+  <linearGradient id="cloud" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#d7e2ff"/></linearGradient>
+  <linearGradient id="green" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#1fd16b"/><stop offset="1" stop-color="#8dffb8"/></linearGradient>
+  <linearGradient id="chip" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5fb0ff"/><stop offset="1" stop-color="#2a63ff"/></linearGradient>
+  <linearGradient id="metal" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f4f6fb"/><stop offset="0.5" stop-color="#aab1c6"/><stop offset="1" stop-color="#e3e7f2"/></linearGradient>
+  <filter id="glow" x="-20%" y="-30%" width="140%" height="160%"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="glowSoft" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="glowGold" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="glowGreen" x="-30%" y="-40%" width="160%" height="180%"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="glowBlue" x="-30%" y="-40%" width="160%" height="180%"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#0b0230" flood-opacity="0.45"/></filter>
+  <mask id="moonA"><rect x="150" y="440" width="120" height="100" fill="#000"/><circle cx="208" cy="490" r="40" fill="#fff"/><circle cx="226" cy="482" r="34" fill="#000"/></mask>
+  <mask id="moonB"><rect x="350" y="440" width="120" height="100" fill="#000"/><circle cx="402" cy="490" r="40" fill="#fff"/><circle cx="386" cy="490" r="36" fill="#000"/></mask>
+</defs>
+<rect width="1024" height="1024" rx="224" fill="url(#bg)"/><rect width="1024" height="1024" rx="224" fill="url(#bgGlow)"/>
+  <!-- Đồng hồ -->
+  <rect x="110" y="120" width="804" height="210" rx="58" fill="url(#glassDark)" stroke="url(#edge)" stroke-width="7"/>
+  <rect x="122" y="130" width="780" height="80" rx="46" fill="url(#gloss)"/>
+  <text x="512" y="283" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-weight="700" font-size="158" fill="#fff" letter-spacing="2" filter="url(#glow)">10:09</text>
+
+  <!-- Lịch âm dương -->
+  <rect x="110" y="362" width="390" height="286" rx="52" fill="url(#glassDark)" stroke="url(#edge)" stroke-width="7"/>
+  <rect x="120" y="372" width="370" height="70" rx="40" fill="url(#gloss)"/>
+  <line x1="305" y1="400" x2="305" y2="610" stroke="#ffffff" stroke-opacity="0.25" stroke-width="3"/>
+  <text x="206" y="426" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-weight="700" font-size="28" fill="#ffd877">Âm Lịch</text>
+  <text x="404" y="426" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-weight="700" font-size="28" fill="#ffd877">Dương Lịch</text>
+  <!-- trăng 🌙 và 🌒 -->
+  <g mask="url(#moonA)"><circle cx="208" cy="490" r="40" fill="url(#gold)"/></g>
+  <circle cx="402" cy="490" r="40" fill="#ffffff" fill-opacity="0.12"/>
+  <g mask="url(#moonB)"><circle cx="402" cy="490" r="40" fill="url(#gold)"/></g>
+  <!-- ngày -->
+  <text x="208" y="602" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-weight="700" font-size="88" fill="#fff">12</text>
+  <text x="402" y="602" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-weight="700" font-size="88" fill="#fff">20</text>
+  <!-- hoa sen -->
+  <g transform="translate(305 508) scale(0.72)" filter="url(#glowSoft)">
+    <ellipse cx="-22" cy="0" rx="10" ry="24" transform="rotate(-50 -22 14)" fill="#ff9cc9"/>
+    <ellipse cx="22" cy="0" rx="10" ry="24" transform="rotate(50 22 14)" fill="#ff9cc9"/>
+    <ellipse cx="-11" cy="-4" rx="11" ry="27" transform="rotate(-22 -11 14)" fill="#ffb8da"/>
+    <ellipse cx="11" cy="-4" rx="11" ry="27" transform="rotate(22 11 14)" fill="#ffb8da"/>
+    <ellipse cx="0" cy="-8" rx="11" ry="30" fill="#ffd3e8"/>
+  </g>
+
+  <!-- Thời tiết -->
+  <rect x="524" y="362" width="390" height="286" rx="52" fill="url(#glassBlue)" stroke="url(#edge)" stroke-width="7"/>
+  <rect x="534" y="372" width="370" height="70" rx="40" fill="url(#gloss)"/>
+  <g filter="url(#glowGold)">
+    <g stroke="#ffd36a" stroke-width="12" stroke-linecap="round">
+      <line x1="685" y1="410" x2="685" y2="428"/><line x1="685" y1="532" x2="685" y2="550"/>
+      <line x1="623" y1="480" x2="641" y2="480"/><line x1="729" y1="480" x2="747" y2="480"/>
+      <line x1="641" y1="436" x2="653" y2="448"/><line x1="717" y1="436" x2="729" y2="448"/>
+      <line x1="641" y1="524" x2="653" y2="512"/>
+    </g>
+    <circle cx="685" cy="480" r="62" fill="url(#sun)"/>
+  </g>
+  <g filter="url(#shadow)">
+    <circle cx="745" cy="560" r="44" fill="url(#cloud)"/>
+    <circle cx="803" cy="545" r="58" fill="url(#cloud)"/>
+    <circle cx="858" cy="565" r="40" fill="url(#cloud)"/>
+    <rect x="745" y="560" width="113" height="45" fill="url(#cloud)"/>
+    <circle cx="745" cy="582" r="22" fill="url(#cloud)"/>
+    <circle cx="858" cy="582" r="22" fill="url(#cloud)"/>
+  </g>
+
+  <!-- Thông số máy -->
+  <rect x="110" y="680" width="804" height="226" rx="58" fill="url(#glassDark)" stroke="url(#edge)" stroke-width="7"/>
+  <rect x="122" y="690" width="780" height="72" rx="44" fill="url(#gloss)"/>
+  <line x1="381" y1="716" x2="381" y2="872" stroke="#ffffff" stroke-opacity="0.22" stroke-width="3"/>
+  <line x1="643" y1="716" x2="643" y2="872" stroke="#ffffff" stroke-opacity="0.22" stroke-width="3"/>
+  <!-- pin -->
+  <g filter="url(#glowGreen)">
+    <rect x="190" y="728" width="112" height="64" rx="14" fill="none" stroke="#7dffb0" stroke-width="8"/>
+    <rect x="306" y="748" width="12" height="24" rx="4" fill="#7dffb0"/>
+    <rect x="202" y="740" width="78" height="40" rx="7" fill="url(#green)"/>
+  </g>
+  <text x="246" y="862" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-weight="700" font-size="54" fill="#fff">87%</text>
+  <!-- chip RAM -->
+  <g filter="url(#glowBlue)">
+    <g stroke="#9ad0ff" stroke-width="7" stroke-linecap="round">
+      <line x1="486" y1="718" x2="486" y2="736"/><line x1="512" y1="718" x2="512" y2="736"/><line x1="538" y1="718" x2="538" y2="736"/>
+      <line x1="486" y1="784" x2="486" y2="802"/><line x1="512" y1="784" x2="512" y2="802"/><line x1="538" y1="784" x2="538" y2="802"/>
+      <line x1="466" y1="738" x2="484" y2="738"/><line x1="466" y1="760" x2="484" y2="760"/>
+      <line x1="540" y1="738" x2="558" y2="738"/><line x1="540" y1="760" x2="558" y2="760"/>
+    </g>
+    <rect x="474" y="730" width="76" height="62" rx="12" fill="url(#chip)" stroke="#cfe6ff" stroke-width="4"/>
+    <rect x="496" y="749" width="32" height="24" rx="5" fill="#0d2a66" fill-opacity="0.7"/>
+  </g>
+  <text x="512" y="862" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-weight="700" font-size="54" fill="#fff">62%</text>
+  <!-- ổ lưu trữ -->
+  <g filter="url(#shadow)">
+    <rect x="718" y="730" width="112" height="62" rx="14" fill="url(#metal)" stroke="#ffffff" stroke-opacity="0.8" stroke-width="3"/>
+    <rect x="732" y="742" width="52" height="10" rx="5" fill="#5a5f73"/>
+    <rect x="732" y="760" width="52" height="10" rx="5" fill="#5a5f73"/>
+    <circle cx="812" cy="776" r="6" fill="#7dffb0"/>
+  </g>
+  <text x="774" y="862" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-weight="700" font-size="54" fill="#fff">58%</text>
+</svg>
