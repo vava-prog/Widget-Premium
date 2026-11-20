@@ -57,8 +57,17 @@ private fun HomeScreen() {
                 fontWeight = FontWeight.Bold
             )
             Text(stringResource(R.string.home_intro), style = MaterialTheme.typography.bodyLarge)
-            Button(onClick = { requestPinWidget(context) }, modifier = Modifier.fillMaxWidth()) {
+            Button(
+                onClick = { requestPinWidget(context, ClockWidgetProvider::class.java) },
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 Text(stringResource(R.string.btn_add_widget))
+            }
+            Button(
+                onClick = { requestPinWidget(context, InfoWidgetProvider::class.java) },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(stringResource(R.string.btn_add_info_widget))
             }
             Text(stringResource(R.string.guide_title), style = MaterialTheme.typography.titleMedium)
             steps.forEachIndexed { index, res ->
@@ -68,11 +77,11 @@ private fun HomeScreen() {
     }
 }
 
-/** Nhờ launcher ghim widget đồng hồ lên màn hình chính (nếu launcher hỗ trợ). */
-private fun requestPinWidget(context: Context) {
+/** Nhờ launcher ghim widget lên màn hình chính (nếu launcher hỗ trợ). */
+private fun requestPinWidget(context: Context, provider: Class<*>) {
     val manager = context.getSystemService(AppWidgetManager::class.java)
     if (manager != null && manager.isRequestPinAppWidgetSupported) {
-        manager.requestPinAppWidget(ComponentName(context, ClockWidgetProvider::class.java), null, null)
+        manager.requestPinAppWidget(ComponentName(context, provider), null, null)
     } else {
         Toast.makeText(context, R.string.add_widget_unsupported, Toast.LENGTH_LONG).show()
     }
