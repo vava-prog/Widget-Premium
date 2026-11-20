@@ -31,6 +31,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        if (WeatherStore.city(this) != null) WeatherScheduler.schedule(this)
         setContent {
             WidgetPremiumTheme {
                 HomeScreen()
@@ -69,6 +70,7 @@ private fun HomeScreen() {
             ) {
                 Text(stringResource(R.string.btn_add_info_widget))
             }
+            WeatherSection()
             Text(stringResource(R.string.guide_title), style = MaterialTheme.typography.titleMedium)
             steps.forEachIndexed { index, res ->
                 Text("${index + 1}. " + stringResource(res), style = MaterialTheme.typography.bodyMedium)

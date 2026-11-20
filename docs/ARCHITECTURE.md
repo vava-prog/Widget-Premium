@@ -1,6 +1,6 @@
 # Kiến trúc Widget Premium
 
-Trạng thái: giai đoạn 1, 2 và 3a (lịch Âm, thông số máy). Thời tiết (3b) chưa làm. Các phần ghi "dự kiến" chưa được xây.
+Trạng thái: giai đoạn 1, 2, 3a (lịch Âm, thông số máy) và 3b (thời tiết). Dự báo theo giờ chưa làm. Các phần ghi "dự kiến" chưa được xây.
 
 ## Nguyên tắc
 - Một module `app` ở giai đoạn đầu. Khi mã lớn lên sẽ tách module theo ranh giới dưới đây, không tách sớm.
@@ -13,11 +13,11 @@ Trạng thái: giai đoạn 1, 2 và 3a (lịch Âm, thông số máy). Thời t
 | `MainActivity` (Compose) | Trang chủ, nút ghim widget, hướng dẫn thêm widget | Có |
 | `ClockWidgetProvider` | Widget đồng hồ + ngày bằng RemoteViews/TextClock, chạm để mở app | Có |
 | `LunarCalendar` (thuần Kotlin, có test) | Đổi dương sang âm theo UTC+7, tháng nhuận, can chi của năm. Tiết khí: dự kiến | Có (3a) |
-| `weather` | Gọi Open-Meteo, lưu bản mới nhất để dùng khi mất mạng | Dự kiến, giai đoạn 3b |
+| `WeatherApi`, `WeatherParsers`, `WeatherStore`, `WeatherSection` | Tìm thành phố, lấy dự báo hiện tại và 7 ngày từ Open-Meteo, lưu bản mới nhất để dùng khi mất mạng, hiện trong app và trên widget | Có (3b) |
 | `DeviceStats` + `InfoWidgetProvider` | Pin, nhiệt độ pin, RAM, bộ nhớ trong; mục nào máy không có thì ẩn. Làm mới theo lịch hệ thống (~30 phút) và khi đổi ngày, đổi giờ, cắm/rút sạc, pin yếu | Có (3a) |
 | `data` (Room) | Ghi chú theo ngày, công việc, nhắc việc | Dự kiến, giai đoạn 4 |
 | `reminder` | AlarmManager đặt nhắc đúng giờ, khôi phục sau khi khởi động lại | Dự kiến, giai đoạn 4 |
-| `refresh` (WorkManager) | Làm mới thời tiết theo lịch | Dự kiến, giai đoạn 3b |
+| `WeatherWorker` (WorkManager) | Làm mới thời tiết mỗi 30 phút khi có mạng, rồi cập nhật widget | Có (3b) |
 | `theme` | Standard và Liquid Glass, màu, độ trong suốt, sáng/tối | Dự kiến, giai đoạn 5 |
 
 ## Cách widget hiển thị đồng hồ

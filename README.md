@@ -2,7 +2,7 @@
 
 Ứng dụng widget Android gom những thứ bạn nhìn mỗi ngày vào một màn hình chính gọn gàng: giờ, ngày âm dương, thời tiết và tình trạng máy.
 
-> **Trạng thái: giai đoạn 3a.** Đã có khung dự án, CI, widget đồng hồ + ngày và widget thông tin (lịch âm, pin, nhiệt độ, RAM, bộ nhớ). Thời tiết chưa làm. Các tính năng còn lại bên dưới là dự kiến, chưa hoàn thành. Xem [kiến trúc](docs/ARCHITECTURE.md) và [danh sách quyền](docs/PERMISSIONS.md).
+> **Trạng thái: giai đoạn 3b.** Đã có widget đồng hồ + ngày và widget thông tin (lịch âm, thời tiết, pin, nhiệt độ, RAM, bộ nhớ). Thời tiết dùng Open-Meteo, chọn thành phố trong app; dự báo theo giờ chưa làm. Các tính năng còn lại bên dưới là dự kiến, chưa hoàn thành. Xem [kiến trúc](docs/ARCHITECTURE.md) và [danh sách quyền](docs/PERMISSIONS.md).
 
 **Tải APK thử nghiệm (bản debug mới nhất):** https://github.com/vava-prog/Widget-Premium/releases/tag/latest-debug
 

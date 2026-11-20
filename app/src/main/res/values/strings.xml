@@ -19,4 +19,27 @@
     <string name="stat_temp_fmt">Nhiệt độ\n%1$s°C</string>
     <string name="stat_ram_fmt">RAM (GB)\n%1$s/%2$s</string>
     <string name="stat_storage_fmt">Bộ nhớ (GB)\n%1$s/%2$s</string>
+    <string name="weather_title">Thời tiết</string>
+    <string name="weather_hint">Nhập tên thành phố</string>
+    <string name="btn_search">Tìm</string>
+    <string name="btn_refresh">Làm mới thời tiết</string>
+    <string name="weather_no_result">Không tìm thấy thành phố này</string>
+    <string name="weather_search_failed">Không tìm được. Kiểm tra kết nối mạng rồi thử lại</string>
+    <string name="weather_offline">Không có mạng, đang hiển thị dữ liệu đã lưu</string>
+    <string name="weather_current_fmt">%1$s %2$s°C, %3$s, độ ẩm %4$d%%</string>
+    <string name="weather_updated_fmt">cập nhật %1$s</string>
+    <string name="weather_pick_city">Chạm để chọn thành phố thời tiết</string>
+    <string name="weather_widget_fmt">%1$s %2$s°C · %3$s · %4$s</string>
+    <string name="weather_forecast_title">Dự báo 7 ngày</string>
+    <string name="weather_privacy">Khi tìm và lấy dự báo, tên thành phố và tọa độ được gửi tới Open-Meteo. Ứng dụng không gửi gì khác.</string>
+    <string name="weather_attribution">Dữ liệu thời tiết: Open-Meteo.com</string>
+    <string name="cond_clear">Trời nắng</string>
+    <string name="cond_partly">Có mây</string>
+    <string name="cond_cloudy">Nhiều mây</string>
+    <string name="cond_fog">Sương mù</string>
+    <string name="cond_drizzle">Mưa phùn</string>
+    <string name="cond_rain">Mưa</string>
+    <string name="cond_snow">Tuyết</string>
+    <string name="cond_thunder">Dông</string>
+    <string name="cond_unknown">Không rõ</string>
 </resources>

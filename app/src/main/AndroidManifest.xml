@@ -1,6 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- Giai đoạn 2: chưa cần quyền nào. Quyền sẽ được thêm đúng lúc dùng, xem docs/PERMISSIONS.md -->
+    <!-- Chỉ dùng để lấy thời tiết từ Open-Meteo, xem docs/PERMISSIONS.md và PRIVACY.md -->
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="false"

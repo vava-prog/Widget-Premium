@@ -9,5 +9,14 @@ object Formats {
         return if (value >= 10) String.format(locale, "%.0f", value) else String.format(locale, "%.1f", value)
     }
 
+    /** "2026-11-20" thành "20/11". Chuỗi lạ thì trả nguyên. */
+    fun shortDate(iso: String): String {
+        val parts = iso.split("-")
+        return if (parts.size == 3) parts[2] + "/" + parts[1] else iso
+    }
+
+    fun clockTime(epochMs: Long): String =
+        java.text.SimpleDateFormat("HH:mm", Locale.getDefault()).format(java.util.Date(epochMs))
+
     fun celsius(value: Float, locale: Locale = Locale.getDefault()): String = String.format(locale, "%.1f", value)
 }
