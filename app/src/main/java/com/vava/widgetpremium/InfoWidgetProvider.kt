@@ -21,6 +21,7 @@ class InfoWidgetProvider : AppWidgetProvider() {
         for (id in appWidgetIds) {
             appWidgetManager.updateAppWidget(id, buildViews(context))
         }
+        DayNightScheduler.scheduleNext(context)
     }
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -49,13 +50,13 @@ class InfoWidgetProvider : AppWidgetProvider() {
             for (id in ids) manager.updateAppWidget(id, buildViews(context))
         }
 
-        private fun weatherLine(context: Context): String? {
+        private fun weatherLine(context: Context, isDay: Boolean): String? {
             val city = WeatherStore.city(context) ?: return context.getString(R.string.weather_pick_city)
             val weather = WeatherStore.cached(context) ?: return null
             val condition = Condition.fromWmo(weather.code)
             var text = context.getString(
                 R.string.weather_widget_fmt,
-                condition.emoji,
+                condition.emoji(isDay),
                 Math.round(weather.tempC).toString(),
                 context.getString(condition.labelRes()),
                 city.name
@@ -82,7 +83,10 @@ class InfoWidgetProvider : AppWidgetProvider() {
                 context.getString(lunarRes, lunar.day, lunar.month, LunarCalendar.yearName(lunar.year))
             )
 
-            val weatherText = weatherLine(context)
+            val day = WidgetUpdater.isDay(context)
+            views.setInt(R.id.info_root, "setBackgroundResource", if (day) R.drawable.widget_bg_day else R.drawable.widget_bg)
+
+            val weatherText = weatherLine(context, day)
             if (weatherText != null) {
                 views.setTextViewText(R.id.info_weather, weatherText)
                 views.setViewVisibility(R.id.info_weather, View.VISIBLE)

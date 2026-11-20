@@ -24,7 +24,7 @@ object WeatherApi {
         return get(
             "$FORECAST?latitude=$lat&longitude=$lon" +
                 "&current=temperature_2m,relative_humidity_2m,weather_code" +
-                "&daily=weather_code,temperature_2m_max,temperature_2m_min" +
+                "&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset" +
                 "&timezone=auto&forecast_days=7"
         )
     }

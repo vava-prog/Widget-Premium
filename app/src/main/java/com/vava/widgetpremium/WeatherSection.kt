@@ -104,7 +104,7 @@ fun WeatherSection() {
                 Text(
                     stringResource(
                         R.string.weather_current_fmt,
-                        condition.emoji,
+                        condition.emoji(WidgetUpdater.isDay(context)),
                         w.tempC.roundToInt().toString(),
                         stringResource(condition.labelRes()),
                         w.humidity

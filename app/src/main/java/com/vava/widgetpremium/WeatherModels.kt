@@ -14,18 +14,35 @@ data class City(
         get() = listOf(name, admin, country).filter { it.isNotBlank() }.distinct().joinToString(", ")
 }
 
-data class DayForecast(val date: String, val code: Int, val maxC: Double, val minC: Double)
+data class DayForecast(
+    val date: String,
+    val code: Int,
+    val maxC: Double,
+    val minC: Double,
+    val sunrise: String? = null,
+    val sunset: String? = null
+)
 
 data class Weather(
     val tempC: Double,
     val humidity: Int,
     val code: Int,
-    val days: List<DayForecast>
+    val days: List<DayForecast>,
+    /** Độ lệch múi giờ của thành phố so với UTC (giây). */
+    val utcOffsetSec: Int = 0
 )
 
 enum class Condition(val emoji: String) {
     CLEAR("☀️"), PARTLY("⛅"), CLOUDY("☁️"), FOG("🌫️"), DRIZZLE("🌦️"),
     RAIN("🌧️"), SNOW("❄️"), THUNDER("⛈️"), UNKNOWN("❔");
+
+    /** Biểu tượng theo ban ngày hoặc ban đêm: trời quang ban đêm là trăng. */
+    fun emoji(isDay: Boolean): String = when {
+        isDay -> emoji
+        this == CLEAR -> "🌙"
+        this == PARTLY -> "☁️"
+        else -> emoji
+    }
 
     companion object {
         /** Đổi mã thời tiết WMO của Open-Meteo sang nhóm tình trạng. */
@@ -75,10 +92,18 @@ object WeatherParsers {
             val codes = daily.optJSONArray("weather_code")
             val max = daily.optJSONArray("temperature_2m_max")
             val min = daily.optJSONArray("temperature_2m_min")
+            val sunrise = daily.optJSONArray("sunrise")
+            val sunset = daily.optJSONArray("sunset")
             if (time != null && codes != null && max != null && min != null) {
                 val n = minOf(time.length(), codes.length(), max.length(), min.length())
                 for (i in 0 until n) {
-                    days.add(DayForecast(time.getString(i), codes.optInt(i, -1), max.optDouble(i), min.optDouble(i)))
+                    days.add(
+                        DayForecast(
+                            time.getString(i), codes.optInt(i, -1), max.optDouble(i), min.optDouble(i),
+                            sunrise?.optString(i)?.takeIf { it.isNotEmpty() },
+                            sunset?.optString(i)?.takeIf { it.isNotEmpty() }
+                        )
+                    )
                 }
             }
         }
@@ -86,7 +111,8 @@ object WeatherParsers {
             tempC = current.getDouble("temperature_2m"),
             humidity = current.optInt("relative_humidity_2m", -1),
             code = current.optInt("weather_code", -1),
-            days = days
+            days = days,
+            utcOffsetSec = root.optInt("utc_offset_seconds", 0)
         )
     }
 }

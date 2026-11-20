@@ -35,7 +35,8 @@ object WeatherRepository {
                 false
             }
         }
-        InfoWidgetProvider.updateAll(context)
+        WidgetUpdater.updateAll(context)
+        DayNightScheduler.scheduleNext(context)
         return ok
     }
 }
