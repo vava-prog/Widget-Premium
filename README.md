@@ -2,7 +2,9 @@
 
 Ứng dụng widget Android gom những thứ bạn nhìn mỗi ngày vào một màn hình chính gọn gàng: giờ, ngày âm dương, thời tiết và tình trạng máy.
 
-> **Trạng thái: đang lên kế hoạch.** Repo hiện chưa có mã nguồn. Các mục dưới đây là tính năng dự kiến, chưa phải tính năng đã hoàn thành.
+> **Trạng thái: giai đoạn 2.** Đã có khung dự án, CI và widget đồng hồ + ngày. Các tính năng còn lại bên dưới là dự kiến, chưa hoàn thành. Xem [kiến trúc](docs/ARCHITECTURE.md) và [danh sách quyền](docs/PERMISSIONS.md).
+
+**Tải APK thử nghiệm (bản debug mới nhất):** https://github.com/vava-prog/Widget-Premium/releases/tag/latest-debug
 
 ## Tính năng dự kiến
 

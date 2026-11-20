@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Widget Premium</string>
+    <string name="home_intro">A clock and date widget for your home screen. Tap the widget to open the app.</string>
+    <string name="btn_add_widget">Add clock widget</string>
+    <string name="add_widget_unsupported">Your launcher does not support quick add. Add the widget manually using the steps below.</string>
+    <string name="guide_title">How to add the widget manually</string>
+    <string name="guide_step1">Touch and hold an empty spot on the home screen.</string>
+    <string name="guide_step2">Choose Widgets, then find Widget Premium.</string>
+    <string name="guide_step3">Drag the widget onto the home screen and drag its edges to resize.</string>
+    <string name="widget_clock_label">Widget Premium: Clock</string>
+    <string name="widget_clock_desc">Large clock with the date</string>
+</resources>

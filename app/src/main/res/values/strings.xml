@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Widget Premium</string>
+    <string name="home_intro">Widget đồng hồ và ngày cho màn hình chính. Chạm vào widget để mở ứng dụng.</string>
+    <string name="btn_add_widget">Thêm widget đồng hồ</string>
+    <string name="add_widget_unsupported">Launcher của bạn không hỗ trợ thêm nhanh. Hãy thêm widget thủ công theo hướng dẫn bên dưới.</string>
+    <string name="guide_title">Cách thêm widget thủ công</string>
+    <string name="guide_step1">Nhấn giữ vào chỗ trống trên màn hình chính.</string>
+    <string name="guide_step2">Chọn Widget, rồi tìm Widget Premium.</string>
+    <string name="guide_step3">Kéo widget ra màn hình chính và kéo mép để đổi kích thước.</string>
+    <string name="widget_clock_label">Widget Premium: Đồng hồ</string>
+    <string name="widget_clock_desc">Đồng hồ lớn kèm ngày tháng</string>
+</resources>
