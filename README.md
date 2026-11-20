@@ -1,4 +1,4 @@
-# Widget-Pro
+# Widget Premium
 
 Ứng dụng widget Android gom những thứ bạn nhìn mỗi ngày vào một màn hình chính gọn gàng: giờ, ngày âm dương, thời tiết và tình trạng máy.
 
