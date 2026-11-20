@@ -10,6 +10,14 @@ Mô tả đầy đủ và lộ trình nằm trong `README.md`. Người dùng n�
 - Không thu thập dữ liệu người dùng. Tính năng cần mạng (thời tiết) phải nói rõ trong app và `PRIVACY.md`.
 - Giấy phép dự án: MIT (xem `LICENSE`). Thư viện bên thứ ba ghi trong `LICENSE-NOTICES.md`.
 
+## Yêu cầu kỹ thuật cố định
+- Kotlin, Material 3, Glance hoặc AppWidget API, Room, WorkManager, AlarmManager, Coroutines, MVVM, Open-Meteo. Mã chia module.
+- Không quyền vị trí nền, không root, không máy chủ cấp phép, không dịch vụ nền liên tục không cần thiết.
+- Địa điểm thời tiết nhập tay được. Mất mạng thì dùng dữ liệu đã lưu. Cảm biến không có thì ẩn, không hiện số giả.
+- Không làm giao diện minh họa: mỗi chức năng phải chạy thật. Không bỏ qua lỗi build hay runtime.
+- Giới hạn của Android (cập nhật widget, chạy nền) phải được giải thích và có phương án thay thế.
+- Tài liệu tham khảo bên ngoài chỉ dùng để hiểu chức năng và trải nghiệm. Không dịch ngược, không dùng tài nguyên, khóa hay cơ chế máy chủ của ứng dụng khác.
+
 ## Quy trình mỗi lần thay đổi
 1. Đọc mã liên quan trước khi sửa. Sửa nhỏ, đúng chỗ.
 2. Chuỗi giao diện: thêm vào cả `values/strings.xml` (tiếng Việt) và `values-en/strings.xml` (tiếng Anh). Chạy script kiểm tra: hai file đủ khóa như nhau, không khóa thừa, không `R.string.x` thiếu. Dấu nháy đơn trong chuỗi tiếng Anh phải viết `\'`.
