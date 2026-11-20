@@ -16,7 +16,7 @@
         android:format24Hour="HH:mm"
         android:includeFontPadding="false"
         android:textColor="#FFFFFFFF"
-        android:textSize="44sp" />
+        android:textSize="60sp" />
 
     <TextClock
         android:id="@+id/info_date"
@@ -25,7 +25,7 @@
         android:format12Hour="EEEE, dd/MM/yyyy"
         android:format24Hour="EEEE, dd/MM/yyyy"
         android:textColor="#CCFFFFFF"
-        android:textSize="14sp" />
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/info_lunar"
@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
         android:textColor="#CCFFFFFF"
-        android:textSize="14sp" />
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/info_weather"
@@ -43,12 +43,12 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="#CCFFFFFF"
-        android:textSize="14sp" />
+        android:textSize="16sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="14dp"
         android:orientation="horizontal">
 
         <TextView
@@ -58,7 +58,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:textColor="#FFFFFFFF"
-            android:textSize="12sp" />
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/stat_temp"
@@ -67,7 +67,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:textColor="#FFFFFFFF"
-            android:textSize="12sp" />
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/stat_ram"
@@ -76,7 +76,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:textColor="#FFFFFFFF"
-            android:textSize="12sp" />
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/stat_storage"
@@ -85,6 +85,6 @@
             android:layout_weight="1"
             android:gravity="center"
             android:textColor="#FFFFFFFF"
-            android:textSize="12sp" />
+            android:textSize="14sp" />
     </LinearLayout>
 </LinearLayout>
