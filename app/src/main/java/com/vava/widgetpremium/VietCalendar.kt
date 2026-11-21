@@ -61,6 +61,44 @@ object VietCalendar {
     /** Chi giờ chứa giờ đồng hồ đã cho (23 và 0 là Tý). */
     fun hourChi(hour: Int): Int = ((hour + 1) / 2) % 12
 
+    /** 24 tiết khí, chỉ số 0 là Xuân phân (kinh độ Mặt Trời 0 độ), mỗi tiết cách nhau 15 độ. */
+    val TERMS = listOf(
+        "Xuân phân", "Thanh minh", "Cốc vũ", "Lập hạ", "Tiểu mãn", "Mang chủng", "Hạ chí", "Tiểu thử",
+        "Đại thử", "Lập thu", "Xử thử", "Bạch lộ", "Thu phân", "Hàn lộ", "Sương giáng", "Lập đông",
+        "Tiểu tuyết", "Đại tuyết", "Đông chí", "Tiểu hàn", "Đại hàn", "Lập xuân", "Vũ thủy", "Kinh trập"
+    )
+
+    val TRUC = listOf("Kiến", "Trừ", "Mãn", "Bình", "Định", "Chấp", "Phá", "Nguy", "Thành", "Thu", "Khai", "Bế")
+
+    /** Tiết khí đang có hiệu lực vào cuối ngày (tiết bắt đầu trong ngày này thì tính là tiết mới). */
+    fun solarTermIndex(date: LocalDate): Int =
+        Math.floorDiv(LunarCalendar.sunLongitudeDegrees((julianDay(date) + 1).toInt()).toInt(), 15).coerceIn(0, 23)
+
+    private fun termIndexAtStart(date: LocalDate): Int =
+        Math.floorDiv(LunarCalendar.sunLongitudeDegrees(julianDay(date).toInt()).toInt(), 15).coerceIn(0, 23)
+
+    /** Chỉ số tiết khí nếu một tiết khí bắt đầu vào đúng ngày này, ngược lại là null. */
+    fun solarTermStartingOn(date: LocalDate): Int? {
+        val end = solarTermIndex(date)
+        return if (end != termIndexAtStart(date)) end else null
+    }
+
+    /** Chi của tháng tiết khí (tháng Dần bắt đầu ở Lập xuân), chỉ đổi ở các "tiết" có chỉ số lẻ. */
+    fun termMonthChi(termIndex: Int): Int {
+        val t = if (termIndex % 2 == 1) termIndex else (termIndex + 23) % 24
+        return (4 + (t - 1) / 2) % 12
+    }
+
+    /** Chỉ số 12 Trực của ngày: ngày có chi trùng chi của tháng tiết khí là Kiến; ngày đổi tháng lặp lại Trực của hôm trước. */
+    fun trucIndex(date: LocalDate): Int =
+        ((dayChiIndex(date) - termMonthChi(solarTermIndex(date))) % 12 + 12) % 12
+
+    /** Nguyệt kỵ: mùng 5, 14, 23 âm lịch. */
+    fun isNguyetKy(lunar: LunarDate): Boolean = lunar.day == 5 || lunar.day == 14 || lunar.day == 23
+
+    /** Tam nương: mùng 3, 7, 13, 18, 22, 27 âm lịch. */
+    fun isTamNuong(lunar: LunarDate): Boolean = lunar.day in setOf(3, 7, 13, 18, 22, 27)
+
     private val SOLAR = mapOf(
         (1 to 1) to Holiday.NEW_YEAR, (3 to 2) to Holiday.PARTY_FOUNDING, (14 to 2) to Holiday.VALENTINE,
         (8 to 3) to Holiday.WOMEN_INTL, (30 to 4) to Holiday.LIBERATION, (1 to 5) to Holiday.LABOUR,

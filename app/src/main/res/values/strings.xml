@@ -119,4 +119,9 @@
     <string name="rs_ok">Quyền thông báo và báo thức: đã đủ.</string>
     <string name="rs_test">Gửi thông báo thử ngay</string>
     <string name="rs_test_text">Đây là thông báo thử từ Widget Premium.</string>
+    <string name="cal_term_today">Tiết khí: %1$s (bắt đầu từ hôm nay)</string>
+    <string name="cal_term_current">Tiết khí: %1$s</string>
+    <string name="cal_truc">Trực: %1$s</string>
+    <string name="cal_nguyet_ky">Ngày Nguyệt kỵ (mùng 5, 14, 23 âm lịch): theo quan niệm dân gian nên tránh việc lớn.</string>
+    <string name="cal_tam_nuong">Ngày Tam nương (3, 7, 13, 18, 22, 27 âm lịch): theo quan niệm dân gian nên tránh khởi sự.</string>
 </resources>

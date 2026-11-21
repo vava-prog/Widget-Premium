@@ -320,6 +320,14 @@ private fun DayDetail(date: LocalDate, today: LocalDate) {
                 color = if (good) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
             )
             holidays.forEach { Text("★ " + stringResource(holidayRes(it)), color = MaterialTheme.colorScheme.error) }
+            val termStart = remember(date) { VietCalendar.solarTermStartingOn(date) }
+            Text(
+                if (termStart != null) stringResource(R.string.cal_term_today, VietCalendar.TERMS[termStart])
+                else stringResource(R.string.cal_term_current, VietCalendar.TERMS[VietCalendar.solarTermIndex(date)])
+            )
+            Text(stringResource(R.string.cal_truc, VietCalendar.TRUC[VietCalendar.trucIndex(date)]))
+            if (VietCalendar.isNguyetKy(lunar)) Text(stringResource(R.string.cal_nguyet_ky), color = MaterialTheme.colorScheme.error)
+            if (VietCalendar.isTamNuong(lunar)) Text(stringResource(R.string.cal_tam_nuong), color = MaterialTheme.colorScheme.error)
             Text(stringResource(R.string.cal_good_hours), style = MaterialTheme.typography.labelLarge)
             goodHours.chunked(3).forEach { row ->
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {

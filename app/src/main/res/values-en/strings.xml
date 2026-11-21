@@ -119,4 +119,9 @@
     <string name="rs_ok">Notification and alarm permissions: all set.</string>
     <string name="rs_test">Send a test notification now</string>
     <string name="rs_test_text">This is a test notification from Widget Premium.</string>
+    <string name="cal_term_today">Solar term: %1$s (starts today)</string>
+    <string name="cal_term_current">Solar term: %1$s</string>
+    <string name="cal_truc">Trực (12 day officers): %1$s</string>
+    <string name="cal_nguyet_ky">Nguyệt kỵ day (lunar 5, 14, 23): by folk custom, avoid big undertakings.</string>
+    <string name="cal_tam_nuong">Tam nương day (lunar 3, 7, 13, 18, 22, 27): by folk custom, avoid starting new things.</string>
 </resources>

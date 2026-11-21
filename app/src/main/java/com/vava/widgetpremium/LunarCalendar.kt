@@ -103,6 +103,20 @@ object LunarCalendar {
         return floor(l / PI * 6).toInt()
     }
 
+    /** Kinh độ Mặt Trời (độ, 0 đến 360) lúc 0 giờ sáng giờ Việt Nam của ngày có số ngày Julius jdn. */
+    fun sunLongitudeDegrees(jdn: Int): Double {
+        val t = (jdn - 2451545.5 - TIME_ZONE / 24) / 36525
+        val t2 = t * t
+        val dr = PI / 180
+        val m = 357.52910 + 35999.05030 * t - 0.0001559 * t2 - 0.00000048 * t * t2
+        val l0 = 280.46645 + 36000.76983 * t + 0.0003032 * t2
+        var dl = (1.9146 - 0.004817 * t - 0.000014 * t2) * sin(dr * m)
+        dl += (0.019993 - 0.000101 * t) * sin(dr * 2 * m) + 0.00029 * sin(dr * 3 * m)
+        var l = (l0 + dl) * dr
+        l -= PI * 2 * floor(l / (PI * 2))
+        return l / dr
+    }
+
     private fun lunarMonth11(year: Int): Int {
         val off = julianDay(31, 12, year) - 2415021
         val k = floor(off / SYNODIC_MONTH).toInt()

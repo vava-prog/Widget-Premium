@@ -95,4 +95,57 @@ class VietCalendarTest {
         assertEquals(LocalDateTime.of(2026, 11, 22, 8, 0), ReminderRules.defaultTime(LocalDate.of(2026, 11, 22), now))
         assertEquals("2026-11-21", ReminderRules.dateKey(LocalDate.of(2026, 11, 21)))
     }
+
+    @Test fun solarTermsMatchKnownDates() {
+        fun start(y: Int, m: Int, d: Int) = VietCalendar.solarTermStartingOn(LocalDate.of(y, m, d))?.let { VietCalendar.TERMS[it] }
+        assertEquals("Lập xuân", start(2026, 2, 4))
+        assertEquals("Thanh minh", start(2026, 4, 5))
+        assertEquals("Xuân phân", start(2026, 3, 20))
+        assertEquals("Hạ chí", start(2026, 6, 21))
+        assertEquals("Thu phân", start(2026, 9, 23))
+        assertEquals("Lập đông", start(2026, 11, 7))
+        assertEquals("Đông chí", start(2026, 12, 22))
+        assertNull(start(2026, 11, 8))
+    }
+
+    @Test fun termMonthChiMapping() {
+        assertEquals(2, VietCalendar.termMonthChi(21)) // Lập xuân: tháng Dần
+        assertEquals(2, VietCalendar.termMonthChi(22)) // Vũ thủy vẫn tháng Dần
+        assertEquals(3, VietCalendar.termMonthChi(23)) // Kinh trập: Mão
+        assertEquals(3, VietCalendar.termMonthChi(0))  // Xuân phân: Mão
+        assertEquals(0, VietCalendar.termMonthChi(17)) // Đại tuyết: Tý
+        assertEquals(0, VietCalendar.termMonthChi(18)) // Đông chí: Tý
+        assertEquals(1, VietCalendar.termMonthChi(19)) // Tiểu hàn: Sửu
+    }
+
+    @Test fun trucAdvancesDailyAndRepeatsOnTermDay() {
+        var date = LocalDate.of(2026, 1, 1)
+        repeat(400) {
+            val next = date.plusDays(1)
+            val a = VietCalendar.trucIndex(date)
+            val b = VietCalendar.trucIndex(next)
+            if (VietCalendar.solarTermStartingOn(next)?.let { it % 2 == 1 } == true) {
+                assertEquals("repeat on $next", a, b)
+            } else {
+                assertEquals("advance on $next", (a + 1) % 12, b)
+            }
+            date = next
+        }
+    }
+
+    @Test fun trucKienWhenDayChiEqualsMonthChi() {
+        // Cuối ngày Lập xuân 2026 vào tháng Dần; ngày chi Dần đầu tiên sau đó là Kiến
+        var d = LocalDate.of(2026, 2, 4)
+        while (VietCalendar.dayChiIndex(d) != 2) d = d.plusDays(1)
+        assertEquals(0, VietCalendar.trucIndex(d))
+        assertEquals("Kiến", VietCalendar.TRUC[VietCalendar.trucIndex(d)])
+    }
+
+    @Test fun tabooDays() {
+        fun lunar(day: Int) = LunarDate(day, 5, 2026, false)
+        assertTrue(VietCalendar.isNguyetKy(lunar(14)))
+        assertFalse(VietCalendar.isNguyetKy(lunar(15)))
+        assertTrue(VietCalendar.isTamNuong(lunar(27)))
+        assertFalse(VietCalendar.isTamNuong(lunar(28)))
+    }
 }
