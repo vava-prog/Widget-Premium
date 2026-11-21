@@ -164,4 +164,6 @@
     <string name="cal_hour_good">Hoàng đạo</string>
     <string name="cal_hour_bad">Hắc đạo</string>
     <string name="cal_next_term">Tiết khí kế tiếp: %1$s, ngày %2$s (còn %3$d ngày)</string>
+    <string name="rs_oem_hint">Nếu nhắc không hiện dù đã đủ quyền: nhiều hãng máy (Xiaomi, Oppo, Vivo, Huawei) chặn ứng dụng chạy nền. Mở cài đặt ứng dụng, bật "Tự khởi động" và đặt tiết kiệm pin là "Không hạn chế".</string>
+    <string name="rs_open_app_settings">Mở cài đặt ứng dụng</string>
 </resources>

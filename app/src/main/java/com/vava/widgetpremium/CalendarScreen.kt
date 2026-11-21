@@ -528,6 +528,13 @@ private fun ReminderStatus() {
         if (notifOk && exactOk) {
             Text(stringResource(R.string.rs_ok), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
+        Text(stringResource(R.string.rs_oem_hint), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        OutlinedButton(onClick = {
+            context.startActivity(
+                Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + context.packageName))
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            )
+        }, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.rs_open_app_settings)) }
         OutlinedButton(onClick = {
             ReminderNotifier.show(context, 0L, context.getString(R.string.rs_test_text))
             refresh++
