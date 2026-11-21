@@ -114,7 +114,7 @@
     <string name="reminder_title">Nhắc việc</string>
     <string name="rs_notif_off">Thông báo của ứng dụng đang tắt nên nhắc việc sẽ không hiện.</string>
     <string name="rs_open_notif">Mở cài đặt thông báo</string>
-    <string name="rs_exact_off">Chưa cho phép báo thức chính xác: nhắc có thể trễ vài phút hoặc hơn khi máy ngủ.</string>
+    <string name="rs_exact_off">Chưa cho phép báo thức chính xác: nhắc vẫn đúng giờ nhưng máy sẽ hiện biểu tượng báo thức trên thanh trạng thái.</string>
     <string name="rs_allow_exact">Cho phép báo thức chính xác</string>
     <string name="rs_ok">Quyền thông báo và báo thức: đã đủ.</string>
     <string name="rs_test">Gửi thông báo thử ngay</string>

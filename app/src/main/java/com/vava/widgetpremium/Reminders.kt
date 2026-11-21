@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 
 /**
  * Đặt và hủy báo thức nhắc. Dùng báo thức chính xác khi hệ thống cho phép;
- * nếu Android không cấp quyền báo thức chính xác thì dùng báo thức gần đúng (có thể lệch vài phút).
+ * nếu Android không cấp quyền thì dùng báo thức kiểu đồng hồ (hiện biểu tượng báo thức trên thanh trạng thái, nhưng đúng giờ).
  */
 object ReminderScheduler {
     const val ACTION = "com.vava.widgetpremium.NOTE_REMINDER"
@@ -35,10 +35,18 @@ object ReminderScheduler {
             intentFor(context, note.id).putExtra(EXTRA_TEXT, note.text),
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
-        val exact = Build.VERSION.SDK_INT < Build.VERSION_CODES.S || alarms.canScheduleExactAlarms()
+        val exact = canExact(context)
         try {
-            if (exact) alarms.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, at, pending)
-            else alarms.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, at, pending)
+            if (exact) {
+                alarms.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, at, pending)
+            } else {
+                // Không có quyền báo thức chính xác: dùng báo thức kiểu đồng hồ, chạy đúng giờ và không bị Doze trì hoãn.
+                val show = PendingIntent.getActivity(
+                    context, 0, Intent(context, MainActivity::class.java).putExtra(MainActivity.EXTRA_TAB, 1),
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                )
+                alarms.setAlarmClock(AlarmManager.AlarmClockInfo(at, show), pending)
+            }
         } catch (e: SecurityException) {
             alarms.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, at, pending)
         }

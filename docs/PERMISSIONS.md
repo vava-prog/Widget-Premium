@@ -14,6 +14,6 @@ Không dùng: vị trí nền, quyền lưu trữ rộng, dịch vụ nền ch�
 
 ## Phase 4: ghi chú và nhắc giờ (tab Lịch Việt)
 - `POST_NOTIFICATIONS` (Android 13+): hiện thông báo nhắc. Chỉ xin sau khi người dùng lưu ghi chú có đặt giờ nhắc; từ chối thì ghi chú vẫn lưu, chỉ không hiện thông báo.
-- `SCHEDULE_EXACT_ALARM`: nhắc đúng giờ. Nếu Android không cấp, ứng dụng tự dùng báo thức gần đúng (có thể lệch vài phút), không bắt buộc người dùng cấp.
+- `SCHEDULE_EXACT_ALARM`: nhắc đúng giờ. Nếu Android không cấp, ứng dụng tự dùng báo thức kiểu đồng hồ (`setAlarmClock`, đúng giờ, hiện biểu tượng báo thức), không bắt buộc người dùng cấp.
 - `RECEIVE_BOOT_COMPLETED`: Android xóa báo thức khi khởi động lại hoặc cập nhật app, nên ứng dụng đặt lại các nhắc còn hiệu lực từ cơ sở dữ liệu trên máy. Không có dịch vụ chạy nền liên tục.
 - Ghi chú lưu bằng Room trên máy, không gửi đi đâu (xem PRIVACY.md).

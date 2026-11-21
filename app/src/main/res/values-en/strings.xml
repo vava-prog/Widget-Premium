@@ -114,7 +114,7 @@
     <string name="reminder_title">Reminder</string>
     <string name="rs_notif_off">Notifications are off for this app, so reminders will not show.</string>
     <string name="rs_open_notif">Open notification settings</string>
-    <string name="rs_exact_off">Exact alarms are not allowed: reminders may be late by minutes or more when the phone sleeps.</string>
+    <string name="rs_exact_off">Exact alarms are not allowed: reminders still fire on time but the phone shows an alarm icon in the status bar.</string>
     <string name="rs_allow_exact">Allow exact alarms</string>
     <string name="rs_ok">Notification and alarm permissions: all set.</string>
     <string name="rs_test">Send a test notification now</string>
