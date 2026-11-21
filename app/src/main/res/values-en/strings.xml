@@ -124,4 +124,14 @@
     <string name="cal_truc">Trực (12 day officers): %1$s</string>
     <string name="cal_nguyet_ky">Nguyệt kỵ day (lunar 5, 14, 23): by folk custom, avoid big undertakings.</string>
     <string name="cal_tam_nuong">Tam nương day (lunar 3, 7, 13, 18, 22, 27): by folk custom, avoid starting new things.</string>
+    <string name="style_title">Widget appearance</string>
+    <string name="style_theme_standard">Standard</string>
+    <string name="style_theme_glass">Frosted glass</string>
+    <string name="style_accent">Accent color</string>
+    <string name="style_opacity">Background strength: %1$d%%</string>
+    <string name="style_mode">Light or dark</string>
+    <string name="style_mode_auto">Auto (sunrise and sunset)</string>
+    <string name="style_mode_day">Always light</string>
+    <string name="style_mode_night">Always dark</string>
+    <string name="style_hint">Changes apply right away to the widgets already on your home screen.</string>
 </resources>

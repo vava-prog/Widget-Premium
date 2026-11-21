@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import android.view.View
 import android.widget.RemoteViews
 import java.util.Calendar
@@ -18,10 +19,14 @@ import java.util.Calendar
 class InfoWidgetProvider : AppWidgetProvider() {
 
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
-        for (id in appWidgetIds) {
-            appWidgetManager.updateAppWidget(id, buildViews(context))
-        }
+        for (id in appWidgetIds) update(context, appWidgetManager, id)
         DayNightScheduler.scheduleNext(context)
+    }
+
+    override fun onAppWidgetOptionsChanged(
+        context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, newOptions: Bundle
+    ) {
+        update(context, appWidgetManager, appWidgetId)
     }
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -47,7 +52,11 @@ class InfoWidgetProvider : AppWidgetProvider() {
         fun updateAll(context: Context) {
             val manager = AppWidgetManager.getInstance(context)
             val ids = manager.getAppWidgetIds(ComponentName(context, InfoWidgetProvider::class.java))
-            for (id in ids) manager.updateAppWidget(id, buildViews(context))
+            for (id in ids) update(context, manager, id)
+        }
+
+        private fun update(context: Context, manager: AppWidgetManager, id: Int) {
+            manager.updateAppWidget(id, buildViews(context, manager, id))
         }
 
         private fun weatherLine(context: Context, isDay: Boolean): String? {
@@ -68,7 +77,7 @@ class InfoWidgetProvider : AppWidgetProvider() {
             return text
         }
 
-        private fun buildViews(context: Context): RemoteViews {
+        private fun buildViews(context: Context, manager: AppWidgetManager, id: Int): RemoteViews {
             val views = RemoteViews(context.packageName, R.layout.widget_info)
 
             val now = Calendar.getInstance()
@@ -83,8 +92,9 @@ class InfoWidgetProvider : AppWidgetProvider() {
                 context.getString(lunarRes, lunar.day, lunar.month, LunarCalendar.yearName(lunar.year))
             )
 
-            val day = WidgetUpdater.isDay(context)
-            views.setInt(R.id.info_root, "setBackgroundResource", if (day) R.drawable.widget_bg_day else R.drawable.widget_bg)
+            val day = WidgetUpdater.widgetIsDay(context)
+            val (w, h) = WidgetBackground.sizeDp(manager, id, 250, 200)
+            WidgetBackground.apply(context, views, R.id.info_bg, w, h)
 
             val weatherText = weatherLine(context, day)
             if (weatherText != null) {

@@ -116,6 +116,7 @@ private fun HomeScreen() {
                 Text(stringResource(R.string.btn_add_info_widget))
             }
             WeatherSection()
+            StyleSection()
             IconSwitchRow()
             Text(stringResource(R.string.guide_title), style = MaterialTheme.typography.titleMedium)
             steps.forEachIndexed { index, res ->

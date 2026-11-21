@@ -18,9 +18,18 @@ object WidgetUpdater {
     fun isDay(context: Context, nowMs: Long = System.currentTimeMillis()): Boolean =
         DayNight.isDay(nowMs, currentSun(context, nowMs))
 
-    fun updateAll(context: Context) {
+    /** Sáng hay tối của widget: theo mặt trời hoặc ép cố định theo lựa chọn của người dùng. */
+    fun widgetIsDay(context: Context): Boolean =
+        WidgetPalette.resolveDay(StyleStore.load(context).mode, isDay(context))
+
+    /** Vẽ lại mọi widget (không đụng tới biểu tượng ứng dụng). */
+    fun updateWidgets(context: Context) {
         ClockWidgetProvider.updateAll(context)
         InfoWidgetProvider.updateAll(context)
+    }
+
+    fun updateAll(context: Context) {
+        updateWidgets(context)
         LauncherIcon.apply(context, isDay(context))
     }
 }

@@ -51,7 +51,7 @@ Mục tiêu thiết kế:
 2. **Nền ứng dụng và hệ thống widget:** khung dự án, CI, widget đồng hồ.
 3. **Dữ liệu:** lịch Âm – Dương, thời tiết, pin, nhiệt độ, RAM, bộ nhớ.
 4. **Ghi chú và nhắc việc:** Room, thông báo đúng giờ.
-5. **Giao diện:** hai phong cách Standard và Kính mờ (Liquid Glass), tùy chỉnh màu và độ trong suốt, tự chuyển sáng/tối.
+5. **Giao diện (đã làm):** hai phong cách Standard và Kính mờ (Liquid Glass) tự vẽ theo kích thước widget, chọn màu chủ đạo, độ đậm của nền, chế độ sáng/tối (tự động theo mặt trời hoặc ép cố định). Chọn trong màn hình Trang chủ, áp dụng ngay.
 6. **Kiểm thử, tối ưu hiệu năng, sửa lỗi.**
 7. **Đóng gói:** APK, README, tài liệu kiến trúc và quyền, hướng dẫn thêm widget.
 

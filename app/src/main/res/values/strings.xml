@@ -124,4 +124,14 @@
     <string name="cal_truc">Trực: %1$s</string>
     <string name="cal_nguyet_ky">Ngày Nguyệt kỵ (mùng 5, 14, 23 âm lịch): theo quan niệm dân gian nên tránh việc lớn.</string>
     <string name="cal_tam_nuong">Ngày Tam nương (3, 7, 13, 18, 22, 27 âm lịch): theo quan niệm dân gian nên tránh khởi sự.</string>
+    <string name="style_title">Giao diện widget</string>
+    <string name="style_theme_standard">Tiêu chuẩn</string>
+    <string name="style_theme_glass">Kính mờ</string>
+    <string name="style_accent">Màu chủ đạo</string>
+    <string name="style_opacity">Độ đậm của nền: %1$d%%</string>
+    <string name="style_mode">Sáng hoặc tối</string>
+    <string name="style_mode_auto">Tự động theo mặt trời</string>
+    <string name="style_mode_day">Luôn sáng</string>
+    <string name="style_mode_night">Luôn tối</string>
+    <string name="style_hint">Thay đổi được áp dụng ngay cho các widget đang có trên màn hình chính.</string>
 </resources>
