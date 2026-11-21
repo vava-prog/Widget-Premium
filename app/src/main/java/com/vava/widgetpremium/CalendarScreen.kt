@@ -98,6 +98,17 @@ private fun holidayRes(h: Holiday): Int = when (h) {
     Holiday.KITCHEN_GODS -> R.string.holiday_kitchen_gods
 }
 
+private fun directionRes(d: Direction): Int = when (d) {
+    Direction.N -> R.string.dir_n
+    Direction.NE -> R.string.dir_ne
+    Direction.E -> R.string.dir_e
+    Direction.SE -> R.string.dir_se
+    Direction.S -> R.string.dir_s
+    Direction.SW -> R.string.dir_sw
+    Direction.W -> R.string.dir_w
+    Direction.NW -> R.string.dir_nw
+}
+
 private fun toMillis(t: LocalDateTime): Long = t.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
 private fun fromMillis(ms: Long): LocalDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(ms), ZoneId.systemDefault())
 private val REMIND_FORMAT: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy")
@@ -326,6 +337,13 @@ private fun DayDetail(date: LocalDate, today: LocalDate) {
                 else stringResource(R.string.cal_term_current, VietCalendar.TERMS[VietCalendar.solarTermIndex(date)])
             )
             Text(stringResource(R.string.cal_truc, VietCalendar.TRUC[VietCalendar.trucIndex(date)]))
+            Text(
+                stringResource(
+                    R.string.cal_directions,
+                    stringResource(directionRes(VietCalendar.hyThan(date))),
+                    stringResource(directionRes(VietCalendar.taiThan(date)))
+                )
+            )
             if (VietCalendar.isNguyetKy(lunar)) Text(stringResource(R.string.cal_nguyet_ky), color = MaterialTheme.colorScheme.error)
             if (VietCalendar.isTamNuong(lunar)) Text(stringResource(R.string.cal_tam_nuong), color = MaterialTheme.colorScheme.error)
             Text(stringResource(R.string.cal_good_hours), style = MaterialTheme.typography.labelLarge)

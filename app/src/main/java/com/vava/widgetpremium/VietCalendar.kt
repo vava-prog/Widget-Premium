@@ -5,6 +5,8 @@ import java.time.LocalDateTime
 import java.time.YearMonth
 
 /** Ngày lễ và sự kiện, tên hiển thị lấy từ chuỗi tài nguyên ở lớp giao diện. */
+enum class Direction { N, NE, E, SE, S, SW, W, NW }
+
 enum class Holiday {
     NEW_YEAR, PARTY_FOUNDING, VALENTINE, WOMEN_INTL, LIBERATION, LABOUR, CHILDREN, NATIONAL,
     WOMEN_VN, TEACHERS, CHRISTMAS,
@@ -113,6 +115,20 @@ object VietCalendar {
         }
         return null
     }
+
+    // Hỷ thần và Tài thần theo can của ngày (Giáp, Ất, Bính, Đinh, Mậu, Kỷ, Canh, Tân, Nhâm, Quý).
+    // Nguồn: Đặng Xuân Xuyến, "Cách tính phương vị xuất hành" (t-van.net); đối chiếu ngày Giáp Thân và Mậu Tuất trên quantrimang.com.
+    private val HY_THAN = listOf(
+        Direction.NE, Direction.NW, Direction.SW, Direction.S, Direction.SE,
+        Direction.NE, Direction.NW, Direction.SW, Direction.S, Direction.SE
+    )
+    private val TAI_THAN = listOf(
+        Direction.SE, Direction.SE, Direction.E, Direction.E, Direction.N,
+        Direction.S, Direction.SW, Direction.SW, Direction.W, Direction.NW
+    )
+
+    fun hyThan(date: LocalDate): Direction = HY_THAN[dayCanIndex(date)]
+    fun taiThan(date: LocalDate): Direction = TAI_THAN[dayCanIndex(date)]
 
     /** Nguyệt kỵ: mùng 5, 14, 23 âm lịch. */
     fun isNguyetKy(lunar: LunarDate): Boolean = lunar.day == 5 || lunar.day == 14 || lunar.day == 23

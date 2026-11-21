@@ -148,4 +148,23 @@ class VietCalendarTest {
         assertTrue(VietCalendar.isTamNuong(lunar(27)))
         assertFalse(VietCalendar.isTamNuong(lunar(28)))
     }
+
+    @Test fun hyThanTaiThanByDayCan() {
+        // Ngày Giáp Thân và Mậu Tuất khớp quantrimang.com; các ngày còn lại theo bảng của Đặng Xuân Xuyến.
+        fun dateWithCan(can: Int): LocalDate {
+            var d = LocalDate.of(2026, 1, 1)
+            while (VietCalendar.dayCanIndex(d) != can) d = d.plusDays(1)
+            return d
+        }
+        val hy = listOf(Direction.NE, Direction.NW, Direction.SW, Direction.S, Direction.SE, Direction.NE, Direction.NW, Direction.SW, Direction.S, Direction.SE)
+        val tai = listOf(Direction.SE, Direction.SE, Direction.E, Direction.E, Direction.N, Direction.S, Direction.SW, Direction.SW, Direction.W, Direction.NW)
+        for (can in 0..9) {
+            assertEquals(hy[can], VietCalendar.hyThan(dateWithCan(can)))
+            assertEquals(tai[can], VietCalendar.taiThan(dateWithCan(can)))
+        }
+        // Giáp ngày 5 ngày sau đó là Kỷ: cùng Hỷ thần Đông Bắc, khác Tài thần
+        val giap = dateWithCan(0)
+        assertEquals(VietCalendar.hyThan(giap), VietCalendar.hyThan(giap.plusDays(5)))
+        assertTrue(VietCalendar.taiThan(giap) != VietCalendar.taiThan(giap.plusDays(5)))
+    }
 }

@@ -166,4 +166,13 @@
     <string name="cal_next_term">Tiết khí kế tiếp: %1$s, ngày %2$s (còn %3$d ngày)</string>
     <string name="rs_oem_hint">Nếu nhắc không hiện dù đã đủ quyền: nhiều hãng máy (Xiaomi, Oppo, Vivo, Huawei) chặn ứng dụng chạy nền. Mở cài đặt ứng dụng, bật "Tự khởi động" và đặt tiết kiệm pin là "Không hạn chế".</string>
     <string name="rs_open_app_settings">Mở cài đặt ứng dụng</string>
+    <string name="dir_n">Chính Bắc</string>
+    <string name="dir_ne">Đông Bắc</string>
+    <string name="dir_e">Chính Đông</string>
+    <string name="dir_se">Đông Nam</string>
+    <string name="dir_s">Chính Nam</string>
+    <string name="dir_sw">Tây Nam</string>
+    <string name="dir_w">Chính Tây</string>
+    <string name="dir_nw">Tây Bắc</string>
+    <string name="cal_directions">Hướng xuất hành: Hỷ thần %1$s · Tài thần %2$s</string>
 </resources>
