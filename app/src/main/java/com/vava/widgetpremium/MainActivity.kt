@@ -13,11 +13,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -46,10 +48,39 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         if (WeatherStore.city(this) != null) WeatherScheduler.schedule(this)
         DayNightScheduler.scheduleNext(this)
+        val startTab = intent?.getIntExtra(EXTRA_TAB, 0) ?: 0
         setContent {
             WidgetPremiumTheme {
-                HomeScreen()
+                AppRoot(startTab)
             }
+        }
+    }
+
+    companion object {
+        const val EXTRA_TAB = "open_tab"
+    }
+}
+
+@Composable
+private fun AppRoot(startTab: Int) {
+    var tab by remember { mutableStateOf(startTab) }
+    Scaffold(
+        bottomBar = {
+            NavigationBar {
+                NavigationBarItem(
+                    selected = tab == 0, onClick = { tab = 0 },
+                    icon = { Text("🏠") }, label = { Text(stringResource(R.string.nav_home)) }
+                )
+                NavigationBarItem(
+                    selected = tab == 1, onClick = { tab = 1 },
+                    icon = { Text("📅") }, label = { Text(stringResource(R.string.nav_calendar)) }
+                )
+            }
+        }
+    ) { padding ->
+        Surface(Modifier.fillMaxSize().padding(padding), color = MaterialTheme.colorScheme.background) {
+            if (tab == 0) HomeScreen()
+            else CalendarScreen(Modifier.verticalScroll(rememberScrollState()))
         }
     }
 }
@@ -61,7 +92,6 @@ private fun HomeScreen() {
     Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
         Column(
             modifier = Modifier
-                .safeDrawingPadding()
                 .verticalScroll(rememberScrollState())
                 .padding(24.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)

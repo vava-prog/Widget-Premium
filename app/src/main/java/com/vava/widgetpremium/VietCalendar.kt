@@ -1,0 +1,118 @@
+package com.vava.widgetpremium
+
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.YearMonth
+
+/** Ngày lễ và sự kiện, tên hiển thị lấy từ chuỗi tài nguyên ở lớp giao diện. */
+enum class Holiday {
+    NEW_YEAR, PARTY_FOUNDING, VALENTINE, WOMEN_INTL, LIBERATION, LABOUR, CHILDREN, NATIONAL,
+    WOMEN_VN, TEACHERS, CHRISTMAS,
+    TET, TET_2, TET_3, FIRST_FULL_MOON, HAN_THUC, HUNG_KINGS, BUDDHA, DOAN_NGO, VU_LAN, MID_AUTUMN, KITCHEN_GODS
+}
+
+/** Phần tính toán thuần của tab Lịch Việt: can chi ngày, hoàng đạo, giờ hoàng đạo, ngày lễ, lưới tháng. */
+object VietCalendar {
+    val CAN = listOf("Giáp", "Ất", "Bính", "Đinh", "Mậu", "Kỷ", "Canh", "Tân", "Nhâm", "Quý")
+    val CHI = listOf("Tý", "Sửu", "Dần", "Mão", "Thìn", "Tỵ", "Ngọ", "Mùi", "Thân", "Dậu", "Tuất", "Hợi")
+
+    /** Số ngày Julius (nửa đêm) của ngày dương. 1970-01-01 là 2440588. */
+    fun julianDay(date: LocalDate): Long = date.toEpochDay() + 2440588L
+
+    fun dayCanIndex(date: LocalDate): Int = ((julianDay(date) + 9) % 10).toInt()
+    fun dayChiIndex(date: LocalDate): Int = ((julianDay(date) + 1) % 12).toInt()
+
+    /** Ví dụ 2000-01-01 là ngày "Mậu Ngọ". */
+    fun dayName(date: LocalDate): String = CAN[dayCanIndex(date)] + " " + CHI[dayChiIndex(date)]
+
+    /** Chi của tháng âm lịch (tháng 1 là Dần). */
+    private val STAR_START = intArrayOf(0, 2, 4, 6, 8, 10) // Tý, Dần, Thìn, Ngọ, Thân, Tuất
+
+    /**
+     * Ngày hoàng đạo theo bảng 12 sao: Thanh Long khởi ở chi phụ thuộc tháng âm lịch,
+     * các sao tốt là Thanh Long, Minh Đường, Kim Quỹ, Thiên Đức, Ngọc Đường, Tư Mệnh.
+     */
+    fun isHoangDao(lunarMonth: Int, dayChi: Int): Boolean {
+        val start = STAR_START[(lunarMonth - 1) % 6]
+        val star = ((dayChi - start) % 12 + 12) % 12
+        return star in GOOD_STARS
+    }
+
+    private val GOOD_STARS = setOf(0, 1, 4, 5, 7, 10)
+
+    private val GOOD_HOURS = listOf(
+        listOf(0, 1, 3, 6, 8, 9),   // ngày Tý, Ngọ
+        listOf(2, 3, 5, 8, 10, 11), // ngày Sửu, Mùi
+        listOf(0, 1, 4, 5, 7, 10),  // ngày Dần, Thân
+        listOf(0, 2, 3, 6, 7, 9),   // ngày Mão, Dậu
+        listOf(2, 4, 5, 8, 9, 11),  // ngày Thìn, Tuất
+        listOf(1, 4, 6, 7, 10, 11)  // ngày Tỵ, Hợi
+    )
+
+    /** Sáu chi giờ hoàng đạo (0 = Tý ... 11 = Hợi) của một ngày, theo chi của ngày. */
+    fun goodHours(dayChi: Int): List<Int> = GOOD_HOURS[dayChi % 6]
+
+    /** Giờ bắt đầu và kết thúc (0 đến 23) của một chi giờ. Tý là 23 giờ đến 1 giờ. */
+    fun hourRange(chiIndex: Int): Pair<Int, Int> {
+        val start = (chiIndex * 2 + 23) % 24
+        return start to (start + 2) % 24
+    }
+
+    /** Chi giờ chứa giờ đồng hồ đã cho (23 và 0 là Tý). */
+    fun hourChi(hour: Int): Int = ((hour + 1) / 2) % 12
+
+    private val SOLAR = mapOf(
+        (1 to 1) to Holiday.NEW_YEAR, (3 to 2) to Holiday.PARTY_FOUNDING, (14 to 2) to Holiday.VALENTINE,
+        (8 to 3) to Holiday.WOMEN_INTL, (30 to 4) to Holiday.LIBERATION, (1 to 5) to Holiday.LABOUR,
+        (1 to 6) to Holiday.CHILDREN, (2 to 9) to Holiday.NATIONAL, (20 to 10) to Holiday.WOMEN_VN,
+        (20 to 11) to Holiday.TEACHERS, (25 to 12) to Holiday.CHRISTMAS
+    )
+
+    private val LUNAR = mapOf(
+        (1 to 1) to Holiday.TET, (2 to 1) to Holiday.TET_2, (3 to 1) to Holiday.TET_3,
+        (15 to 1) to Holiday.FIRST_FULL_MOON, (3 to 3) to Holiday.HAN_THUC, (10 to 3) to Holiday.HUNG_KINGS,
+        (15 to 4) to Holiday.BUDDHA, (5 to 5) to Holiday.DOAN_NGO, (15 to 7) to Holiday.VU_LAN,
+        (15 to 8) to Holiday.MID_AUTUMN, (23 to 12) to Holiday.KITCHEN_GODS
+    )
+
+    fun holidays(date: LocalDate, lunar: LunarDate): List<Holiday> {
+        val list = ArrayList<Holiday>(2)
+        SOLAR[date.dayOfMonth to date.monthValue]?.let { list.add(it) }
+        if (!lunar.isLeap) LUNAR[lunar.day to lunar.month]?.let { list.add(it) }
+        return list
+    }
+
+    fun lunarOf(date: LocalDate): LunarDate = LunarCalendar.fromSolar(date.dayOfMonth, date.monthValue, date.year)
+
+    /** Lưới tháng, tuần bắt đầu từ thứ Hai; ô trống là null. Số ô luôn chia hết cho 7. */
+    fun monthCells(month: YearMonth): List<LocalDate?> {
+        val offset = month.atDay(1).dayOfWeek.value - 1
+        val cells = ArrayList<LocalDate?>()
+        repeat(offset) { cells.add(null) }
+        for (d in 1..month.lengthOfMonth()) cells.add(month.atDay(d))
+        while (cells.size % 7 != 0) cells.add(null)
+        return cells
+    }
+
+    /** Các ngày lễ trong một tháng dương, theo thứ tự ngày. */
+    fun monthEvents(month: YearMonth): List<Pair<LocalDate, Holiday>> {
+        val out = ArrayList<Pair<LocalDate, Holiday>>()
+        for (d in 1..month.lengthOfMonth()) {
+            val date = month.atDay(d)
+            holidays(date, lunarOf(date)).forEach { out.add(date to it) }
+        }
+        return out
+    }
+}
+
+/** Quy tắc cho ghi chú và giờ nhắc (thuần, có test). */
+object ReminderRules {
+    /** Giờ nhắc hợp lệ khi nằm sau thời điểm hiện tại. */
+    fun isValid(remindAtMs: Long, nowMs: Long): Boolean = remindAtMs > nowMs
+
+    /** Giờ nhắc gợi ý: hôm nay thì sau 1 giờ (làm tròn lên phút), ngày khác thì 08:00. */
+    fun defaultTime(day: LocalDate, now: LocalDateTime): LocalDateTime =
+        if (day == now.toLocalDate()) now.plusHours(1).withSecond(0).withNano(0) else day.atTime(8, 0)
+
+    fun dateKey(day: LocalDate): String = day.toString()
+}
