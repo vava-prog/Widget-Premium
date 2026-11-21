@@ -21,6 +21,7 @@ object WidgetUpdater {
     fun updateAll(context: Context) {
         ClockWidgetProvider.updateAll(context)
         InfoWidgetProvider.updateAll(context)
+        LauncherIcon.apply(context, isDay(context))
     }
 }
 

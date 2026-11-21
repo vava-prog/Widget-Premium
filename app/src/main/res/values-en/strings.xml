@@ -42,4 +42,8 @@
     <string name="cond_snow">Snow</string>
     <string name="cond_thunder">Thunderstorm</string>
     <string name="cond_unknown">Unknown</string>
+    <string name="logo_lunar">Lunar</string>
+    <string name="logo_solar">Solar</string>
+    <string name="icon_switch_title">Switch app icon by day/night</string>
+    <string name="icon_switch_hint">The icon changes its background at sunrise and sunset. Some launchers may flicker when it changes; turn this off if that happens.</string>
 </resources>
