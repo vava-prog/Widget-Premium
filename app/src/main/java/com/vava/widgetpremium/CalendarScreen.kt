@@ -329,27 +329,59 @@ private fun DayDetail(date: LocalDate, today: LocalDate) {
             if (VietCalendar.isNguyetKy(lunar)) Text(stringResource(R.string.cal_nguyet_ky), color = MaterialTheme.colorScheme.error)
             if (VietCalendar.isTamNuong(lunar)) Text(stringResource(R.string.cal_tam_nuong), color = MaterialTheme.colorScheme.error)
             Text(stringResource(R.string.cal_good_hours), style = MaterialTheme.typography.labelLarge)
-            goodHours.chunked(3).forEach { row ->
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                HourDial(
+                    good = goodHours,
+                    currentChi = nowChi,
+                    centerLines = listOf(
+                        stringResource(R.string.cal_year_line, LunarCalendar.yearName(lunar.year)),
+                        stringResource(R.string.cal_month_line, VietCalendar.lunarMonthName(lunar)),
+                        stringResource(R.string.cal_day_name, VietCalendar.dayName(date))
+                    )
+                )
+            }
+            Text(
+                stringResource(R.string.cal_dial_legend),
+                style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            (0..11).chunked(6).forEach { row ->
+                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                     row.forEach { h ->
                         val (from, to) = VietCalendar.hourRange(h)
-                        val current = h == nowChi
-                        Text(
-                            "${VietCalendar.CHI[h]} $from–$to",
-                            modifier = Modifier
+                        val isGood = h in goodHours
+                        Column(
+                            Modifier
                                 .weight(1f)
-                                .clip(RoundedCornerShape(10.dp))
+                                .clip(RoundedCornerShape(8.dp))
                                 .then(
-                                    if (current) Modifier.border(BorderStroke(2.dp, MaterialTheme.colorScheme.primary), RoundedCornerShape(10.dp))
+                                    if (h == nowChi) Modifier.border(BorderStroke(2.dp, MaterialTheme.colorScheme.tertiary), RoundedCornerShape(8.dp))
                                     else Modifier
                                 )
-                                .background(MaterialTheme.colorScheme.secondaryContainer)
-                                .padding(vertical = 8.dp),
-                            textAlign = TextAlign.Center,
-                            style = MaterialTheme.typography.bodyMedium
-                        )
+                                .background(if (isGood) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant)
+                                .padding(vertical = 6.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(VietCalendar.hourName(date, h), fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
+                            Text("$from–$to", fontSize = 11.sp)
+                            Text(
+                                stringResource(if (isGood) R.string.cal_hour_good else R.string.cal_hour_bad),
+                                fontSize = 10.sp,
+                                color = if (isGood) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
                     }
                 }
+            }
+            val next = remember(date) { VietCalendar.nextTerm(date) }
+            if (next != null) {
+                Text(
+                    stringResource(
+                        R.string.cal_next_term, VietCalendar.TERMS[next.first],
+                        "%02d/%02d".format(next.second.dayOfMonth, next.second.monthValue),
+                        java.time.temporal.ChronoUnit.DAYS.between(date, next.second).toInt()
+                    ),
+                    style = MaterialTheme.typography.bodyMedium
+                )
             }
         }
     }

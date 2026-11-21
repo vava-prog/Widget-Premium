@@ -23,13 +23,17 @@ data class DayForecast(
     val sunset: String? = null
 )
 
+data class HourForecast(val time: String, val tempC: Double, val code: Int)
+
 data class Weather(
     val tempC: Double,
     val humidity: Int,
     val code: Int,
     val days: List<DayForecast>,
     /** Độ lệch múi giờ của thành phố so với UTC (giây). */
-    val utcOffsetSec: Int = 0
+    val utcOffsetSec: Int = 0,
+    /** Dự báo từng giờ (giờ địa phương của thành phố). Rỗng với dữ liệu lưu từ bản cũ. */
+    val hourly: List<HourForecast> = emptyList()
 )
 
 enum class Condition(val emoji: String) {
@@ -107,12 +111,27 @@ object WeatherParsers {
                 }
             }
         }
+        val hours = ArrayList<HourForecast>()
+        val hourly = root.optJSONObject("hourly")
+        if (hourly != null) {
+            val time = hourly.optJSONArray("time")
+            val temps = hourly.optJSONArray("temperature_2m")
+            val codes = hourly.optJSONArray("weather_code")
+            if (time != null && temps != null && codes != null) {
+                val n = minOf(time.length(), temps.length(), codes.length())
+                for (i in 0 until n) {
+                    if (temps.isNull(i)) continue
+                    hours.add(HourForecast(time.getString(i), temps.getDouble(i), codes.optInt(i, -1)))
+                }
+            }
+        }
         return Weather(
             tempC = current.getDouble("temperature_2m"),
             humidity = current.optInt("relative_humidity_2m", -1),
             code = current.optInt("weather_code", -1),
             days = days,
-            utcOffsetSec = root.optInt("utc_offset_seconds", 0)
+            utcOffsetSec = root.optInt("utc_offset_seconds", 0),
+            hourly = hours
         )
     }
 }

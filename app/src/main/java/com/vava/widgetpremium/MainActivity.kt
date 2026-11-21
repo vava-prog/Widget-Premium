@@ -96,6 +96,7 @@ private fun HomeScreen() {
                 .padding(24.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            Dashboard()
             LiveLogo(Modifier.fillMaxWidth(0.8f).align(Alignment.CenterHorizontally))
             Text(
                 stringResource(R.string.app_name),

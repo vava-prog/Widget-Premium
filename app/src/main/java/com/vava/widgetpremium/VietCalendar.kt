@@ -93,6 +93,27 @@ object VietCalendar {
     fun trucIndex(date: LocalDate): Int =
         ((dayChiIndex(date) - termMonthChi(solarTermIndex(date))) % 12 + 12) % 12
 
+    /** Can chi của tháng âm lịch (tháng 1 là Dần; can tháng tính theo can năm). Ví dụ tháng 10 năm Bính Ngọ là Kỷ Hợi. */
+    fun lunarMonthName(lunar: LunarDate): String {
+        val yearCan = (lunar.year + 6) % 10
+        val can = (yearCan * 2 + lunar.month + 1) % 10
+        val chi = (lunar.month + 1) % 12
+        return CAN[can] + " " + CHI[chi]
+    }
+
+    /** Can chi của một canh giờ trong ngày (can giờ Tý phụ thuộc can ngày). */
+    fun hourName(date: LocalDate, chiIndex: Int): String =
+        CAN[(dayCanIndex(date) * 2 + chiIndex) % 10] + " " + CHI[chiIndex]
+
+    /** Tiết khí kế tiếp sau ngày đã cho (tối đa 20 ngày tới): chỉ số tiết và ngày bắt đầu. */
+    fun nextTerm(date: LocalDate): Pair<Int, LocalDate>? {
+        for (i in 1..20) {
+            val d = date.plusDays(i.toLong())
+            solarTermStartingOn(d)?.let { return it to d }
+        }
+        return null
+    }
+
     /** Nguyệt kỵ: mùng 5, 14, 23 âm lịch. */
     fun isNguyetKy(lunar: LunarDate): Boolean = lunar.day == 5 || lunar.day == 14 || lunar.day == 23
 
