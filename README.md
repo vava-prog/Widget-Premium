@@ -53,7 +53,14 @@ Mục tiêu thiết kế:
 4. **Ghi chú và nhắc việc:** Room, thông báo đúng giờ.
 5. **Giao diện (đã làm):** hai phong cách Standard và Kính mờ (Liquid Glass) tự vẽ theo kích thước widget, chọn màu chủ đạo, độ đậm của nền, chế độ sáng/tối (tự động theo mặt trời hoặc ép cố định). Chọn trong màn hình Trang chủ, áp dụng ngay.
 6. **Kiểm thử, tối ưu hiệu năng, sửa lỗi.**
-7. **Đóng gói:** APK, README, tài liệu kiến trúc và quyền, hướng dẫn thêm widget.
+7. **Đóng gói (đã làm):** quy trình phát hành APK có chữ ký chạy tay ([docs/RELEASE.md](docs/RELEASE.md)), README, tài liệu kiến trúc và quyền, hướng dẫn thêm widget.
+
+## Cài đặt
+1. Mở trang [Releases](../../releases), tải file `.apk` mới nhất (bản `latest-debug` là bản thử nghiệm, bản có số phiên bản là bản có chữ ký).
+2. Mở file trên điện thoại, cho phép cài từ nguồn này nếu Android hỏi.
+3. Mở Widget Premium, bấm "Thêm widget đồng hồ" hoặc "Thêm widget thông tin", hoặc nhấn giữ màn hình chính > Widget > Widget Premium.
+4. Vào mục thời tiết để nhập thành phố, vào "Giao diện widget" để chọn phong cách và màu.
+5. Nhắc việc: máy Xiaomi, Oppo, Vivo, Huawei... hay chặn chạy nền; nếu nhắc không hiện, bật tự khởi động và đặt tiết kiệm pin "Không hạn chế" cho ứng dụng.
 
 ## Giấy phép
 

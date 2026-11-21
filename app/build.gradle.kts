@@ -16,8 +16,9 @@ android {
         applicationId = "com.vava.widgetpremium"
         minSdk = 26
         targetSdk = 35
-        versionCode = 1
-        versionName = "0.1.0"
+        // CI phát hành truyền -PversionCode và -PversionName; chạy bình thường dùng giá trị mặc định
+        versionCode = (project.findProperty("versionCode") as String?)?.toIntOrNull() ?: 7
+        versionName = (project.findProperty("versionName") as String?) ?: "0.7.0"
     }
 
     signingConfigs {
