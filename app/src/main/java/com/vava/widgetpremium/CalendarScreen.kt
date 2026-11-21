@@ -2,7 +2,10 @@ package com.vava.widgetpremium
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
+import android.provider.Settings
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -34,6 +37,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -51,6 +55,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.activity.ComponentActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.compose.ui.unit.sp
 import java.time.Instant
 import java.time.LocalDate
@@ -181,6 +188,7 @@ fun CalendarScreen(modifier: Modifier = Modifier) {
                 Button(onClick = { editing = null; showDialog = true }, modifier = Modifier.fillMaxWidth()) {
                     Text(stringResource(R.string.notes_add))
                 }
+                ReminderStatus()
             }
         }
 
@@ -438,4 +446,49 @@ private fun NoteDialog(day: LocalDate, initial: Note?, onDismiss: () -> Unit, on
         },
         dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.notes_cancel)) } }
     )
+}
+
+/** Cho người dùng thấy vì sao nhắc có thể không hiện và cách khắc phục; có nút gửi thông báo thử. */
+@Composable
+private fun ReminderStatus() {
+    val context = LocalContext.current
+    var refresh by remember { mutableStateOf(0) }
+    DisposableEffect(context) {
+        val lifecycle = (context as? ComponentActivity)?.lifecycle
+        val observer = LifecycleEventObserver { _, event -> if (event == Lifecycle.Event.ON_RESUME) refresh++ }
+        lifecycle?.addObserver(observer)
+        onDispose { lifecycle?.removeObserver(observer) }
+    }
+    val notifOk = refresh >= 0 && ReminderScheduler.hasNotificationPermission(context)
+    val exactOk = refresh >= 0 && ReminderScheduler.canExact(context)
+    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        if (!notifOk) {
+            Text(stringResource(R.string.rs_notif_off), color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
+            OutlinedButton(onClick = {
+                context.startActivity(
+                    Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                        .putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                )
+            }, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.rs_open_notif)) }
+        }
+        if (!exactOk) {
+            Text(stringResource(R.string.rs_exact_off), color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
+            OutlinedButton(onClick = {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    context.startActivity(
+                        Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM, Uri.parse("package:" + context.packageName))
+                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    )
+                }
+            }, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.rs_allow_exact)) }
+        }
+        if (notifOk && exactOk) {
+            Text(stringResource(R.string.rs_ok), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+        OutlinedButton(onClick = {
+            ReminderNotifier.show(context, 0L, context.getString(R.string.rs_test_text))
+            refresh++
+        }, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.rs_test)) }
+    }
 }

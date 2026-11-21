@@ -112,4 +112,11 @@
     <string name="reminder_channel_name">Calendar reminders</string>
     <string name="reminder_channel_desc">On-time notifications for notes you set a reminder on</string>
     <string name="reminder_title">Reminder</string>
+    <string name="rs_notif_off">Notifications are off for this app, so reminders will not show.</string>
+    <string name="rs_open_notif">Open notification settings</string>
+    <string name="rs_exact_off">Exact alarms are not allowed: reminders may be late by minutes or more when the phone sleeps.</string>
+    <string name="rs_allow_exact">Allow exact alarms</string>
+    <string name="rs_ok">Notification and alarm permissions: all set.</string>
+    <string name="rs_test">Send a test notification now</string>
+    <string name="rs_test_text">This is a test notification from Widget Premium.</string>
 </resources>

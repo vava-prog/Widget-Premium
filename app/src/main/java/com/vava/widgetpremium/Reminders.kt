@@ -54,9 +54,15 @@ object ReminderScheduler {
         pending.cancel()
     }
 
+    /** Có quyền và người dùng chưa tắt thông báo của ứng dụng trong Cài đặt. */
     fun hasNotificationPermission(context: Context): Boolean =
-        Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
-            context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
+        (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
+            context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) &&
+            (context.getSystemService(NotificationManager::class.java)?.areNotificationsEnabled() ?: true)
+
+    fun canExact(context: Context): Boolean =
+        Build.VERSION.SDK_INT < Build.VERSION_CODES.S ||
+            (context.getSystemService(AlarmManager::class.java)?.canScheduleExactAlarms() ?: false)
 }
 
 object ReminderNotifier {
