@@ -16,3 +16,6 @@ network: the city name you search for and the chosen city's coordinates are sent
 use GPS or location permissions.
 
 Dữ liệu thời tiết: [Open-Meteo.com](https://open-meteo.com/) (giấy phép CC BY 4.0).
+
+## Ghi chú và nhắc việc
+Ghi chú, việc cần làm và giờ nhắc được lưu trong cơ sở dữ liệu trên máy (Room), không gửi đi đâu, không sao lưu lên đám mây (`allowBackup=false`). Thông báo nhắc do chính ứng dụng tạo trên máy. Xóa dữ liệu ứng dụng hoặc gỡ cài đặt sẽ xóa toàn bộ ghi chú.
