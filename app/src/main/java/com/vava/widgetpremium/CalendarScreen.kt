@@ -344,8 +344,8 @@ private fun DayDetail(date: LocalDate, today: LocalDate) {
                 stringResource(R.string.cal_dial_legend),
                 style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-            (0..11).chunked(6).forEach { row ->
-                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+            (0..11).chunked(3).forEach { row ->
+                Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     row.forEach { h ->
                         val (from, to) = VietCalendar.hourRange(h)
                         val isGood = h in goodHours
@@ -361,11 +361,13 @@ private fun DayDetail(date: LocalDate, today: LocalDate) {
                                 .padding(vertical = 6.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Text(VietCalendar.hourName(date, h), fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
-                            Text("$from–$to", fontSize = 11.sp)
+                            Text(VietCalendar.hourName(date, h), fontSize = 14.sp, fontWeight = FontWeight.SemiBold, maxLines = 1, softWrap = false)
+                            Text("$from–$to", fontSize = 13.sp, maxLines = 1, softWrap = false)
                             Text(
                                 stringResource(if (isGood) R.string.cal_hour_good else R.string.cal_hour_bad),
-                                fontSize = 10.sp,
+                                fontSize = 12.sp,
+                                maxLines = 1,
+                                softWrap = false,
                                 color = if (isGood) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
