@@ -154,6 +154,9 @@ object VietCalendar {
 
     fun mansion(date: LocalDate): Mansion = MANSIONS[mansionIndex(date)]
 
+    /** Chi xung với ngày (lục xung): cách 6 chi, ví dụ ngày Tý xung tuổi Ngọ. */
+    fun clashChi(date: LocalDate): Int = (dayChiIndex(date) + 6) % 12
+
     val LUC_DIEU = listOf("Đại an", "Lưu niên", "Tốc hỷ", "Xích khẩu", "Tiểu cát", "Không vong")
 
     /**

@@ -203,4 +203,13 @@ class VietCalendarTest {
         assertEquals("Tiểu cát", name(14, 10))
         for (m in 1..12) for (d in 1..30) assertTrue(VietCalendar.lucDieuIndex(LunarDate(d, m, 2026, false)) in 0..5)
     }
+
+    @Test fun clashIsOppositeBranch() {
+        val kyHoi = LocalDate.of(2026, 11, 21) // ngày Kỷ Hợi xung Tỵ
+        assertEquals("Tỵ", VietCalendar.CHI[VietCalendar.clashChi(kyHoi)])
+        for (i in 0..11) {
+            val d = LocalDate.of(2026, 1, 1).plusDays(i.toLong())
+            assertEquals(6, Math.floorMod(VietCalendar.clashChi(d) - VietCalendar.dayChiIndex(d), 12))
+        }
+    }
 }
