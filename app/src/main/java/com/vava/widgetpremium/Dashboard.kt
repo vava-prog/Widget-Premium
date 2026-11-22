@@ -122,6 +122,12 @@ fun Dashboard() {
                                 stringResource(condition.labelRes()) + " · " + city.name,
                                 style = MaterialTheme.typography.bodySmall
                             )
+                            w.feelsC?.let {
+                                Text(
+                                    stringResource(R.string.dash_feels_like, Math.round(it).toInt()),
+                                    style = MaterialTheme.typography.bodySmall
+                                )
+                            }
                         } else {
                             Text(stringResource(R.string.dash_weather_none), style = MaterialTheme.typography.bodySmall)
                         }

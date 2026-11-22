@@ -68,4 +68,28 @@ class WeatherParsersTest {
         assertEquals("20/11", Formats.shortDate("2026-11-20"))
         assertEquals("abc", Formats.shortDate("abc"))
     }
+
+    @Test
+    fun parsesFeelsLikeAndHourlyWhenPresent() {
+        val json = """
+            {"utc_offset_seconds":25200,
+             "current":{"temperature_2m":24.0,"apparent_temperature":26.3,"relative_humidity_2m":80,"weather_code":2},
+             "hourly":{"time":["2026-11-22T05:00","2026-11-22T06:00","2026-11-22T07:00"],
+                       "temperature_2m":[23.0,null,25.5],"weather_code":[1,2,3]},
+             "daily":{"time":["2026-11-22"],"weather_code":[2],"temperature_2m_max":[30.0],"temperature_2m_min":[22.0]}}
+        """.trimIndent()
+        val w = WeatherParsers.parseWeather(json)!!
+        assertEquals(26.3, w.feelsC!!, 0.001)
+        assertEquals(2, w.hourly.size) // giờ có giá trị null bị bỏ qua
+        assertEquals("2026-11-22T07:00", w.hourly[1].time)
+        assertEquals(25.5, w.hourly[1].tempC, 0.001)
+        assertEquals(3, w.hourly[1].code)
+    }
+
+    @Test
+    fun oldCachedDataHasNoFeelsLikeOrHourly() {
+        val w = WeatherParsers.parseWeather(forecast)!!
+        assertNull(w.feelsC)
+        assertTrue(w.hourly.isEmpty())
+    }
 }

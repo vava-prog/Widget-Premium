@@ -33,7 +33,9 @@ data class Weather(
     /** Độ lệch múi giờ của thành phố so với UTC (giây). */
     val utcOffsetSec: Int = 0,
     /** Dự báo từng giờ (giờ địa phương của thành phố). Rỗng với dữ liệu lưu từ bản cũ. */
-    val hourly: List<HourForecast> = emptyList()
+    val hourly: List<HourForecast> = emptyList(),
+    /** Nhiệt độ cảm nhận (°C); null với dữ liệu lưu từ bản cũ. */
+    val feelsC: Double? = null
 )
 
 enum class Condition(val emoji: String) {
@@ -131,7 +133,8 @@ object WeatherParsers {
             code = current.optInt("weather_code", -1),
             days = days,
             utcOffsetSec = root.optInt("utc_offset_seconds", 0),
-            hourly = hours
+            hourly = hours,
+            feelsC = current.optDouble("apparent_temperature", Double.NaN).takeIf { !it.isNaN() }
         )
     }
 }

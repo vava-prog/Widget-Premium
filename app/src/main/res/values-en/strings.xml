@@ -183,4 +183,5 @@
     <string name="style_text_auto">Default</string>
     <string name="style_text_light">Light text</string>
     <string name="style_text_dark">Dark text</string>
+    <string name="dash_feels_like">Feels like %1$d°C</string>
 </resources>
