@@ -190,4 +190,17 @@ class VietCalendarTest {
             d = d.plusDays(1)
         }
     }
+
+    @Test fun lucDieuMatchesPublishedExamples() {
+        fun name(day: Int, month: Int) = VietCalendar.LUC_DIEU[VietCalendar.lucDieuIndex(LunarDate(day, month, 2026, false))]
+        assertEquals("Đại an", name(1, 1))
+        assertEquals("Lưu niên", name(2, 1))
+        assertEquals("Tốc hỷ", name(3, 1))
+        assertEquals("Lưu niên", name(1, 2))     // tháng 2 khởi từ Lưu niên
+        assertEquals("Tiểu cát", name(23, 7))    // ví dụ của tuvikhoahoc.vn
+        assertEquals("Lưu niên", name(25, 8))    // ví dụ của tuvikhoahoc.vn
+        assertEquals("Đại an", name(5, 3))       // ví dụ của amlich.net
+        assertEquals("Tiểu cát", name(14, 10))
+        for (m in 1..12) for (d in 1..30) assertTrue(VietCalendar.lucDieuIndex(LunarDate(d, m, 2026, false)) in 0..5)
+    }
 }

@@ -337,6 +337,7 @@ private fun DayDetail(date: LocalDate, today: LocalDate) {
                 else stringResource(R.string.cal_term_current, VietCalendar.TERMS[VietCalendar.solarTermIndex(date)])
             )
             Text(stringResource(R.string.cal_truc, VietCalendar.TRUC[VietCalendar.trucIndex(date)]))
+            Text(stringResource(R.string.cal_luc_dieu, VietCalendar.LUC_DIEU[VietCalendar.lucDieuIndex(lunar)]))
             val mansion = remember(date) { VietCalendar.mansion(date) }
             Text(stringResource(R.string.cal_mansion, mansion.name, mansion.element, mansion.animal))
             Text(

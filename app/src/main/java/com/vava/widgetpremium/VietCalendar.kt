@@ -154,6 +154,14 @@ object VietCalendar {
 
     fun mansion(date: LocalDate): Mansion = MANSIONS[mansionIndex(date)]
 
+    val LUC_DIEU = listOf("Đại an", "Lưu niên", "Tốc hỷ", "Xích khẩu", "Tiểu cát", "Không vong")
+
+    /**
+     * Khổng Minh Lục diệu của ngày: mùng 1 tháng Giêng là Đại an, mỗi ngày và mỗi tháng tiến một cung.
+     * Chỉ số = (tháng - 1 + ngày - 1) mod 6. Nguồn: tuvikhoahoc.vn và amlich.net; tháng nhuận tính theo số tháng gốc.
+     */
+    fun lucDieuIndex(lunar: LunarDate): Int = ((lunar.month - 1) + (lunar.day - 1)) % 6
+
     /** Nguyệt kỵ: mùng 5, 14, 23 âm lịch. */
     fun isNguyetKy(lunar: LunarDate): Boolean = lunar.day == 5 || lunar.day == 14 || lunar.day == 23
 

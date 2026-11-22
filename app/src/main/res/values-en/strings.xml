@@ -176,4 +176,5 @@
     <string name="dir_nw">Northwest</string>
     <string name="cal_directions">Travel directions: Hỷ thần (joy) %1$s · Tài thần (wealth) %2$s</string>
     <string name="cal_mansion">28 mansions: %1$s (%2$s · %3$s)</string>
+    <string name="cal_luc_dieu">Six stars (Lục diệu): %1$s</string>
 </resources>
