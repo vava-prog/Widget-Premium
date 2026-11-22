@@ -178,4 +178,9 @@
     <string name="cal_mansion">28 mansions: %1$s (%2$s · %3$s)</string>
     <string name="cal_luc_dieu">Six stars (Lục diệu): %1$s</string>
     <string name="cal_clash">Clashing zodiac: %1$s (people born in a year with this branch)</string>
+    <string name="style_corner">Widget corner radius: %1$d dp</string>
+    <string name="style_text">Text color</string>
+    <string name="style_text_auto">Default</string>
+    <string name="style_text_light">Light text</string>
+    <string name="style_text_dark">Dark text</string>
 </resources>

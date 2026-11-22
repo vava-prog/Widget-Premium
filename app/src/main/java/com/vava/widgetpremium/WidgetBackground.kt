@@ -13,7 +13,6 @@ import android.widget.RemoteViews
 /** Vẽ nền widget thành ảnh bo góc theo đúng kích thước widget, rồi gắn vào RemoteViews. */
 object WidgetBackground {
     private const val MAX_SIDE_PX = 640f
-    private const val CORNER_DP = 26f
 
     /** Kích thước widget (dp) theo thông tin launcher cấp; thiếu thì dùng giá trị mặc định. */
     fun sizeDp(manager: AppWidgetManager, id: Int, defaultW: Int, defaultH: Int): Pair<Int, Int> {
@@ -26,10 +25,17 @@ object WidgetBackground {
     fun apply(context: Context, views: RemoteViews, imageId: Int, widthDp: Int, heightDp: Int) {
         val style = StyleStore.load(context)
         val day = WidgetUpdater.widgetIsDay(context)
-        views.setImageViewBitmap(imageId, render(context, widthDp, heightDp, WidgetPalette.palette(style, day)))
+        views.setImageViewBitmap(imageId, render(context, widthDp, heightDp, WidgetPalette.palette(style, day), style.cornerDp))
     }
 
-    fun render(context: Context, widthDp: Int, heightDp: Int, palette: Palette): Bitmap {
+    /** Ép màu chữ theo lựa chọn; AUTO giữ nguyên màu trong layout. `primary` là chữ lớn, `secondary` là các dòng phụ. */
+    fun applyText(context: Context, views: RemoteViews, primary: List<Int>, secondary: List<Int>) {
+        val colors = WidgetPalette.textColors(StyleStore.load(context).textTone) ?: return
+        primary.forEach { views.setTextColor(it, colors.first) }
+        secondary.forEach { views.setTextColor(it, colors.second) }
+    }
+
+    fun render(context: Context, widthDp: Int, heightDp: Int, palette: Palette, cornerDp: Int): Bitmap {
         val density = context.resources.displayMetrics.density
         var w = widthDp * density
         var h = heightDp * density
@@ -41,7 +47,7 @@ object WidgetBackground {
         val strokePx = palette.strokeDp * density * k
         val inset = strokePx / 2f
         val rect = RectF(inset, inset, bitmap.width - inset, bitmap.height - inset)
-        val radius = CORNER_DP * density * k
+        val radius = cornerDp * density * k
 
         val fill = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             shader = LinearGradient(0f, 0f, 0f, bitmap.height.toFloat(), palette.top, palette.bottom, Shader.TileMode.CLAMP)

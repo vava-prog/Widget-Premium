@@ -4,6 +4,9 @@ import android.content.Context
 
 enum class WidgetTheme { STANDARD, GLASS }
 
+/** Màu chữ trên widget: AUTO giữ màu mặc định (chữ sáng), LIGHT luôn chữ trắng, DARK luôn chữ tối. */
+enum class TextTone { AUTO, LIGHT, DARK }
+
 /** AUTO: theo giờ mặt trời mọc/lặn thật; DAY và NIGHT: ép cố định. */
 enum class DayMode { AUTO, DAY, NIGHT }
 
@@ -11,11 +14,14 @@ data class WidgetStyle(
     val theme: WidgetTheme = WidgetTheme.STANDARD,
     val accentIndex: Int = 0,
     val opacityPercent: Int = 100,
-    val mode: DayMode = DayMode.AUTO
+    val mode: DayMode = DayMode.AUTO,
+    val cornerDp: Int = WidgetPalette.DEFAULT_CORNER_DP,
+    val textTone: TextTone = TextTone.AUTO
 ) {
     fun sanitized(): WidgetStyle = copy(
         accentIndex = accentIndex.coerceIn(0, WidgetPalette.ACCENTS.size - 1),
-        opacityPercent = opacityPercent.coerceIn(WidgetPalette.MIN_OPACITY, 100)
+        opacityPercent = opacityPercent.coerceIn(WidgetPalette.MIN_OPACITY, 100),
+        cornerDp = cornerDp.coerceIn(0, WidgetPalette.MAX_CORNER_DP)
     )
 }
 
@@ -26,6 +32,15 @@ data class Palette(val top: Int, val bottom: Int, val sheen: Int, val stroke: In
 object WidgetPalette {
     val ACCENTS = intArrayOf(0xFF2F7BE0.toInt(), 0xFF14A89A.toInt(), 0xFF7E57C2.toInt(), 0xFFD6457A.toInt(), 0xFFE8803A.toInt())
     const val MIN_OPACITY = 20
+    const val DEFAULT_CORNER_DP = 26
+    const val MAX_CORNER_DP = 40
+
+    /** Màu chữ chính và phụ (ARGB) khi người dùng ép tông chữ; null nghĩa là giữ màu mặc định của widget. */
+    fun textColors(tone: TextTone): Pair<Int, Int>? = when (tone) {
+        TextTone.AUTO -> null
+        TextTone.LIGHT -> 0xFFFFFFFF.toInt() to 0xCCFFFFFF.toInt()
+        TextTone.DARK -> 0xFF101820.toInt() to 0xCC101820.toInt()
+    }
 
     fun withAlpha(argb: Int, alpha: Int): Int = (alpha.coerceIn(0, 255) shl 24) or (argb and 0x00FFFFFF)
 
@@ -78,7 +93,9 @@ object StyleStore {
             theme = runCatching { WidgetTheme.valueOf(p.getString("theme", "STANDARD")!!) }.getOrDefault(WidgetTheme.STANDARD),
             accentIndex = p.getInt("accent", 0),
             opacityPercent = p.getInt("opacity", 100),
-            mode = runCatching { DayMode.valueOf(p.getString("mode", "AUTO")!!) }.getOrDefault(DayMode.AUTO)
+            mode = runCatching { DayMode.valueOf(p.getString("mode", "AUTO")!!) }.getOrDefault(DayMode.AUTO),
+            cornerDp = p.getInt("corner", WidgetPalette.DEFAULT_CORNER_DP),
+            textTone = runCatching { TextTone.valueOf(p.getString("text", "AUTO")!!) }.getOrDefault(TextTone.AUTO)
         ).sanitized()
     }
 
@@ -86,6 +103,7 @@ object StyleStore {
         val s = style.sanitized()
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
             .putString("theme", s.theme.name).putInt("accent", s.accentIndex)
-            .putInt("opacity", s.opacityPercent).putString("mode", s.mode.name).apply()
+            .putInt("opacity", s.opacityPercent).putString("mode", s.mode.name)
+            .putInt("corner", s.cornerDp).putString("text", s.textTone.name).apply()
     }
 }

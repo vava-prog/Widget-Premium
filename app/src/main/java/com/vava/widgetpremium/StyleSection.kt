@@ -40,6 +40,7 @@ fun StyleSection() {
     val context = LocalContext.current
     var style by remember { mutableStateOf(StyleStore.load(context)) }
     var opacity by remember { mutableStateOf(style.opacityPercent.toFloat()) }
+    var corner by remember { mutableStateOf(style.cornerDp.toFloat()) }
 
     fun change(new: WidgetStyle) {
         style = new.sanitized()
@@ -86,6 +87,22 @@ fun StyleSection() {
             valueRange = WidgetPalette.MIN_OPACITY.toFloat()..100f,
             onValueChangeFinished = { change(style.copy(opacityPercent = opacity.toInt())) }
         )
+        Text(stringResource(R.string.style_corner, style.cornerDp), style = MaterialTheme.typography.labelLarge)
+        Slider(
+            value = corner,
+            onValueChange = { corner = it },
+            valueRange = 0f..WidgetPalette.MAX_CORNER_DP.toFloat(),
+            onValueChangeFinished = { change(style.copy(cornerDp = corner.toInt())) }
+        )
+        Text(stringResource(R.string.style_text), style = MaterialTheme.typography.labelLarge)
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            FilterChip(selected = style.textTone == TextTone.AUTO, onClick = { change(style.copy(textTone = TextTone.AUTO)) },
+                label = { Text(stringResource(R.string.style_text_auto)) })
+            FilterChip(selected = style.textTone == TextTone.LIGHT, onClick = { change(style.copy(textTone = TextTone.LIGHT)) },
+                label = { Text(stringResource(R.string.style_text_light)) })
+            FilterChip(selected = style.textTone == TextTone.DARK, onClick = { change(style.copy(textTone = TextTone.DARK)) },
+                label = { Text(stringResource(R.string.style_text_dark)) })
+        }
         Text(stringResource(R.string.style_mode), style = MaterialTheme.typography.labelLarge)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             FilterChip(selected = style.mode == DayMode.AUTO, onClick = { change(style.copy(mode = DayMode.AUTO)) },
@@ -108,7 +125,7 @@ fun StyleSection() {
 private fun StylePreview(style: WidgetStyle) {
     val isDay = WidgetPalette.resolveDay(style.mode, WidgetUpdater.isDay(LocalContext.current))
     val palette = WidgetPalette.palette(style, isDay)
-    val shape = RoundedCornerShape(26.dp)
+    val shape = RoundedCornerShape(style.cornerDp.dp)
     Box(
         Modifier
             .fillMaxWidth()
@@ -130,7 +147,8 @@ private fun StylePreview(style: WidgetStyle) {
                 .padding(8.dp),
             contentAlignment = Alignment.Center
         ) {
-            Text("09:41", color = Color.White, fontSize = 40.sp, fontWeight = FontWeight.Bold)
+            val textColor = WidgetPalette.textColors(style.textTone)?.first?.let { Color(it) } ?: Color.White
+            Text("09:41", color = textColor, fontSize = 40.sp, fontWeight = FontWeight.Bold)
         }
     }
 }

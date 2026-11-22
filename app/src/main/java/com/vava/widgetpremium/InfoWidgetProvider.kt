@@ -95,6 +95,11 @@ class InfoWidgetProvider : AppWidgetProvider() {
             val day = WidgetUpdater.widgetIsDay(context)
             val (w, h) = WidgetBackground.sizeDp(manager, id, 250, 200)
             WidgetBackground.apply(context, views, R.id.info_bg, w, h)
+            WidgetBackground.applyText(
+                context, views,
+                listOf(R.id.info_time, R.id.stat_battery, R.id.stat_temp, R.id.stat_ram, R.id.stat_storage),
+                listOf(R.id.info_date, R.id.info_lunar, R.id.info_weather)
+            )
 
             val weatherText = weatherLine(context, day)
             if (weatherText != null) {

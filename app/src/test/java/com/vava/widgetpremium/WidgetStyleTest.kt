@@ -62,4 +62,20 @@ class WidgetStyleTest {
         val b = WidgetPalette.palette(WidgetStyle(accentIndex = 3), true)
         assertNotEquals(a.bottom, b.bottom)
     }
+
+    @Test fun cornerIsClampedAndDefaultsKept() {
+        assertEquals(WidgetPalette.MAX_CORNER_DP, WidgetStyle(cornerDp = 999).sanitized().cornerDp)
+        assertEquals(0, WidgetStyle(cornerDp = -5).sanitized().cornerDp)
+        assertEquals(WidgetPalette.DEFAULT_CORNER_DP, WidgetStyle().cornerDp)
+    }
+
+    @Test fun textColorsByTone() {
+        assertEquals(null, WidgetPalette.textColors(TextTone.AUTO))
+        val light = WidgetPalette.textColors(TextTone.LIGHT)!!
+        val dark = WidgetPalette.textColors(TextTone.DARK)!!
+        assertEquals(0xFFFFFFFF.toInt(), light.first)
+        assertTrue(alpha(light.second) < 255 && alpha(light.second) > 0)
+        assertEquals(0xFF, alpha(dark.first))
+        assertNotEquals(light.first, dark.first)
+    }
 }

@@ -178,4 +178,9 @@
     <string name="cal_mansion">Nhị thập bát tú: sao %1$s (%2$s · %3$s)</string>
     <string name="cal_luc_dieu">Lục diệu: %1$s</string>
     <string name="cal_clash">Xung tuổi: %1$s (ngày xung với năm sinh cùng chi)</string>
+    <string name="style_corner">Bo góc widget: %1$d dp</string>
+    <string name="style_text">Màu chữ</string>
+    <string name="style_text_auto">Mặc định</string>
+    <string name="style_text_light">Chữ trắng</string>
+    <string name="style_text_dark">Chữ tối</string>
 </resources>
