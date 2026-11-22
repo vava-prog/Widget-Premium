@@ -20,6 +20,15 @@
             android:exported="true"
             android:launchMode="singleTop" />
 
+        <!-- Cầu nối không giao diện cho các vùng chạm trên widget (báo thức, pin, bộ nhớ, lịch) -->
+        <activity
+            android:name=".TapActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:taskAffinity=""
+            android:theme="@android:style/Theme.NoDisplay" />
+
         <!-- Hai lối vào launcher với biểu tượng ban ngày và ban đêm; chỉ một cái bật tại một thời điểm -->
         <activity-alias
             android:name=".LauncherDay"

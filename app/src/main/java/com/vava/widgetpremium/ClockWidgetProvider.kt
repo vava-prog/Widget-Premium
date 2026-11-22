@@ -48,6 +48,8 @@ class ClockWidgetProvider : AppWidgetProvider() {
                 context, 0, open, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
             views.setOnClickPendingIntent(R.id.widget_root, pending)
+            views.setOnClickPendingIntent(R.id.clock_time, WidgetTap.pending(context, TapTarget.ALARMS))
+            views.setOnClickPendingIntent(R.id.clock_date, WidgetTap.pending(context, TapTarget.CALENDAR))
             return views
         }
     }

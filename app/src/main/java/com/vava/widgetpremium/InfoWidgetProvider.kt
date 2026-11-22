@@ -148,6 +148,13 @@ class InfoWidgetProvider : AppWidgetProvider() {
                 context, 1, open, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
             views.setOnClickPendingIntent(R.id.info_root, pending)
+            views.setOnClickPendingIntent(R.id.info_time, WidgetTap.pending(context, TapTarget.ALARMS))
+            views.setOnClickPendingIntent(R.id.info_date, WidgetTap.pending(context, TapTarget.CALENDAR))
+            views.setOnClickPendingIntent(R.id.info_lunar, WidgetTap.pending(context, TapTarget.CALENDAR))
+            views.setOnClickPendingIntent(R.id.stat_battery, WidgetTap.pending(context, TapTarget.BATTERY))
+            views.setOnClickPendingIntent(R.id.stat_temp, WidgetTap.pending(context, TapTarget.BATTERY))
+            views.setOnClickPendingIntent(R.id.stat_ram, WidgetTap.pending(context, TapTarget.MEMORY))
+            views.setOnClickPendingIntent(R.id.stat_storage, WidgetTap.pending(context, TapTarget.STORAGE))
             return views
         }
     }
