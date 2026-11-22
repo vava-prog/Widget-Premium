@@ -175,4 +175,5 @@
     <string name="dir_w">Chính Tây</string>
     <string name="dir_nw">Tây Bắc</string>
     <string name="cal_directions">Hướng xuất hành: Hỷ thần %1$s · Tài thần %2$s</string>
+    <string name="cal_mansion">Nhị thập bát tú: sao %1$s (%2$s · %3$s)</string>
 </resources>

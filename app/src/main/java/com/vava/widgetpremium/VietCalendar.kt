@@ -130,6 +130,30 @@ object VietCalendar {
     fun hyThan(date: LocalDate): Direction = HY_THAN[dayCanIndex(date)]
     fun taiThan(date: LocalDate): Direction = TAI_THAN[dayCanIndex(date)]
 
+    /** Một trong 28 sao (Nhị thập bát tú): tên, hành (bảy chiếu) và con vật. */
+    data class Mansion(val name: String, val element: String, val animal: String)
+
+    val MANSIONS = listOf(
+        Mansion("Giác", "Mộc", "Giao"), Mansion("Cang", "Kim", "Long"), Mansion("Đê", "Thổ", "Lạc"),
+        Mansion("Phòng", "Nhật", "Thố"), Mansion("Tâm", "Nguyệt", "Hồ"), Mansion("Vĩ", "Hỏa", "Hổ"),
+        Mansion("Cơ", "Thủy", "Báo"), Mansion("Đẩu", "Mộc", "Giải"), Mansion("Ngưu", "Kim", "Ngưu"),
+        Mansion("Nữ", "Thổ", "Bức"), Mansion("Hư", "Nhật", "Thử"), Mansion("Nguy", "Nguyệt", "Yến"),
+        Mansion("Thất", "Hỏa", "Trư"), Mansion("Bích", "Thủy", "Dũ"), Mansion("Khuê", "Mộc", "Lang"),
+        Mansion("Lâu", "Kim", "Cẩu"), Mansion("Vị", "Thổ", "Trĩ"), Mansion("Mão", "Nhật", "Kê"),
+        Mansion("Tất", "Nguyệt", "Ô"), Mansion("Chủy", "Hỏa", "Hầu"), Mansion("Sâm", "Thủy", "Viên"),
+        Mansion("Tỉnh", "Mộc", "Hãn"), Mansion("Quỷ", "Kim", "Dương"), Mansion("Liễu", "Thổ", "Chương"),
+        Mansion("Tinh", "Nhật", "Mã"), Mansion("Trương", "Nguyệt", "Lộc"), Mansion("Dực", "Hỏa", "Xà"),
+        Mansion("Chẩn", "Thủy", "Dẫn")
+    )
+
+    /**
+     * Sao trực ngày theo chu kỳ liên tục 28 ngày (không đổi theo tháng). Mỗi sao gắn với một thứ trong tuần
+     * (Giác là thứ Năm, Tất là thứ Hai). Đối chiếu quantrimang.com: 28/7/3307 và 31/12/2708 là Giác, 23/11/3339 là Tất.
+     */
+    fun mansionIndex(date: LocalDate): Int = Math.floorMod(date.toEpochDay() + 7, 28L).toInt()
+
+    fun mansion(date: LocalDate): Mansion = MANSIONS[mansionIndex(date)]
+
     /** Nguyệt kỵ: mùng 5, 14, 23 âm lịch. */
     fun isNguyetKy(lunar: LunarDate): Boolean = lunar.day == 5 || lunar.day == 14 || lunar.day == 23
 

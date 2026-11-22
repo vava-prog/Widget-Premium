@@ -167,4 +167,27 @@ class VietCalendarTest {
         assertEquals(VietCalendar.hyThan(giap), VietCalendar.hyThan(giap.plusDays(5)))
         assertTrue(VietCalendar.taiThan(giap) != VietCalendar.taiThan(giap.plusDays(5)))
     }
+
+    @Test fun mansionsMatchKnownDaysAndWeekdays() {
+        assertEquals("Tất", VietCalendar.mansion(LocalDate.of(3339, 11, 23)).name)
+        assertEquals("Giác", VietCalendar.mansion(LocalDate.of(3307, 7, 28)).name)
+        assertEquals("Giác", VietCalendar.mansion(LocalDate.of(2708, 12, 31)).name)
+        assertEquals(28, VietCalendar.MANSIONS.size)
+        // Mỗi sao gắn với một thứ cố định trong tuần: Giác (Mộc) là thứ Năm, Tất (Nguyệt) là thứ Hai
+        var d = LocalDate.of(2026, 1, 1)
+        repeat(60) {
+            val m = VietCalendar.mansion(d)
+            val expected = when (m.element) {
+                "Nhật" -> java.time.DayOfWeek.SUNDAY
+                "Nguyệt" -> java.time.DayOfWeek.MONDAY
+                "Hỏa" -> java.time.DayOfWeek.TUESDAY
+                "Thủy" -> java.time.DayOfWeek.WEDNESDAY
+                "Mộc" -> java.time.DayOfWeek.THURSDAY
+                "Kim" -> java.time.DayOfWeek.FRIDAY
+                else -> java.time.DayOfWeek.SATURDAY
+            }
+            assertEquals("weekday of ${m.name} on $d", expected, d.dayOfWeek)
+            d = d.plusDays(1)
+        }
+    }
 }
