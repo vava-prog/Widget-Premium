@@ -5,7 +5,7 @@ Nguyên tắc: chỉ xin quyền khi tính năng cần nó chạy được ngay,
 | Quyền | Khi nào | Lý do | Giai đoạn |
 |---|---|---|---|
 | `INTERNET` | Đã dùng | Gọi Open-Meteo để tìm thành phố và lấy dự báo (HTTPS) | 3b |
-| `ACCESS_COARSE_LOCATION` (tùy chọn) | Chưa dùng | Có thể thêm sau nút "Dùng vị trí của tôi" khi đang mở app. Hiện người dùng tự nhập thành phố | sau 3b |
+| `ACCESS_COARSE_LOCATION` (tùy chọn) | Khi người dùng bấm "Dùng vị trí của máy" | Lấy vị trí gần đúng một lần để chọn thành phố thời tiết | sau 3b |
 | `POST_NOTIFICATIONS` | Khi người dùng bật nhắc việc | Hiện thông báo nhắc | 4 |
 | `SCHEDULE_EXACT_ALARM` hoặc `USE_EXACT_ALARM` | Nhắc việc đúng giờ trên Android 12+ | Cân nhắc kỹ chính sách Google Play trước khi dùng | 4 |
 | `RECEIVE_BOOT_COMPLETED` | Nhắc việc | Đặt lại báo thức sau khi khởi động | 4 |
@@ -20,3 +20,7 @@ Không dùng: vị trí nền, quyền lưu trữ rộng, dịch vụ nền ch�
 
 ## Cảnh báo pin yếu và máy nóng (mặc định tắt)
 Dùng lại quyền `POST_NOTIFICATIONS`, xin khi người dùng bật công tắc. Không có dịch vụ chạy nền: ứng dụng chỉ đọc mức pin và nhiệt độ pin khi widget thông tin cập nhật (tín hiệu pin yếu, cắm hoặc rút sạc, định kỳ khoảng 30 phút). Vì vậy cảnh báo nóng không theo thời gian thực. Giữa hai lần báo có thời gian nghỉ (pin yếu 3 giờ, nóng 2 giờ). Không gửi dữ liệu đi đâu.
+
+## Vị trí của máy (tùy chọn)
+- `ACCESS_COARSE_LOCATION`: chỉ xin khi người dùng bấm "Dùng vị trí của máy" ở phần Thời tiết. Lấy vị trí gần đúng một lần (mạng hoặc passive), làm tròn khoảng 1 km. Không có quyền vị trí nền, không có dịch vụ nền, không xin vị trí chính xác. Từ chối hoặc tắt định vị thì báo lỗi và vẫn chọn thành phố thủ công được.
+- Giới hạn: một số máy không có bộ dịch tọa độ thành tên nơi (Geocoder), khi đó thành phố hiện là "Vị trí của máy" nhưng dự báo vẫn đúng theo tọa độ.

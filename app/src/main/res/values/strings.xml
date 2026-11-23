@@ -31,7 +31,11 @@
     <string name="weather_pick_city">Chạm để chọn thành phố thời tiết</string>
     <string name="weather_widget_fmt">%1$s %2$s°C · %3$s · %4$s</string>
     <string name="weather_forecast_title">Dự báo 7 ngày</string>
-    <string name="weather_privacy">Khi tìm và lấy dự báo, tên thành phố và tọa độ được gửi tới Open-Meteo. Ứng dụng không gửi gì khác.</string>
+    <string name="location_use">Dùng vị trí của máy</string>
+    <string name="location_default_name">Vị trí của máy</string>
+    <string name="location_denied">Chưa cấp quyền vị trí. Bạn vẫn có thể tìm và chọn thành phố thủ công.</string>
+    <string name="location_unavailable">Không lấy được vị trí. Hãy bật định vị của máy hoặc chọn thành phố thủ công.</string>
+    <string name="weather_privacy">Khi tìm và lấy dự báo, tên thành phố và tọa độ được gửi tới Open-Meteo. Nút "Dùng vị trí của máy" chỉ lấy vị trí gần đúng một lần khi bạn bấm, làm tròn khoảng 1 km, không theo dõi và không chạy nền. Ứng dụng không gửi gì khác.</string>
     <string name="weather_attribution">Dữ liệu thời tiết: Open-Meteo.com</string>
     <string name="cond_clear">Trời nắng</string>
     <string name="cond_partly">Có mây</string>

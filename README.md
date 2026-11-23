@@ -24,6 +24,7 @@
 ### Giao diện
 - **Chuẩn:** sạch, đơn giản, tự chuyển sáng/tối theo hệ thống.
 - **Kính mờ:** nền trong suốt, bo góc mềm.
+- **Vị trí:** nút "Dùng vị trí của máy" (xin quyền khi bấm, lấy một lần, không chạy nền).
 - **Theo thời tiết:** nền là bầu trời vẽ theo dữ liệu thời tiết đã lưu (trời xanh, mây, sương mù, mưa, tuyết, giông; ban đêm có sao và trăng). Chưa có dữ liệu thì dùng nền Standard.
 - **Tùy chỉnh:** độ đậm nền, bo góc, viền (0 = tự động), cỡ đồng hồ (60–130%), hiện giây, tên tự nhập, màu chữ (mặc định, trắng, tối hoặc tùy chọn), nút "Đặt lại giao diện".
 - Tùy chỉnh màu, biểu tượng và độ trong suốt.

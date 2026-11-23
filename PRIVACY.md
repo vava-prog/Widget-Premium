@@ -8,12 +8,11 @@
 - **Thời tiết là tính năng duy nhất dùng mạng.** Khi bạn tìm thành phố, tên bạn gõ được gửi tới `geocoding-api.open-meteo.com`.
   Khi lấy dự báo, tọa độ của thành phố đã chọn được gửi tới `api.open-meteo.com`. Cả hai qua HTTPS.
   Open-Meteo có thể ghi nhận địa chỉ IP của bạn theo chính sách của họ. Ứng dụng không gửi gì khác.
-- Ứng dụng không dùng GPS và không xin quyền vị trí. Bạn tự chọn thành phố.
+- Vị trí là tùy chọn. Mặc định bạn tự chọn thành phố. Chỉ khi bạn bấm "Dùng vị trí của máy", ứng dụng xin quyền vị trí gần đúng (`ACCESS_COARSE_LOCATION`), lấy vị trí một lần, làm tròn khoảng 1 km rồi dùng làm tọa độ dự báo (gửi tới Open-Meteo như tọa độ thành phố). Không theo dõi vị trí, không lấy vị trí nền, không dùng GPS chính xác. Tên nơi được dịch bằng bộ dịch tọa độ của hệ thống nếu máy có. Từ chối quyền thì mọi thứ vẫn dùng được.
 - Quyền `INTERNET` chỉ phục vụ việc trên.
 
 **Summary: this app does not collect user data and runs no project servers.** Weather is the only feature that uses the
-network: the city name you search for and the chosen city's coordinates are sent over HTTPS to Open-Meteo. The app does not
-use GPS or location permissions.
+network: the city name you search for and the chosen city's coordinates are sent over HTTPS to Open-Meteo. The optional "Use my device location" button asks for approximate location only when tapped, reads it once (rounded to about 1 km), and never tracks or runs in the background.
 
 Dữ liệu thời tiết: [Open-Meteo.com](https://open-meteo.com/) (giấy phép CC BY 4.0).
 

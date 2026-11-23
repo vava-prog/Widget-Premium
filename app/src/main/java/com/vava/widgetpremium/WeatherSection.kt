@@ -1,10 +1,13 @@
 package com.vava.widgetpremium
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -46,8 +49,40 @@ fun WeatherSection() {
         }
     }
 
+    fun useDeviceLocation() {
+        scope.launch {
+            busy = true
+            messageRes = null
+            val found = DeviceLocation.currentCity(context)
+            if (found == null) {
+                messageRes = R.string.location_unavailable
+            } else {
+                WeatherStore.saveCity(context, found)
+                city = found
+                weather = null
+                results = emptyList()
+                WeatherScheduler.schedule(context)
+                refreshWeather()
+            }
+            busy = false
+        }
+    }
+
+    val locationPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+        if (granted) useDeviceLocation() else messageRes = R.string.location_denied
+    }
+
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(stringResource(R.string.weather_title), style = MaterialTheme.typography.titleMedium)
+
+        OutlinedButton(
+            onClick = {
+                if (DeviceLocation.hasPermission(context)) useDeviceLocation()
+                else locationPermission.launch(android.Manifest.permission.ACCESS_COARSE_LOCATION)
+            },
+            enabled = !busy,
+            modifier = Modifier.fillMaxWidth()
+        ) { Text(stringResource(R.string.location_use)) }
 
         OutlinedTextField(
             value = query,

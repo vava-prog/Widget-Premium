@@ -31,7 +31,11 @@
     <string name="weather_pick_city">Tap to choose a weather city</string>
     <string name="weather_widget_fmt">%1$s %2$s°C · %3$s · %4$s</string>
     <string name="weather_forecast_title">7-day forecast</string>
-    <string name="weather_privacy">When you search and fetch forecasts, the city name and coordinates are sent to Open-Meteo. Nothing else is sent.</string>
+    <string name="location_use">Use my device location</string>
+    <string name="location_default_name">My location</string>
+    <string name="location_denied">Location permission not granted. You can still search and pick a city manually.</string>
+    <string name="location_unavailable">Could not get your location. Turn on location on your device or pick a city manually.</string>
+    <string name="weather_privacy">When you search and fetch forecasts, the city name and coordinates are sent to Open-Meteo. The "Use my device location" button gets an approximate location once when you tap it, rounded to about 1 km, with no tracking and nothing in the background. Nothing else is sent.</string>
     <string name="weather_attribution">Weather data: Open-Meteo.com</string>
     <string name="cond_clear">Clear</string>
     <string name="cond_partly">Partly cloudy</string>
