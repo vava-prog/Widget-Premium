@@ -190,6 +190,8 @@
     <string name="week_lunar_leap_fmt">Lunar: %1$d/%2$d (leap)</string>
     <string name="week_pick_city">No city selected</string>
     <string name="week_no_data">No weather data yet</string>
+    <string name="style_theme_weather">Weather</string>
+    <string name="style_weather_hint">Weather background: clear sky, clouds, fog, rain, snow or storm drawn from the saved weather data. With no city selected, the Standard background is used.</string>
     <string name="style_text">Text color</string>
     <string name="style_text_auto">Default</string>
     <string name="style_text_light">Light text</string>

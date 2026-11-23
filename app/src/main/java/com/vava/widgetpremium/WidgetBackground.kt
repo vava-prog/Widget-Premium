@@ -25,7 +25,12 @@ object WidgetBackground {
     fun apply(context: Context, views: RemoteViews, imageId: Int, widthDp: Int, heightDp: Int) {
         val style = StyleStore.load(context)
         val day = WidgetUpdater.widgetIsDay(context)
-        views.setImageViewBitmap(imageId, render(context, widthDp, heightDp, WidgetPalette.palette(style, day), style.cornerDp))
+        val sky = if (style.theme == WidgetTheme.WEATHER) WeatherSky.current(context, day) else null
+        val palette = WidgetPalette.palette(style, day, sky)
+        views.setImageViewBitmap(
+            imageId,
+            render(context, widthDp, heightDp, palette, style.cornerDp, sky, style.opacityPercent / 100f)
+        )
     }
 
     /** Ép màu chữ theo lựa chọn; AUTO giữ nguyên màu trong layout. `primary` là chữ lớn, `secondary` là các dòng phụ. */
@@ -41,7 +46,10 @@ object WidgetBackground {
         views.setTextViewTextSize(timeId, android.util.TypedValue.COMPLEX_UNIT_SP, sp)
     }
 
-    fun render(context: Context, widthDp: Int, heightDp: Int, palette: Palette, cornerDp: Int): Bitmap {
+    fun render(
+        context: Context, widthDp: Int, heightDp: Int, palette: Palette, cornerDp: Int,
+        sky: Sky? = null, artAlpha: Float = 1f
+    ): Bitmap {
         val density = context.resources.displayMetrics.density
         var w = widthDp * density
         var h = heightDp * density
@@ -59,6 +67,14 @@ object WidgetBackground {
             shader = LinearGradient(0f, 0f, 0f, bitmap.height.toFloat(), palette.top, palette.bottom, Shader.TileMode.CLAMP)
         }
         canvas.drawRoundRect(rect, radius, radius, fill)
+
+        if (sky != null) {
+            canvas.save()
+            val clip = android.graphics.Path().apply { addRoundRect(rect, radius, radius, android.graphics.Path.Direction.CW) }
+            canvas.clipPath(clip)
+            SkyArt.draw(canvas, bitmap.width.toFloat(), bitmap.height.toFloat(), density * k, sky, artAlpha)
+            canvas.restore()
+        }
 
         if ((palette.sheen ushr 24) > 0) {
             val sheen = Paint(Paint.ANTI_ALIAS_FLAG).apply {

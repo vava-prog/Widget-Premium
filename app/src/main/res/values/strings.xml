@@ -190,6 +190,8 @@
     <string name="week_lunar_leap_fmt">Âm lịch: %1$d/%2$d (nhuận)</string>
     <string name="week_pick_city">Chưa chọn thành phố</string>
     <string name="week_no_data">Chưa có dữ liệu thời tiết</string>
+    <string name="style_theme_weather">Theo thời tiết</string>
+    <string name="style_weather_hint">Nền theo thời tiết: bầu trời xanh, mây, sương mù, mưa, tuyết hoặc giông theo dữ liệu thời tiết đã lưu. Chưa chọn thành phố thì dùng nền Standard.</string>
     <string name="style_text">Màu chữ</string>
     <string name="style_text_auto">Mặc định</string>
     <string name="style_text_light">Chữ trắng</string>

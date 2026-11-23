@@ -64,6 +64,18 @@ fun StyleSection() {
                 onClick = { change(style.copy(theme = WidgetTheme.GLASS)) },
                 label = { Text(stringResource(R.string.style_theme_glass)) }
             )
+            FilterChip(
+                selected = style.theme == WidgetTheme.WEATHER,
+                onClick = { change(style.copy(theme = WidgetTheme.WEATHER)) },
+                label = { Text(stringResource(R.string.style_theme_weather)) }
+            )
+        }
+        if (style.theme == WidgetTheme.WEATHER) {
+            Text(
+                stringResource(R.string.style_weather_hint),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
         Text(stringResource(R.string.style_accent), style = MaterialTheme.typography.labelLarge)
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -141,7 +153,8 @@ fun StyleSection() {
 @Composable
 private fun StylePreview(style: WidgetStyle) {
     val isDay = WidgetPalette.resolveDay(style.mode, WidgetUpdater.isDay(LocalContext.current))
-    val palette = WidgetPalette.palette(style, isDay)
+    val sky = if (style.theme == WidgetTheme.WEATHER) WeatherSky.current(LocalContext.current, isDay) else null
+    val palette = WidgetPalette.palette(style, isDay, sky)
     val shape = RoundedCornerShape(style.cornerDp.dp)
     Box(
         Modifier

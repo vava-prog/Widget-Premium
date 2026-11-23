@@ -2,7 +2,8 @@ package com.vava.widgetpremium
 
 import android.content.Context
 
-enum class WidgetTheme { STANDARD, GLASS }
+/** WEATHER: nền là bầu trời theo thời tiết đã lưu; chưa có dữ liệu thì dùng nền Standard. */
+enum class WidgetTheme { STANDARD, GLASS, WEATHER }
 
 /** Màu chữ trên widget: AUTO giữ màu mặc định (chữ sáng), LIGHT luôn chữ trắng, DARK luôn chữ tối. */
 enum class TextTone { AUTO, LIGHT, DARK }
@@ -74,21 +75,30 @@ object WidgetPalette {
         DayMode.NIGHT -> false
     }
 
-    fun palette(style: WidgetStyle, isDay: Boolean): Palette {
+    fun palette(style: WidgetStyle, isDay: Boolean, sky: Sky? = null): Palette {
         val s = style.sanitized()
         val accent = ACCENTS[s.accentIndex]
         val white = 0xFFFFFFFF.toInt()
         val black = 0xFF000000.toInt()
         val raw = when (s.theme) {
-            WidgetTheme.STANDARD ->
-                if (isDay) Palette(withAlpha(mix(accent, white, 0.35f), 0xE6), withAlpha(accent, 0xE6), 0, 0, 0f)
-                else Palette(withAlpha(mix(accent, black, 0.75f), 0xE6), withAlpha(mix(accent, black, 0.88f), 0xE6), 0, 0, 0f)
+            WidgetTheme.WEATHER -> if (sky != null) {
+                val (t, b) = WeatherSky.colors(sky, isDay)
+                Palette(t, b, 0, 0, 0f)
+            } else standard(accent, isDay)
+            WidgetTheme.STANDARD -> standard(accent, isDay)
             WidgetTheme.GLASS ->
                 if (isDay) Palette(withAlpha(mix(accent, white, 0.55f), 0x80), withAlpha(accent, 0x4D), withAlpha(white, 0x50), withAlpha(white, 0xA0), 1.5f)
                 else Palette(withAlpha(mix(accent, black, 0.6f), 0x99), withAlpha(mix(accent, black, 0.85f), 0x66), withAlpha(white, 0x30), withAlpha(white, 0x66), 1.5f)
         }
         val p = s.opacityPercent
         return raw.copy(top = scale(raw.top, p), bottom = scale(raw.bottom, p), sheen = scale(raw.sheen, p), stroke = scale(raw.stroke, p))
+    }
+
+    private fun standard(accent: Int, isDay: Boolean): Palette {
+        val white = 0xFFFFFFFF.toInt()
+        val black = 0xFF000000.toInt()
+        return if (isDay) Palette(withAlpha(mix(accent, white, 0.35f), 0xE6), withAlpha(accent, 0xE6), 0, 0, 0f)
+        else Palette(withAlpha(mix(accent, black, 0.75f), 0xE6), withAlpha(mix(accent, black, 0.88f), 0xE6), 0, 0, 0f)
     }
 }
 
