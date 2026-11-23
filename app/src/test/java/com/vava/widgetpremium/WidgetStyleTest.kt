@@ -144,4 +144,30 @@ class WidgetStyleTest {
         assertEquals(WidgetPalette.TODAY_SWATCHES.size - 1, WidgetStyle(todayColorIndex = 99).sanitized().todayColorIndex)
         assertFalse(WidgetStyle().showWeatherDetail)
     }
+
+    @Test fun glassDefaultsKeepOriginalLook() {
+        assertEquals(0x50, WidgetPalette.glassSheenAlpha(true, WidgetPalette.DEFAULT_GLASS_RELIEF))
+        assertEquals(0xA0, WidgetPalette.glassStrokeAlpha(true, WidgetPalette.DEFAULT_GLASS_RELIEF))
+        assertEquals(0x30, WidgetPalette.glassSheenAlpha(false, WidgetPalette.DEFAULT_GLASS_RELIEF))
+        assertEquals(0x66, WidgetPalette.glassStrokeAlpha(false, WidgetPalette.DEFAULT_GLASS_RELIEF))
+        assertEquals(1.5f, WidgetPalette.glassStrokeDp(WidgetPalette.DEFAULT_GLASS_RELIEF), 0.0001f)
+        assertEquals(0, WidgetPalette.glassFrostAlpha(0))
+    }
+
+    @Test fun glassControlsAreMonotonicAndBounded() {
+        assertTrue(WidgetPalette.glassSheenAlpha(true, 100) > WidgetPalette.glassSheenAlpha(true, 30))
+        assertTrue(WidgetPalette.glassStrokeDp(100) > WidgetPalette.glassStrokeDp(0))
+        assertTrue(WidgetPalette.glassFrostAlpha(100) > WidgetPalette.glassFrostAlpha(50))
+        assertTrue(WidgetPalette.glassStrokeAlpha(true, 100) <= 0xFF)
+        assertEquals(100, WidgetStyle(glassFrostPercent = 500).sanitized().glassFrostPercent)
+        assertEquals(0, WidgetStyle(glassReliefPercent = -9).sanitized().glassReliefPercent)
+    }
+
+    @Test fun glassPaletteReactsToFrostAndOnlyForGlass() {
+        val clear = WidgetPalette.palette(WidgetStyle(theme = WidgetTheme.GLASS, glassFrostPercent = 0), true)
+        val frosted = WidgetPalette.palette(WidgetStyle(theme = WidgetTheme.GLASS, glassFrostPercent = 80), true)
+        assertEquals(0, clear.frost ushr 24)
+        assertTrue((frosted.frost ushr 24) > 0)
+        assertEquals(0, WidgetPalette.palette(WidgetStyle(theme = WidgetTheme.STANDARD, glassFrostPercent = 80), true).frost ushr 24)
+    }
 }

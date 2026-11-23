@@ -45,6 +45,8 @@ fun StyleSection() {
     var opacity by remember { mutableStateOf(style.opacityPercent.toFloat()) }
     var corner by remember { mutableStateOf(style.cornerDp.toFloat()) }
     var labelText by remember { mutableStateOf(style.label) }
+    var frost by remember { mutableStateOf(style.glassFrostPercent.toFloat()) }
+    var relief by remember { mutableStateOf(style.glassReliefPercent.toFloat()) }
     var border by remember { mutableStateOf(style.borderDp.toFloat()) }
     var clockScale by remember { mutableStateOf(style.clockScalePercent.toFloat()) }
 
@@ -112,6 +114,27 @@ fun StyleSection() {
             valueRange = 0f..WidgetPalette.MAX_CORNER_DP.toFloat(),
             onValueChangeFinished = { change(style.copy(cornerDp = corner.toInt())) }
         )
+        if (style.theme == WidgetTheme.GLASS) {
+            Text(stringResource(R.string.style_glass_frost, frost.toInt()), style = MaterialTheme.typography.labelLarge)
+            Slider(
+                value = frost,
+                onValueChange = { frost = it },
+                valueRange = 0f..100f,
+                onValueChangeFinished = { change(style.copy(glassFrostPercent = frost.toInt())) }
+            )
+            Text(stringResource(R.string.style_glass_relief, relief.toInt()), style = MaterialTheme.typography.labelLarge)
+            Slider(
+                value = relief,
+                onValueChange = { relief = it },
+                valueRange = 0f..100f,
+                onValueChangeFinished = { change(style.copy(glassReliefPercent = relief.toInt())) }
+            )
+            Text(
+                stringResource(R.string.style_glass_hint),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
         Text(
             if (border.toInt() == 0) stringResource(R.string.style_border_auto) else stringResource(R.string.style_border, border.toInt()),
             style = MaterialTheme.typography.labelLarge
@@ -241,6 +264,8 @@ fun StyleSection() {
             corner = fresh.cornerDp.toFloat()
             clockScale = fresh.clockScalePercent.toFloat()
             border = fresh.borderDp.toFloat()
+            frost = fresh.glassFrostPercent.toFloat()
+            relief = fresh.glassReliefPercent.toFloat()
             labelText = fresh.label
             change(fresh)
         }) { Text(stringResource(R.string.style_reset)) }

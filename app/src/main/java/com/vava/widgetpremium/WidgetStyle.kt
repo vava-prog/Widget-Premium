@@ -43,7 +43,11 @@ data class WidgetStyle(
     /** Thêm dòng thấp/cao và khả năng mưa dưới dòng thời tiết của widget thông tin. */
     val showWeatherDetail: Boolean = false,
     /** Chỉ số ô màu nổi của ngày hôm nay trên dải tuần (0 = trắng mờ mặc định). */
-    val todayColorIndex: Int = 0
+    val todayColorIndex: Int = 0,
+    /** Độ mờ kính 0..100: lớp sương trắng phủ lên mặt kính (chỉ giao diện Kính mờ). */
+    val glassFrostPercent: Int = 0,
+    /** Độ nổi khối kính 0..100: viền và mép sáng dày hơn, rõ hơn (chỉ giao diện Kính mờ). */
+    val glassReliefPercent: Int = WidgetPalette.DEFAULT_GLASS_RELIEF
 ) {
     fun sanitized(): WidgetStyle = copy(
         accentIndex = accentIndex.coerceIn(0, WidgetPalette.ACCENTS.size - 1),
@@ -53,12 +57,18 @@ data class WidgetStyle(
         borderDp = borderDp.coerceIn(0, WidgetPalette.MAX_BORDER_DP),
         label = WidgetPalette.cleanLabel(label),
         todayColorIndex = todayColorIndex.coerceIn(0, WidgetPalette.TODAY_SWATCHES.size - 1),
+        glassFrostPercent = glassFrostPercent.coerceIn(0, 100),
+        glassReliefPercent = glassReliefPercent.coerceIn(0, 100),
         customTextColor = customTextColor or (0xFF shl 24)
     )
 }
 
 /** Màu nền một widget, dạng ARGB. strokeDp = 0 nghĩa là không viền. */
-data class Palette(val top: Int, val bottom: Int, val sheen: Int, val stroke: Int, val strokeDp: Float)
+data class Palette(
+    val top: Int, val bottom: Int, val sheen: Int, val stroke: Int, val strokeDp: Float,
+    /** Lớp sương trắng phủ lên mặt kính (ARGB); 0 = không phủ. */
+    val frost: Int = 0
+)
 
 /** Tính màu nền cho hai phong cách. Thuần Kotlin, có test; việc vẽ nằm ở WidgetBackground. */
 object WidgetPalette {
@@ -68,6 +78,22 @@ object WidgetPalette {
     const val MAX_CORNER_DP = 40
     const val MAX_BORDER_DP = 6
     const val MAX_LABEL_LENGTH = 24
+    const val DEFAULT_GLASS_RELIEF = 60
+
+    /** Độ đậm (0..255) của mép sáng phía trên mặt kính; 60% là giá trị gốc. */
+    fun glassSheenAlpha(isDay: Boolean, reliefPercent: Int): Int =
+        ((if (isDay) 0x50 else 0x30) * reliefPercent.coerceIn(0, 100) / DEFAULT_GLASS_RELIEF).coerceIn(0, 0xFF)
+
+    /** Độ đậm (0..255) của viền kính. */
+    fun glassStrokeAlpha(isDay: Boolean, reliefPercent: Int): Int =
+        ((if (isDay) 0xA0 else 0x66) * reliefPercent.coerceIn(0, 100) / DEFAULT_GLASS_RELIEF).coerceIn(0, 0xFF)
+
+    /** Độ dày viền kính (dp): 1,5 dp ở mức gốc, mảnh hơn khi giảm, dày hơn khi tăng. */
+    fun glassStrokeDp(reliefPercent: Int): Float =
+        1.5f * (40f + reliefPercent.coerceIn(0, 100) * 60f / DEFAULT_GLASS_RELIEF) / 100f
+
+    /** Độ đậm (0..255) của lớp sương trắng theo độ mờ kính. */
+    fun glassFrostAlpha(frostPercent: Int): Int = (0x70 * frostPercent.coerceIn(0, 100) / 100)
 
     /** Màu nổi cho ngày hôm nay trên dải tuần (hiện ở ô chọn; nền thật là bản mờ của màu này). */
     val TODAY_SWATCHES = intArrayOf(0xFFFFFFFF.toInt(), 0xFFFFE066.toInt(), 0xFF7EE0A0.toInt(), 0xFF7FD8FF.toInt(), 0xFFFF9EC4.toInt(), 0xFFFFB36B.toInt())
@@ -149,12 +175,17 @@ object WidgetPalette {
                 Palette(t, b, 0, 0, 0f)
             } else standard(accent, isDay)
             WidgetTheme.STANDARD -> standard(accent, isDay)
-            WidgetTheme.GLASS ->
-                if (isDay) Palette(withAlpha(mix(accent, white, 0.55f), 0x80), withAlpha(accent, 0x4D), withAlpha(white, 0x50), withAlpha(white, 0xA0), 1.5f)
-                else Palette(withAlpha(mix(accent, black, 0.6f), 0x99), withAlpha(mix(accent, black, 0.85f), 0x66), withAlpha(white, 0x30), withAlpha(white, 0x66), 1.5f)
+            WidgetTheme.GLASS -> {
+                val sheen = withAlpha(white, glassSheenAlpha(isDay, s.glassReliefPercent))
+                val stroke = withAlpha(white, glassStrokeAlpha(isDay, s.glassReliefPercent))
+                val frost = withAlpha(white, glassFrostAlpha(s.glassFrostPercent))
+                val dp = glassStrokeDp(s.glassReliefPercent)
+                if (isDay) Palette(withAlpha(mix(accent, white, 0.55f), 0x80), withAlpha(accent, 0x4D), sheen, stroke, dp, frost)
+                else Palette(withAlpha(mix(accent, black, 0.6f), 0x99), withAlpha(mix(accent, black, 0.85f), 0x66), sheen, stroke, dp, frost)
+            }
         }
         val p = s.opacityPercent
-        val scaled = raw.copy(top = scale(raw.top, p), bottom = scale(raw.bottom, p), sheen = scale(raw.sheen, p), stroke = scale(raw.stroke, p))
+        val scaled = raw.copy(top = scale(raw.top, p), bottom = scale(raw.bottom, p), sheen = scale(raw.sheen, p), stroke = scale(raw.stroke, p), frost = scale(raw.frost, p))
         if (s.borderDp <= 0) return scaled
         // Người dùng chọn viền: dùng màu viền sẵn có của giao diện, hoặc trắng mờ nếu giao diện không có viền.
         val color = if ((raw.stroke ushr 24) > 0) scaled.stroke else scale(withAlpha(white, if (isDay) 0xB0 else 0x80), p)
@@ -194,7 +225,9 @@ object StyleStore {
             tapEnabled = p.getBoolean("tap_enabled", true),
             weekMode = enumOrDefault(p.getString("week_mode", null), WeekMode.LUNAR),
             showWeatherDetail = p.getBoolean("weather_detail", false),
-            todayColorIndex = p.getInt("today_color", 0)
+            todayColorIndex = p.getInt("today_color", 0),
+            glassFrostPercent = p.getInt("glass_frost", 0),
+            glassReliefPercent = p.getInt("glass_relief", WidgetPalette.DEFAULT_GLASS_RELIEF)
         ).sanitized()
     }
 
@@ -212,7 +245,8 @@ object StyleStore {
             .putBoolean("show_solar", s.showSolarDate).putBoolean("show_lunar", s.showLunar)
             .putBoolean("show_weather", s.showWeather).putString("hour_format", s.hourFormat.name)
             .putBoolean("tap_enabled", s.tapEnabled).putString("week_mode", s.weekMode.name)
-            .putBoolean("weather_detail", s.showWeatherDetail).putInt("today_color", s.todayColorIndex).apply()
+            .putBoolean("weather_detail", s.showWeatherDetail).putInt("today_color", s.todayColorIndex)
+            .putInt("glass_frost", s.glassFrostPercent).putInt("glass_relief", s.glassReliefPercent).apply()
     }
 }
 

@@ -93,6 +93,10 @@ object WidgetBackground {
             canvas.restore()
         }
 
+        if ((palette.frost ushr 24) > 0) {
+            val frost = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = palette.frost }
+            canvas.drawRoundRect(rect, radius, radius, frost)
+        }
         if ((palette.sheen ushr 24) > 0) {
             val sheen = Paint(Paint.ANTI_ALIAS_FLAG).apply {
                 shader = LinearGradient(0f, 0f, 0f, bitmap.height * 0.5f, palette.sheen, 0x00FFFFFF, Shader.TileMode.CLAMP)

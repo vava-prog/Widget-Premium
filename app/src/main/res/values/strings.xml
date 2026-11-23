@@ -240,6 +240,9 @@
     <string name="diag_no">chưa</string>
     <string name="diag_hint">Nhắc việc kêu đúng giờ cần cả ba mục trên là "có". Trên Xiaomi, Oppo, Vivo hãy bật "Tự khởi động" và chọn "Không hạn chế" pin cho ứng dụng trong cài đặt hệ thống.</string>
     <string name="diag_refresh">Làm mới số liệu</string>
+    <string name="style_glass_frost">Độ mờ kính: %1$d%%</string>
+    <string name="style_glass_relief">Độ nổi khối kính: %1$d%%</string>
+    <string name="style_glass_hint">Độ mờ: phủ lớp sương trắng lên mặt kính (0 = trong suốt). Độ nổi khối: viền và mép sáng dày, rõ hơn. Chỉ áp dụng cho giao diện Kính mờ.</string>
     <string name="style_seconds">Hiện số giây trên đồng hồ</string>
     <string name="style_seconds_hint">Hiện giây thì chữ giờ tự thu nhỏ để vừa widget và máy phải vẽ lại mỗi giây nên tốn pin hơn một chút. Tắt nếu không cần.</string>
     <string name="style_text">Màu chữ</string>
