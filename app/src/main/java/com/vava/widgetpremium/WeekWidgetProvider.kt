@@ -76,29 +76,40 @@ class WeekWidgetProvider : AppWidgetProvider() {
 
             VietCalendar.weekDays(today).forEachIndexed { i, date ->
                 views.setTextViewText(NAME[i], context.getString(NAME_RES[i]))
-                views.setTextViewText(DAY[i], date.dayOfMonth.toString())
-                views.setTextViewText(
-                    LUNAR[i],
-                    if (opts.weekMode == WeekMode.WEATHER) WeekStrip.weatherLabel(date, forecast) else VietCalendar.weekLunarLabel(date)
-                )
+                if (opts.weekMode == WeekMode.WEATHER) {
+                    // Như app mẫu: biểu tượng thời tiết thay cho số ngày, bên dưới là "thấp° cao°".
+                    val icon = WeekStrip.icon(date, forecast)
+                    views.setTextViewText(DAY[i], icon.ifEmpty { date.dayOfMonth.toString() })
+                    views.setTextViewTextSize(DAY[i], android.util.TypedValue.COMPLEX_UNIT_SP, if (icon.isEmpty()) 16f else 18f)
+                    views.setTextViewText(LUNAR[i], WeekStrip.range(date, forecast))
+                    views.setTextViewTextSize(LUNAR[i], android.util.TypedValue.COMPLEX_UNIT_SP, 9f)
+                } else {
+                    views.setTextViewText(DAY[i], date.dayOfMonth.toString())
+                    views.setTextViewTextSize(DAY[i], android.util.TypedValue.COMPLEX_UNIT_SP, 16f)
+                    views.setTextViewText(LUNAR[i], VietCalendar.weekLunarLabel(date))
+                    views.setTextViewTextSize(LUNAR[i], android.util.TypedValue.COMPLEX_UNIT_SP, 10f)
+                }
                 views.setInt(CELL[i], "setBackgroundResource", if (date == today) TODAY_BG[opts.todayColorIndex.coerceIn(0, TODAY_BG.size - 1)] else 0)
                 WidgetTap.bind(context, views, CELL[i], TapTarget.CALENDAR)
             }
 
             val city = WeatherStore.city(context)
             val weather = if (city != null) WeatherStore.cached(context) else null
+            views.setTextViewText(R.id.week_city, if (city != null && opts.showLocation) "📍 " + city.name else "")
             if (weather != null) {
                 val condition = Condition.fromWmo(weather.code)
                 val day = WidgetUpdater.widgetIsDay(context)
                 views.setTextViewText(R.id.week_temp, Math.round(weather.tempC).toString() + "°")
-                views.setTextViewText(R.id.week_cond, condition.emoji(day) + " " + context.getString(condition.labelRes()))
+                views.setTextViewText(R.id.week_icon, condition.emoji(day))
+                views.setTextViewText(R.id.week_cond, context.getString(condition.labelRes()))
                 val today0 = weather.days.firstOrNull()
                 views.setTextViewText(
                     R.id.week_range,
-                    if (today0 != null) "${Math.round(today0.minC)}°–${Math.round(today0.maxC)}°" else city!!.name
+                    if (today0 != null) "${Math.round(today0.minC)}°–${Math.round(today0.maxC)}°" else ""
                 )
             } else {
                 views.setTextViewText(R.id.week_temp, "")
+                views.setTextViewText(R.id.week_icon, "")
                 views.setTextViewText(
                     R.id.week_cond,
                     context.getString(if (city == null) R.string.week_pick_city else R.string.week_no_data)
@@ -109,9 +120,11 @@ class WeekWidgetProvider : AppWidgetProvider() {
             WidgetBackground.applyText(
                 context, views,
                 listOf(R.id.week_time, R.id.week_temp) + DAY.toList(),
-                listOf(R.id.week_date, R.id.week_lunar, R.id.week_cond, R.id.week_range) + NAME.toList() + LUNAR.toList()
+                listOf(R.id.week_sec, R.id.week_date, R.id.week_lunar, R.id.week_city, R.id.week_cond, R.id.week_range) + NAME.toList() + LUNAR.toList()
             )
-            WidgetBackground.applyClockSize(context, views, R.id.week_time, 40f)
+            WidgetBackground.applyClockSize(context, views, R.id.week_time, 40f, splitSeconds = true)
+            WidgetBackground.setShown(views, R.id.week_sec, opts.showSeconds)
+            views.setTextViewTextSize(R.id.week_sec, android.util.TypedValue.COMPLEX_UNIT_SP, WidgetPalette.clockSizeSp(16f, opts.clockScalePercent))
             WidgetTap.bind(context, views, R.id.week_time, TapTarget.ALARMS)
             WidgetTap.bind(context, views, R.id.week_date, TapTarget.CALENDAR)
             WidgetTap.bind(context, views, R.id.week_lunar, TapTarget.CALENDAR)

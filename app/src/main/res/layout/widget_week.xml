@@ -16,13 +16,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="8dp">
+        android:paddingBottom="8dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="8dp">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
+            android:layout_height="wrap_content"
+            android:gravity="top"
             android:orientation="horizontal">
 
             <LinearLayout
@@ -30,42 +32,66 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical">
-                <TextClock
-                    android:id="@+id/week_time"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:format12Hour="h:mm"
-                    android:format24Hour="HH:mm"
-                    android:includeFontPadding="false"
-                    android:shadowColor="#80000000"
-        android:shadowDx="0"
-        android:shadowDy="1"
-        android:shadowRadius="3"
-        android:textColor="#FFFFFFFF"
-                    android:textSize="40sp" />
+                    android:gravity="top"
+                    android:orientation="horizontal">
+                    <TextClock
+                        android:id="@+id/week_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:format12Hour="h:mm"
+                        android:format24Hour="HH:mm"
+                        android:includeFontPadding="false"
+                android:shadowColor="#80000000"
+                android:shadowDx="0"
+                android:shadowDy="1"
+                android:shadowRadius="3"
+                        android:textColor="#FFFFFFFF"
+                        android:textSize="40sp" />
+                    <TextClock
+                        android:id="@+id/week_sec"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="3dp"
+                        android:format12Hour="ss"
+                        android:format24Hour="ss"
+                        android:includeFontPadding="false"
+                android:shadowColor="#80000000"
+                android:shadowDx="0"
+                android:shadowDy="1"
+                android:shadowRadius="3"
+                        android:textColor="#CCFFFFFF"
+                        android:textSize="16sp"
+                        android:visibility="gone" />
+                </LinearLayout>
                 <TextClock
                     android:id="@+id/week_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
                     android:format12Hour="@string/week_date_format"
                     android:format24Hour="@string/week_date_format"
+                    android:includeFontPadding="false"
                     android:maxLines="1"
-                    android:shadowColor="#80000000"
-        android:shadowDx="0"
-        android:shadowDy="1"
-        android:shadowRadius="3"
-        android:textColor="#CCFFFFFF"
+                android:shadowColor="#80000000"
+                android:shadowDx="0"
+                android:shadowDy="1"
+                android:shadowRadius="3"
+                    android:textColor="#CCFFFFFF"
                     android:textSize="13sp" />
                 <TextView
                     android:id="@+id/week_lunar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:includeFontPadding="false"
                     android:maxLines="1"
-                    android:shadowColor="#80000000"
-        android:shadowDx="0"
-        android:shadowDy="1"
-        android:shadowRadius="3"
-        android:textColor="#B3FFFFFF"
+                android:shadowColor="#80000000"
+                android:shadowDx="0"
+                android:shadowDy="1"
+                android:shadowRadius="3"
+                    android:textColor="#B3FFFFFF"
                     android:textSize="12sp" />
             </LinearLayout>
 
@@ -75,45 +101,96 @@
                 android:layout_height="wrap_content"
                 android:gravity="end"
                 android:orientation="vertical">
-                <TextView
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="bottom"
+                    android:orientation="horizontal">
+                    <TextView
+                    android:id="@+id/week_city"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:includeFontPadding="false"
+                    android:maxLines="1"
+                android:shadowColor="#80000000"
+                android:shadowDx="0"
+                android:shadowDy="1"
+                android:shadowRadius="3"
+                    android:textColor="#CCFFFFFF"
+                    android:textSize="12sp" android:ellipsize="end" android:maxWidth="110dp" android:layout_marginRight="6dp" />
+                    <TextView
                     android:id="@+id/week_temp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:includeFontPadding="false"
-                    android:shadowColor="#80000000"
-        android:shadowDx="0"
-        android:shadowDy="1"
-        android:shadowRadius="3"
-        android:textColor="#FFFFFFFF"
-                    android:textSize="32sp" />
-                <TextView
+                    android:maxLines="1"
+                android:shadowColor="#80000000"
+                android:shadowDx="0"
+                android:shadowDy="1"
+                android:shadowRadius="3"
+                    android:textColor="#FFFFFFFF"
+                    android:textSize="30sp" />
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/week_card"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:background="@drawable/week_card_bg"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingBottom="3dp"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:paddingTop="3dp">
+                    <TextView
+                        android:id="@+id/week_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:includeFontPadding="false"
+                        android:textSize="24sp" />
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="6dp"
+                        android:orientation="vertical">
+                        <TextView
                     android:id="@+id/week_cond"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:includeFontPadding="false"
                     android:maxLines="1"
-                    android:shadowColor="#80000000"
-        android:shadowDx="0"
-        android:shadowDy="1"
-        android:shadowRadius="3"
-        android:textColor="#CCFFFFFF"
+                android:shadowColor="#80000000"
+                android:shadowDx="0"
+                android:shadowDy="1"
+                android:shadowRadius="3"
+                    android:textColor="#FFFFFFFF"
                     android:textSize="13sp" />
-                <TextView
+                        <TextView
                     android:id="@+id/week_range"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:includeFontPadding="false"
                     android:maxLines="1"
-                    android:shadowColor="#80000000"
-        android:shadowDx="0"
-        android:shadowDy="1"
-        android:shadowRadius="3"
-        android:textColor="#B3FFFFFF"
-                    android:textSize="12sp" />
+                android:shadowColor="#80000000"
+                android:shadowDx="0"
+                android:shadowDy="1"
+                android:shadowRadius="3"
+                    android:textColor="#CCFFFFFF"
+                    android:textSize="11sp" />
+                    </LinearLayout>
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="46dp"
+            android:layout_height="44dp"
             android:orientation="horizontal">
         <LinearLayout
             android:id="@+id/wk_cell0"
@@ -123,23 +200,14 @@
             android:gravity="center"
             android:orientation="vertical">
             <TextView android:id="@+id/wk_name0" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:includeFontPadding="false" android:shadowColor="#80000000"
-        android:shadowDx="0"
-        android:shadowDy="1"
-        android:shadowRadius="3"
-        android:textColor="#CCFFFFFF" android:textSize="11sp" />
+                android:includeFontPadding="false" android:shadowColor="#80000000" android:shadowDx="0" android:shadowDy="1" android:shadowRadius="3"
+                android:textColor="#CCFFFFFF" android:textSize="11sp" />
             <TextView android:id="@+id/wk_day0" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:includeFontPadding="false" android:shadowColor="#80000000"
-        android:shadowDx="0"
-        android:shadowDy="1"
-        android:shadowRadius="3"
-        android:textColor="#FFFFFFFF" android:textSize="16sp" android:textStyle="bold" />
+                android:includeFontPadding="false" android:shadowColor="#80000000" android:shadowDx="0" android:shadowDy="1" android:shadowRadius="3"
+                android:textColor="#FFFFFFFF" android:textSize="16sp" android:textStyle="bold" />
             <TextView android:id="@+id/wk_lunar0" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:includeFontPadding="false" android:shadowColor="#80000000"
-        android:shadowDx="0"
-        android:shadowDy="1"
-        android:shadowRadius="3"
-        android:textColor="#B3FFFFFF" android:textSize="10sp" />
+                android:includeFontPadding="false" android:maxLines="1" android:shadowColor="#80000000" android:shadowDx="0" android:shadowDy="1" android:shadowRadius="3"
+                android:textColor="#B3FFFFFF" android:textSize="10sp" />
         </LinearLayout>
         <LinearLayout
             android:id="@+id/wk_cell1"
@@ -149,23 +217,14 @@
             android:gravity="center"
             android:orientation="vertical">
             <TextView android:id="@+id/wk_name1" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:includeFontPadding="false" android:shadowColor="#80000000"
-        android:shadowDx="0"
-        android:shadowDy="1"
-        android:shadowRadius="3"
-        android:textColor="#CCFFFFFF" android:textSize="11sp" />
+                android:includeFontPadding="false" android:shadowColor="#80000000" android:shadowDx="0" android:shadowDy="1" android:shadowRadius="3"
+                android:textColor="#CCFFFFFF" android:textSize="11sp" />
             <TextView android:id="@+id/wk_day1" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:includeFontPadding="false" android:shadowColor="#80000000"
-        android:shadowDx="0"
-        android:shadowDy="1"
-        android:shadowRadius="3"
-        android:textColor="#FFFFFFFF" android:textSize="16sp" android:textStyle="bold" />
+                android:includeFontPadding="false" android:shadowColor="#80000000" android:shadowDx="0" android:shadowDy="1" android:shadowRadius="3"
+                android:textColor="#FFFFFFFF" android:textSize="16sp" android:textStyle="bold" />
             <TextView android:id="@+id/wk_lunar1" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:includeFontPadding="false" android:shadowColor="#80000000"
-        android:shadowDx="0"
-        android:shadowDy="1"
-        android:shadowRadius="3"
-        android:textColor="#B3FFFFFF" android:textSize="10sp" />
+                android:includeFontPadding="false" android:maxLines="1" android:shadowColor="#80000000" android:shadowDx="0" android:shadowDy="1" android:shadowRadius="3"
+                android:textColor="#B3FFFFFF" android:textSize="10sp" />
         </LinearLayout>
         <LinearLayout
             android:id="@+id/wk_cell2"
@@ -175,23 +234,14 @@
             android:gravity="center"
             android:orientation="vertical">
             <TextView android:id="@+id/wk_name2" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:includeFontPadding="false" android:shadowColor="#80000000"
-        android:shadowDx="0"
-        android:shadowDy="1"
-        android:shadowRadius="3"
-        android:textColor="#CCFFFFFF" android:textSize="11sp" />
+                android:includeFontPadding="false" android:shadowColor="#80000000" android:shadowDx="0" android:shadowDy="1" android:shadowRadius="3"
+                android:textColor="#CCFFFFFF" android:textSize="11sp" />
             <TextView android:id="@+id/wk_day2" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:includeFontPadding="false" android:shadowColor="#80000000"
-        android:shadowDx="0"
-        android:shadowDy="1"
-        android:shadowRadius="3"
-        android:textColor="#FFFFFFFF" android:textSize="16sp" android:textStyle="bold" />
+                android:includeFontPadding="false" android:shadowColor="#80000000" android:shadowDx="0" android:shadowDy="1" android:shadowRadius="3"
+                android:textColor="#FFFFFFFF" android:textSize="16sp" android:textStyle="bold" />
             <TextView android:id="@+id/wk_lunar2" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:includeFontPadding="false" android:shadowColor="#80000000"
-        android:shadowDx="0"
-        android:shadowDy="1"
-        android:shadowRadius="3"
-        android:textColor="#B3FFFFFF" android:textSize="10sp" />
+                android:includeFontPadding="false" android:maxLines="1" android:shadowColor="#80000000" android:shadowDx="0" android:shadowDy="1" android:shadowRadius="3"
+                android:textColor="#B3FFFFFF" android:textSize="10sp" />
         </LinearLayout>
         <LinearLayout
             android:id="@+id/wk_cell3"
@@ -201,23 +251,14 @@
             android:gravity="center"
             android:orientation="vertical">
             <TextView android:id="@+id/wk_name3" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:includeFontPadding="false" android:shadowColor="#80000000"
-        android:shadowDx="0"
-        android:shadowDy="1"
-        android:shadowRadius="3"
-        android:textColor="#CCFFFFFF" android:textSize="11sp" />
+                android:includeFontPadding="false" android:shadowColor="#80000000" android:shadowDx="0" android:shadowDy="1" android:shadowRadius="3"
+                android:textColor="#CCFFFFFF" android:textSize="11sp" />
             <TextView android:id="@+id/wk_day3" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:includeFontPadding="false" android:shadowColor="#80000000"
-        android:shadowDx="0"
-        android:shadowDy="1"
-        android:shadowRadius="3"
-        android:textColor="#FFFFFFFF" android:textSize="16sp" android:textStyle="bold" />
+                android:includeFontPadding="false" android:shadowColor="#80000000" android:shadowDx="0" android:shadowDy="1" android:shadowRadius="3"
+                android:textColor="#FFFFFFFF" android:textSize="16sp" android:textStyle="bold" />
             <TextView android:id="@+id/wk_lunar3" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:includeFontPadding="false" android:shadowColor="#80000000"
-        android:shadowDx="0"
-        android:shadowDy="1"
-        android:shadowRadius="3"
-        android:textColor="#B3FFFFFF" android:textSize="10sp" />
+                android:includeFontPadding="false" android:maxLines="1" android:shadowColor="#80000000" android:shadowDx="0" android:shadowDy="1" android:shadowRadius="3"
+                android:textColor="#B3FFFFFF" android:textSize="10sp" />
         </LinearLayout>
         <LinearLayout
             android:id="@+id/wk_cell4"
@@ -227,23 +268,14 @@
             android:gravity="center"
             android:orientation="vertical">
             <TextView android:id="@+id/wk_name4" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:includeFontPadding="false" android:shadowColor="#80000000"
-        android:shadowDx="0"
-        android:shadowDy="1"
-        android:shadowRadius="3"
-        android:textColor="#CCFFFFFF" android:textSize="11sp" />
+                android:includeFontPadding="false" android:shadowColor="#80000000" android:shadowDx="0" android:shadowDy="1" android:shadowRadius="3"
+                android:textColor="#CCFFFFFF" android:textSize="11sp" />
             <TextView android:id="@+id/wk_day4" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:includeFontPadding="false" android:shadowColor="#80000000"
-        android:shadowDx="0"
-        android:shadowDy="1"
-        android:shadowRadius="3"
-        android:textColor="#FFFFFFFF" android:textSize="16sp" android:textStyle="bold" />
+                android:includeFontPadding="false" android:shadowColor="#80000000" android:shadowDx="0" android:shadowDy="1" android:shadowRadius="3"
+                android:textColor="#FFFFFFFF" android:textSize="16sp" android:textStyle="bold" />
             <TextView android:id="@+id/wk_lunar4" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:includeFontPadding="false" android:shadowColor="#80000000"
-        android:shadowDx="0"
-        android:shadowDy="1"
-        android:shadowRadius="3"
-        android:textColor="#B3FFFFFF" android:textSize="10sp" />
+                android:includeFontPadding="false" android:maxLines="1" android:shadowColor="#80000000" android:shadowDx="0" android:shadowDy="1" android:shadowRadius="3"
+                android:textColor="#B3FFFFFF" android:textSize="10sp" />
         </LinearLayout>
         <LinearLayout
             android:id="@+id/wk_cell5"
@@ -253,23 +285,14 @@
             android:gravity="center"
             android:orientation="vertical">
             <TextView android:id="@+id/wk_name5" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:includeFontPadding="false" android:shadowColor="#80000000"
-        android:shadowDx="0"
-        android:shadowDy="1"
-        android:shadowRadius="3"
-        android:textColor="#CCFFFFFF" android:textSize="11sp" />
+                android:includeFontPadding="false" android:shadowColor="#80000000" android:shadowDx="0" android:shadowDy="1" android:shadowRadius="3"
+                android:textColor="#CCFFFFFF" android:textSize="11sp" />
             <TextView android:id="@+id/wk_day5" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:includeFontPadding="false" android:shadowColor="#80000000"
-        android:shadowDx="0"
-        android:shadowDy="1"
-        android:shadowRadius="3"
-        android:textColor="#FFFFFFFF" android:textSize="16sp" android:textStyle="bold" />
+                android:includeFontPadding="false" android:shadowColor="#80000000" android:shadowDx="0" android:shadowDy="1" android:shadowRadius="3"
+                android:textColor="#FFFFFFFF" android:textSize="16sp" android:textStyle="bold" />
             <TextView android:id="@+id/wk_lunar5" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:includeFontPadding="false" android:shadowColor="#80000000"
-        android:shadowDx="0"
-        android:shadowDy="1"
-        android:shadowRadius="3"
-        android:textColor="#B3FFFFFF" android:textSize="10sp" />
+                android:includeFontPadding="false" android:maxLines="1" android:shadowColor="#80000000" android:shadowDx="0" android:shadowDy="1" android:shadowRadius="3"
+                android:textColor="#B3FFFFFF" android:textSize="10sp" />
         </LinearLayout>
         <LinearLayout
             android:id="@+id/wk_cell6"
@@ -279,23 +302,14 @@
             android:gravity="center"
             android:orientation="vertical">
             <TextView android:id="@+id/wk_name6" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:includeFontPadding="false" android:shadowColor="#80000000"
-        android:shadowDx="0"
-        android:shadowDy="1"
-        android:shadowRadius="3"
-        android:textColor="#CCFFFFFF" android:textSize="11sp" />
+                android:includeFontPadding="false" android:shadowColor="#80000000" android:shadowDx="0" android:shadowDy="1" android:shadowRadius="3"
+                android:textColor="#CCFFFFFF" android:textSize="11sp" />
             <TextView android:id="@+id/wk_day6" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:includeFontPadding="false" android:shadowColor="#80000000"
-        android:shadowDx="0"
-        android:shadowDy="1"
-        android:shadowRadius="3"
-        android:textColor="#FFFFFFFF" android:textSize="16sp" android:textStyle="bold" />
+                android:includeFontPadding="false" android:shadowColor="#80000000" android:shadowDx="0" android:shadowDy="1" android:shadowRadius="3"
+                android:textColor="#FFFFFFFF" android:textSize="16sp" android:textStyle="bold" />
             <TextView android:id="@+id/wk_lunar6" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:includeFontPadding="false" android:shadowColor="#80000000"
-        android:shadowDx="0"
-        android:shadowDy="1"
-        android:shadowRadius="3"
-        android:textColor="#B3FFFFFF" android:textSize="10sp" />
+                android:includeFontPadding="false" android:maxLines="1" android:shadowColor="#80000000" android:shadowDx="0" android:shadowDy="1" android:shadowRadius="3"
+                android:textColor="#B3FFFFFF" android:textSize="10sp" />
         </LinearLayout>
         </LinearLayout>
     </LinearLayout>

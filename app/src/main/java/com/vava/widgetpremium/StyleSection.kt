@@ -227,6 +227,7 @@ fun StyleSection() {
         toggle(R.string.disp_solar, style.showSolarDate) { change(style.copy(showSolarDate = it)) }
         toggle(R.string.disp_lunar, style.showLunar) { change(style.copy(showLunar = it)) }
         toggle(R.string.disp_weather, style.showWeather) { change(style.copy(showWeather = it)) }
+        toggle(R.string.disp_location, style.showLocation) { change(style.copy(showLocation = it)) }
         toggle(R.string.disp_weather_detail, style.showWeatherDetail) { change(style.copy(showWeatherDetail = it)) }
         toggle(R.string.disp_tap, style.tapEnabled) { change(style.copy(tapEnabled = it)) }
         Text(stringResource(R.string.disp_hour_format), style = MaterialTheme.typography.labelLarge)

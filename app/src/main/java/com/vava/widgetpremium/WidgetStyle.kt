@@ -47,7 +47,9 @@ data class WidgetStyle(
     /** Độ mờ kính 0..100: lớp sương trắng phủ lên mặt kính (chỉ giao diện Kính mờ). */
     val glassFrostPercent: Int = 0,
     /** Độ nổi khối kính 0..100: viền và mép sáng dày hơn, rõ hơn (chỉ giao diện Kính mờ). */
-    val glassReliefPercent: Int = WidgetPalette.DEFAULT_GLASS_RELIEF
+    val glassReliefPercent: Int = WidgetPalette.DEFAULT_GLASS_RELIEF,
+    /** Hiện tên thành phố cạnh nhiệt độ trên widget Lịch tuần. */
+    val showLocation: Boolean = true
 ) {
     fun sanitized(): WidgetStyle = copy(
         accentIndex = accentIndex.coerceIn(0, WidgetPalette.ACCENTS.size - 1),
@@ -228,7 +230,8 @@ object StyleStore {
             showWeatherDetail = p.getBoolean("weather_detail", false),
             todayColorIndex = p.getInt("today_color", 0),
             glassFrostPercent = p.getInt("glass_frost", 0),
-            glassReliefPercent = p.getInt("glass_relief", WidgetPalette.DEFAULT_GLASS_RELIEF)
+            glassReliefPercent = p.getInt("glass_relief", WidgetPalette.DEFAULT_GLASS_RELIEF),
+            showLocation = p.getBoolean("show_location", true)
         ).sanitized()
     }
 
@@ -266,7 +269,7 @@ object StyleStore {
             .putBoolean("show_weather", s.showWeather).putString("hour_format", s.hourFormat.name)
             .putBoolean("tap_enabled", s.tapEnabled).putString("week_mode", s.weekMode.name)
             .putBoolean("weather_detail", s.showWeatherDetail).putInt("today_color", s.todayColorIndex)
-            .putInt("glass_frost", s.glassFrostPercent).putInt("glass_relief", s.glassReliefPercent).apply()
+            .putInt("glass_frost", s.glassFrostPercent).putInt("glass_relief", s.glassReliefPercent).putBoolean("show_location", s.showLocation).apply()
     }
 }
 

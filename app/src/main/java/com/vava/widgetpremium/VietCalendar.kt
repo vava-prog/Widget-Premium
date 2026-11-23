@@ -239,10 +239,17 @@ object ReminderRules {
     fun dateKey(day: LocalDate): String = day.toString()
 }
 
-/** Nhãn hàng thứ ba của dải tuần ở chế độ thời tiết: biểu tượng và nhiệt độ cao nhất; thiếu dữ liệu thì rỗng. */
+/** Nội dung ô thời tiết của dải tuần: biểu tượng và "thấp° cao°"; thiếu dữ liệu thì rỗng. */
 object WeekStrip {
-    fun weatherLabel(date: java.time.LocalDate, days: List<DayForecast>): String {
-        val d = days.firstOrNull { it.date == date.toString() } ?: return ""
-        return Condition.fromWmo(d.code).emoji + Math.round(d.maxC) + "°"
+    private fun day(date: java.time.LocalDate, days: List<DayForecast>): DayForecast? =
+        days.firstOrNull { it.date == date.toString() }
+
+    fun icon(date: java.time.LocalDate, days: List<DayForecast>): String =
+        day(date, days)?.let { Condition.fromWmo(it.code).emoji } ?: ""
+
+    fun range(date: java.time.LocalDate, days: List<DayForecast>): String {
+        val d = day(date, days) ?: return ""
+        if (d.minC.isNaN() || d.maxC.isNaN()) return ""
+        return "${Math.round(d.minC)}° ${Math.round(d.maxC)}°"
     }
 }
