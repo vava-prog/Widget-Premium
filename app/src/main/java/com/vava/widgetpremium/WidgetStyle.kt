@@ -39,7 +39,11 @@ data class WidgetStyle(
     val hourFormat: HourFormat = HourFormat.SYSTEM,
     /** Tắt thì chạm vào widget không mở gì. */
     val tapEnabled: Boolean = true,
-    val weekMode: WeekMode = WeekMode.LUNAR
+    val weekMode: WeekMode = WeekMode.LUNAR,
+    /** Thêm dòng thấp/cao và khả năng mưa dưới dòng thời tiết của widget thông tin. */
+    val showWeatherDetail: Boolean = false,
+    /** Chỉ số ô màu nổi của ngày hôm nay trên dải tuần (0 = trắng mờ mặc định). */
+    val todayColorIndex: Int = 0
 ) {
     fun sanitized(): WidgetStyle = copy(
         accentIndex = accentIndex.coerceIn(0, WidgetPalette.ACCENTS.size - 1),
@@ -48,6 +52,7 @@ data class WidgetStyle(
         clockScalePercent = clockScalePercent.coerceIn(WidgetPalette.MIN_CLOCK_SCALE, WidgetPalette.MAX_CLOCK_SCALE),
         borderDp = borderDp.coerceIn(0, WidgetPalette.MAX_BORDER_DP),
         label = WidgetPalette.cleanLabel(label),
+        todayColorIndex = todayColorIndex.coerceIn(0, WidgetPalette.TODAY_SWATCHES.size - 1),
         customTextColor = customTextColor or (0xFF shl 24)
     )
 }
@@ -63,6 +68,9 @@ object WidgetPalette {
     const val MAX_CORNER_DP = 40
     const val MAX_BORDER_DP = 6
     const val MAX_LABEL_LENGTH = 24
+
+    /** Màu nổi cho ngày hôm nay trên dải tuần (hiện ở ô chọn; nền thật là bản mờ của màu này). */
+    val TODAY_SWATCHES = intArrayOf(0xFFFFFFFF.toInt(), 0xFFFFE066.toInt(), 0xFF7EE0A0.toInt(), 0xFF7FD8FF.toInt(), 0xFFFF9EC4.toInt(), 0xFFFFB36B.toInt())
 
     /** Gộp xuống một dòng, bỏ khoảng trắng thừa, cắt tối đa MAX_LABEL_LENGTH ký tự. */
     fun cleanLabel(raw: String): String =
@@ -184,7 +192,9 @@ object StyleStore {
             showWeather = p.getBoolean("show_weather", true),
             hourFormat = enumOrDefault(p.getString("hour_format", null), HourFormat.SYSTEM),
             tapEnabled = p.getBoolean("tap_enabled", true),
-            weekMode = enumOrDefault(p.getString("week_mode", null), WeekMode.LUNAR)
+            weekMode = enumOrDefault(p.getString("week_mode", null), WeekMode.LUNAR),
+            showWeatherDetail = p.getBoolean("weather_detail", false),
+            todayColorIndex = p.getInt("today_color", 0)
         ).sanitized()
     }
 
@@ -201,7 +211,8 @@ object StyleStore {
             .putInt("clock_scale", s.clockScalePercent).putInt("border", s.borderDp).putBoolean("seconds", s.showSeconds).putString("label", s.label).putInt("text_custom", s.customTextColor)
             .putBoolean("show_solar", s.showSolarDate).putBoolean("show_lunar", s.showLunar)
             .putBoolean("show_weather", s.showWeather).putString("hour_format", s.hourFormat.name)
-            .putBoolean("tap_enabled", s.tapEnabled).putString("week_mode", s.weekMode.name).apply()
+            .putBoolean("tap_enabled", s.tapEnabled).putString("week_mode", s.weekMode.name)
+            .putBoolean("weather_detail", s.showWeatherDetail).putInt("today_color", s.todayColorIndex).apply()
     }
 }
 

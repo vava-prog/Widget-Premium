@@ -214,6 +214,10 @@
     <string name="disp_week_mode">Dải tuần (widget Lịch tuần)</string>
     <string name="disp_week_lunar">Ngày âm</string>
     <string name="disp_week_weather">Thời tiết 7 ngày</string>
+    <string name="disp_weather_detail">Dòng chi tiết thời tiết (thấp/cao, khả năng mưa)</string>
+    <string name="disp_today_color">Màu nổi của hôm nay (dải tuần)</string>
+    <string name="weather_detail_range_fmt">Thấp – cao: %1$d° – %2$d°</string>
+    <string name="weather_detail_rain_fmt">Khả năng mưa %1$d%%</string>
     <string name="style_seconds">Hiện số giây trên đồng hồ</string>
     <string name="style_seconds_hint">Hiện giây thì chữ giờ tự thu nhỏ để vừa widget và máy phải vẽ lại mỗi giây nên tốn pin hơn một chút. Tắt nếu không cần.</string>
     <string name="style_text">Màu chữ</string>

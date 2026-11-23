@@ -40,6 +40,10 @@ class WeekWidgetProvider : AppWidgetProvider() {
             R.string.cal_week_mon, R.string.cal_week_tue, R.string.cal_week_wed, R.string.cal_week_thu,
             R.string.cal_week_fri, R.string.cal_week_sat, R.string.cal_week_sun
         )
+        private val TODAY_BG = intArrayOf(
+            R.drawable.week_today_bg, R.drawable.week_today_bg1, R.drawable.week_today_bg2,
+            R.drawable.week_today_bg3, R.drawable.week_today_bg4, R.drawable.week_today_bg5
+        )
         private val CELL = intArrayOf(R.id.wk_cell0, R.id.wk_cell1, R.id.wk_cell2, R.id.wk_cell3, R.id.wk_cell4, R.id.wk_cell5, R.id.wk_cell6)
         private val NAME = intArrayOf(R.id.wk_name0, R.id.wk_name1, R.id.wk_name2, R.id.wk_name3, R.id.wk_name4, R.id.wk_name5, R.id.wk_name6)
         private val DAY = intArrayOf(R.id.wk_day0, R.id.wk_day1, R.id.wk_day2, R.id.wk_day3, R.id.wk_day4, R.id.wk_day5, R.id.wk_day6)
@@ -77,7 +81,7 @@ class WeekWidgetProvider : AppWidgetProvider() {
                     LUNAR[i],
                     if (opts.weekMode == WeekMode.WEATHER) WeekStrip.weatherLabel(date, forecast) else VietCalendar.weekLunarLabel(date)
                 )
-                views.setInt(CELL[i], "setBackgroundResource", if (date == today) R.drawable.week_today_bg else 0)
+                views.setInt(CELL[i], "setBackgroundResource", if (date == today) TODAY_BG[opts.todayColorIndex.coerceIn(0, TODAY_BG.size - 1)] else 0)
                 WidgetTap.bind(context, views, CELL[i], TapTarget.CALENDAR)
             }
 

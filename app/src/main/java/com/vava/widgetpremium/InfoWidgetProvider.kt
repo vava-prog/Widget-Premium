@@ -112,7 +112,7 @@ class InfoWidgetProvider : AppWidgetProvider() {
             WidgetBackground.applyText(
                 context, views,
                 listOf(R.id.info_time, R.id.stat_battery, R.id.stat_temp, R.id.stat_ram, R.id.stat_storage),
-                listOf(R.id.info_date, R.id.info_label, R.id.info_lunar, R.id.info_weather)
+                listOf(R.id.info_date, R.id.info_label, R.id.info_lunar, R.id.info_weather, R.id.info_detail)
             )
             WidgetBackground.applyClockSize(context, views, R.id.info_time, 60f)
             WidgetBackground.applyLabel(context, views, R.id.info_label)
@@ -127,6 +127,17 @@ class InfoWidgetProvider : AppWidgetProvider() {
             } else {
                 views.setViewVisibility(R.id.info_weather, View.GONE)
             }
+
+            val detail = if (opts.showWeather && opts.showWeatherDetail && WeatherStore.city(context) != null)
+                WeatherDetail.of(WeatherStore.cached(context)?.days?.firstOrNull()) else null
+            if (detail != null) {
+                val range = context.getString(R.string.weather_detail_range_fmt, detail.minC, detail.maxC)
+                val text = if (detail.rainPercent != null) {
+                    range + " · " + context.getString(R.string.weather_detail_rain_fmt, detail.rainPercent)
+                } else range
+                views.setTextViewText(R.id.info_detail, text)
+            }
+            WidgetBackground.setShown(views, R.id.info_detail, detail != null)
 
             val battery = DeviceStats.battery(context)
             if (battery != null) {

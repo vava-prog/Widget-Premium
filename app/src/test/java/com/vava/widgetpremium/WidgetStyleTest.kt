@@ -138,4 +138,10 @@ class WidgetStyleTest {
         assertEquals(HourFormat.SYSTEM, d.hourFormat)
         assertEquals(WeekMode.LUNAR, d.weekMode)
     }
+
+    @Test fun todayColorIndexIsClamped() {
+        assertEquals(0, WidgetStyle(todayColorIndex = -3).sanitized().todayColorIndex)
+        assertEquals(WidgetPalette.TODAY_SWATCHES.size - 1, WidgetStyle(todayColorIndex = 99).sanitized().todayColorIndex)
+        assertFalse(WidgetStyle().showWeatherDetail)
+    }
 }

@@ -92,4 +92,24 @@ class WeatherParsersTest {
         assertNull(w.feelsC)
         assertTrue(w.hourly.isEmpty())
     }
+
+    @Test fun parsesRainChanceAndDetail() {
+        val json = """{"utc_offset_seconds":25200,"current":{"temperature_2m":28.0,"weather_code":0},
+            "daily":{"time":["2026-11-23","2026-11-24"],"weather_code":[0,61],"temperature_2m_max":[29.4,28.6],
+            "temperature_2m_min":[22.0,23.0],"precipitation_probability_max":[10,null]}}"""
+        val w = WeatherParsers.parseWeather(json)!!
+        assertEquals(10, w.days[0].rainPercent)
+        assertEquals(null, w.days[1].rainPercent)
+        val d = WeatherDetail.of(w.days[0])!!
+        assertEquals(22, d.minC)
+        assertEquals(29, d.maxC)
+        assertEquals(10, d.rainPercent)
+        assertEquals(null, WeatherDetail.of(null))
+    }
+
+    @Test fun oldCachedForecastWithoutRainStillParses() {
+        val json = """{"current":{"temperature_2m":28.0,"weather_code":0},
+            "daily":{"time":["2026-11-23"],"weather_code":[0],"temperature_2m_max":[29.0],"temperature_2m_min":[22.0]}}"""
+        assertEquals(null, WeatherParsers.parseWeather(json)!!.days[0].rainPercent)
+    }
 }

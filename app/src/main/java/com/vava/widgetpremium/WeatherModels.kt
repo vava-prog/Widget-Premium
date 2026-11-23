@@ -20,7 +20,9 @@ data class DayForecast(
     val maxC: Double,
     val minC: Double,
     val sunrise: String? = null,
-    val sunset: String? = null
+    val sunset: String? = null,
+    /** Khả năng mưa lớn nhất trong ngày (%), null nếu nguồn không có. */
+    val rainPercent: Int? = null
 )
 
 data class HourForecast(val time: String, val tempC: Double, val code: Int)
@@ -100,6 +102,7 @@ object WeatherParsers {
             val min = daily.optJSONArray("temperature_2m_min")
             val sunrise = daily.optJSONArray("sunrise")
             val sunset = daily.optJSONArray("sunset")
+            val rain = daily.optJSONArray("precipitation_probability_max")
             if (time != null && codes != null && max != null && min != null) {
                 val n = minOf(time.length(), codes.length(), max.length(), min.length())
                 for (i in 0 until n) {
@@ -107,7 +110,8 @@ object WeatherParsers {
                         DayForecast(
                             time.getString(i), codes.optInt(i, -1), max.optDouble(i), min.optDouble(i),
                             sunrise?.optString(i)?.takeIf { it.isNotEmpty() },
-                            sunset?.optString(i)?.takeIf { it.isNotEmpty() }
+                            sunset?.optString(i)?.takeIf { it.isNotEmpty() },
+                            rainPercent = if (rain == null || rain.isNull(i)) null else rain.optInt(i).coerceIn(0, 100)
                         )
                     )
                 }
@@ -136,5 +140,15 @@ object WeatherParsers {
             hourly = hours,
             feelsC = current.optDouble("apparent_temperature", Double.NaN).takeIf { !it.isNaN() }
         )
+    }
+}
+
+/** Dòng chi tiết thời tiết hôm nay: thấp, cao (làm tròn) và khả năng mưa nếu có. */
+object WeatherDetail {
+    data class Parts(val minC: Int, val maxC: Int, val rainPercent: Int?)
+
+    fun of(day: DayForecast?): Parts? {
+        if (day == null || day.minC.isNaN() || day.maxC.isNaN()) return null
+        return Parts(Math.round(day.minC).toInt(), Math.round(day.maxC).toInt(), day.rainPercent)
     }
 }

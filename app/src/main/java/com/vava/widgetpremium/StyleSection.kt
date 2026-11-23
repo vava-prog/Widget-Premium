@@ -204,12 +204,30 @@ fun StyleSection() {
         toggle(R.string.disp_solar, style.showSolarDate) { change(style.copy(showSolarDate = it)) }
         toggle(R.string.disp_lunar, style.showLunar) { change(style.copy(showLunar = it)) }
         toggle(R.string.disp_weather, style.showWeather) { change(style.copy(showWeather = it)) }
+        toggle(R.string.disp_weather_detail, style.showWeatherDetail) { change(style.copy(showWeatherDetail = it)) }
         toggle(R.string.disp_tap, style.tapEnabled) { change(style.copy(tapEnabled = it)) }
         Text(stringResource(R.string.disp_hour_format), style = MaterialTheme.typography.labelLarge)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             FilterChip(selected = style.hourFormat == HourFormat.SYSTEM, onClick = { change(style.copy(hourFormat = HourFormat.SYSTEM)) }, label = { Text(stringResource(R.string.disp_hour_system)) })
             FilterChip(selected = style.hourFormat == HourFormat.H24, onClick = { change(style.copy(hourFormat = HourFormat.H24)) }, label = { Text(stringResource(R.string.disp_hour_24)) })
             FilterChip(selected = style.hourFormat == HourFormat.H12, onClick = { change(style.copy(hourFormat = HourFormat.H12)) }, label = { Text(stringResource(R.string.disp_hour_12)) })
+        }
+        Text(stringResource(R.string.disp_today_color), style = MaterialTheme.typography.labelLarge)
+        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            WidgetPalette.TODAY_SWATCHES.forEachIndexed { index, color ->
+                val selected = index == style.todayColorIndex
+                Box(
+                    Modifier
+                        .size(32.dp)
+                        .clip(CircleShape)
+                        .background(Color(color))
+                        .border(
+                            BorderStroke(if (selected) 3.dp else 1.dp, if (selected) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.outline),
+                            CircleShape
+                        )
+                        .clickable { change(style.copy(todayColorIndex = index)) }
+                )
+            }
         }
         Text(stringResource(R.string.disp_week_mode), style = MaterialTheme.typography.labelLarge)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
