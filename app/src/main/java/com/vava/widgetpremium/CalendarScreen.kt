@@ -12,7 +12,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -187,6 +189,8 @@ fun CalendarScreen(modifier: Modifier = Modifier) {
                 Text(stringResource(R.string.notes_title), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                 if (dayNotes.isEmpty()) {
                     Text(stringResource(R.string.notes_empty), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                } else {
+                    Text(stringResource(R.string.notes_gesture_hint), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
                 dayNotes.forEach { note ->
                     NoteRow(
@@ -411,11 +415,12 @@ private fun DayDetail(date: LocalDate, today: LocalDate) {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun NoteRow(note: Note, onToggle: () -> Unit, onEdit: () -> Unit, onDelete: () -> Unit) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Checkbox(checked = note.done, onCheckedChange = { onToggle() })
-        Column(Modifier.weight(1f)) {
+        Column(Modifier.weight(1f).combinedClickable(onClick = onEdit, onLongClick = onDelete)) {
             Text(
                 note.text,
                 textDecoration = if (note.done) TextDecoration.LineThrough else null,

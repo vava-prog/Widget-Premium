@@ -89,6 +89,7 @@
     <string name="holiday_vu_lan">Vu Lan</string>
     <string name="holiday_mid_autumn">Tết Trung thu</string>
     <string name="holiday_kitchen_gods">Ông Công Ông Táo</string>
+    <string name="notes_gesture_hint">Chạm ghi chú để sửa · nhấn giữ để xóa</string>
     <string name="notes_title">Ghi chú và nhắc việc</string>
     <string name="notes_empty">Ngày này chưa có ghi chú.</string>
     <string name="notes_add">+ Thêm ghi chú</string>

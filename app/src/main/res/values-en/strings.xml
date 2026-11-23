@@ -89,6 +89,7 @@
     <string name="holiday_vu_lan">Vu Lan</string>
     <string name="holiday_mid_autumn">Mid-Autumn Festival</string>
     <string name="holiday_kitchen_gods">Kitchen Gods Day</string>
+    <string name="notes_gesture_hint">Tap a note to edit · long-press to delete</string>
     <string name="notes_title">Notes and reminders</string>
     <string name="notes_empty">No notes for this day yet.</string>
     <string name="notes_add">+ Add note</string>
