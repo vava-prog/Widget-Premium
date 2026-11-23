@@ -42,8 +42,9 @@ class ClockWidgetProvider : AppWidgetProvider() {
             val views = RemoteViews(context.packageName, R.layout.widget_clock)
             val (w, h) = WidgetBackground.sizeDp(manager, id, 250, 110)
             WidgetBackground.apply(context, views, R.id.clock_bg, w, h)
-            WidgetBackground.applyText(context, views, listOf(R.id.clock_time), listOf(R.id.clock_date))
+            WidgetBackground.applyText(context, views, listOf(R.id.clock_time), listOf(R.id.clock_date, R.id.clock_label))
             WidgetBackground.applyClockSize(context, views, R.id.clock_time, 56f)
+            WidgetBackground.applyLabel(context, views, R.id.clock_label)
             val open = Intent(context, MainActivity::class.java)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
             val pending = PendingIntent.getActivity(

@@ -40,6 +40,13 @@ object WidgetBackground {
         secondary.forEach { views.setTextColor(it, colors.second) }
     }
 
+    /** Hiện dòng tên tự nhập; rỗng thì ẩn dòng đó. */
+    fun applyLabel(context: Context, views: RemoteViews, labelId: Int) {
+        val label = StyleStore.load(context).label
+        views.setViewVisibility(labelId, if (label.isEmpty()) android.view.View.GONE else android.view.View.VISIBLE)
+        if (label.isNotEmpty()) views.setTextViewText(labelId, label)
+    }
+
     /** Đổi cỡ chữ giờ theo tỉ lệ người dùng chọn; baseSp là cỡ mặc định trong layout. */
     fun applyClockSize(context: Context, views: RemoteViews, timeId: Int, baseSp: Float) {
         val style = StyleStore.load(context)

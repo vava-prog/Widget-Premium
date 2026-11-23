@@ -22,14 +22,17 @@ data class WidgetStyle(
     /** Độ rộng viền (dp). 0 = tự động theo giao diện (Kính mờ có viền mảnh, còn lại không viền). */
     val borderDp: Int = 0,
     /** Hiện giây trên đồng hồ widget. Tắt mặc định vì TextClock phải vẽ lại mỗi giây. */
-    val showSeconds: Boolean = false
+    val showSeconds: Boolean = false,
+    /** Dòng tên tự nhập hiện trên widget; rỗng thì ẩn. */
+    val label: String = ""
 ) {
     fun sanitized(): WidgetStyle = copy(
         accentIndex = accentIndex.coerceIn(0, WidgetPalette.ACCENTS.size - 1),
         opacityPercent = opacityPercent.coerceIn(WidgetPalette.MIN_OPACITY, 100),
         cornerDp = cornerDp.coerceIn(0, WidgetPalette.MAX_CORNER_DP),
         clockScalePercent = clockScalePercent.coerceIn(WidgetPalette.MIN_CLOCK_SCALE, WidgetPalette.MAX_CLOCK_SCALE),
-        borderDp = borderDp.coerceIn(0, WidgetPalette.MAX_BORDER_DP)
+        borderDp = borderDp.coerceIn(0, WidgetPalette.MAX_BORDER_DP),
+        label = WidgetPalette.cleanLabel(label)
     )
 }
 
@@ -43,6 +46,11 @@ object WidgetPalette {
     const val DEFAULT_CORNER_DP = 26
     const val MAX_CORNER_DP = 40
     const val MAX_BORDER_DP = 6
+    const val MAX_LABEL_LENGTH = 24
+
+    /** Gộp xuống một dòng, bỏ khoảng trắng thừa, cắt tối đa MAX_LABEL_LENGTH ký tự. */
+    fun cleanLabel(raw: String): String =
+        raw.replace(Regex("\\s+"), " ").trim().take(MAX_LABEL_LENGTH).trim()
     const val MIN_CLOCK_SCALE = 60
     const val DEFAULT_CLOCK_SCALE = 100
     const val MAX_CLOCK_SCALE = 130
@@ -134,7 +142,8 @@ object StyleStore {
             textTone = runCatching { TextTone.valueOf(p.getString("text", "AUTO")!!) }.getOrDefault(TextTone.AUTO),
             clockScalePercent = p.getInt("clock_scale", WidgetPalette.DEFAULT_CLOCK_SCALE),
             borderDp = p.getInt("border", 0),
-            showSeconds = p.getBoolean("seconds", false)
+            showSeconds = p.getBoolean("seconds", false),
+            label = p.getString("label", "") ?: ""
         ).sanitized()
     }
 
@@ -148,6 +157,6 @@ object StyleStore {
             .putString("theme", s.theme.name).putInt("accent", s.accentIndex)
             .putInt("opacity", s.opacityPercent).putString("mode", s.mode.name)
             .putInt("corner", s.cornerDp).putString("text", s.textTone.name)
-            .putInt("clock_scale", s.clockScalePercent).putInt("border", s.borderDp).putBoolean("seconds", s.showSeconds).apply()
+            .putInt("clock_scale", s.clockScalePercent).putInt("border", s.borderDp).putBoolean("seconds", s.showSeconds).putString("label", s.label).apply()
     }
 }

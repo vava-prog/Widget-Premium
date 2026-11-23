@@ -18,6 +18,7 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Slider
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -43,6 +44,7 @@ fun StyleSection() {
     var style by remember { mutableStateOf(StyleStore.load(context)) }
     var opacity by remember { mutableStateOf(style.opacityPercent.toFloat()) }
     var corner by remember { mutableStateOf(style.cornerDp.toFloat()) }
+    var labelText by remember { mutableStateOf(style.label) }
     var border by remember { mutableStateOf(style.borderDp.toFloat()) }
     var clockScale by remember { mutableStateOf(style.clockScalePercent.toFloat()) }
 
@@ -127,6 +129,23 @@ fun StyleSection() {
             valueRange = WidgetPalette.MIN_CLOCK_SCALE.toFloat()..WidgetPalette.MAX_CLOCK_SCALE.toFloat(),
             onValueChangeFinished = { change(style.copy(clockScalePercent = clockScale.toInt())) }
         )
+        OutlinedTextField(
+            value = labelText,
+            onValueChange = { labelText = it.take(WidgetPalette.MAX_LABEL_LENGTH) },
+            label = { Text(stringResource(R.string.style_label)) },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth()
+        )
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            OutlinedButton(onClick = { change(style.copy(label = labelText)); labelText = WidgetPalette.cleanLabel(labelText) }) {
+                Text(stringResource(R.string.style_label_apply))
+            }
+            if (style.label.isNotEmpty()) {
+                OutlinedButton(onClick = { labelText = ""; change(style.copy(label = "")) }) {
+                    Text(stringResource(R.string.style_label_clear))
+                }
+            }
+        }
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(stringResource(R.string.style_seconds), modifier = Modifier.weight(1f), style = MaterialTheme.typography.labelLarge)
             Switch(checked = style.showSeconds, onCheckedChange = { change(style.copy(showSeconds = it)) })
@@ -161,6 +180,7 @@ fun StyleSection() {
             corner = fresh.cornerDp.toFloat()
             clockScale = fresh.clockScalePercent.toFloat()
             border = fresh.borderDp.toFloat()
+            labelText = fresh.label
             change(fresh)
         }) { Text(stringResource(R.string.style_reset)) }
         Text(

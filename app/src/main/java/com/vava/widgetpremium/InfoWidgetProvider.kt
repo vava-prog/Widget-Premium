@@ -112,9 +112,10 @@ class InfoWidgetProvider : AppWidgetProvider() {
             WidgetBackground.applyText(
                 context, views,
                 listOf(R.id.info_time, R.id.stat_battery, R.id.stat_temp, R.id.stat_ram, R.id.stat_storage),
-                listOf(R.id.info_date, R.id.info_lunar, R.id.info_weather)
+                listOf(R.id.info_date, R.id.info_label, R.id.info_lunar, R.id.info_weather)
             )
             WidgetBackground.applyClockSize(context, views, R.id.info_time, 60f)
+            WidgetBackground.applyLabel(context, views, R.id.info_label)
 
             val weatherText = weatherLine(context, day)
             if (weatherText != null) {

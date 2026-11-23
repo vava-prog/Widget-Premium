@@ -105,4 +105,11 @@ class WidgetStyleTest {
         assertEquals(56f, WidgetPalette.clockSizeSp(56f, 100, false), 0.001f)
         assertEquals(56f * WidgetPalette.SECONDS_SHRINK, WidgetPalette.clockSizeSp(56f, 100, true), 0.001f)
     }
+
+    @Test fun labelIsCleanedAndLimited() {
+        assertEquals("Nhà của Vân", WidgetPalette.cleanLabel("  Nhà   của\nVân  "))
+        assertEquals("", WidgetPalette.cleanLabel("   "))
+        assertEquals(WidgetPalette.MAX_LABEL_LENGTH, WidgetPalette.cleanLabel("a".repeat(100)).length)
+        assertEquals("abc", WidgetStyle(label = " abc ").sanitized().label)
+    }
 }
