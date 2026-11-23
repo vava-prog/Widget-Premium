@@ -212,4 +212,22 @@ class VietCalendarTest {
             assertEquals(6, Math.floorMod(VietCalendar.clashChi(d) - VietCalendar.dayChiIndex(d), 12))
         }
     }
+
+    @Test fun weekDaysStartOnMondayAndCoverSevenDays() {
+        // 23/11/2026 là thứ Hai; 29/11 là Chủ nhật.
+        val week = VietCalendar.weekDays(java.time.LocalDate.of(2026, 11, 25))
+        assertEquals(java.time.LocalDate.of(2026, 11, 23), week.first())
+        assertEquals(java.time.LocalDate.of(2026, 11, 29), week.last())
+        assertEquals(7, week.size)
+        assertEquals(week, VietCalendar.weekDays(java.time.LocalDate.of(2026, 11, 29)))
+        assertEquals(week, VietCalendar.weekDays(java.time.LocalDate.of(2026, 11, 23)))
+    }
+
+    @Test fun weekLunarLabelShowsMonthOnFirstDay() {
+        // 23/11/2026 là 15 tháng 10 âm lịch (khớp màn hình thật).
+        assertEquals("15", VietCalendar.weekLunarLabel(java.time.LocalDate.of(2026, 11, 23)))
+        val firstDay = generateSequence(java.time.LocalDate.of(2026, 11, 23)) { it.plusDays(1) }
+            .first { VietCalendar.lunarOf(it).day == 1 }
+        assertEquals("1/" + VietCalendar.lunarOf(firstDay).month, VietCalendar.weekLunarLabel(firstDay))
+    }
 }

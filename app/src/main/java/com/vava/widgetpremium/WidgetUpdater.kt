@@ -26,6 +26,7 @@ object WidgetUpdater {
     fun updateWidgets(context: Context) {
         ClockWidgetProvider.updateAll(context)
         InfoWidgetProvider.updateAll(context)
+        WeekWidgetProvider.updateAll(context)
     }
 
     fun updateAll(context: Context) {

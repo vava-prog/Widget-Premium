@@ -120,6 +120,12 @@ private fun HomeScreen() {
             ) {
                 Text(stringResource(R.string.btn_add_info_widget))
             }
+            Button(
+                onClick = { requestPinWidget(context, WeekWidgetProvider::class.java) },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(stringResource(R.string.btn_add_week_widget))
+            }
             WeatherSection()
             StyleSection()
             IconSwitchRow()

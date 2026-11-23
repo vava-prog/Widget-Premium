@@ -183,6 +183,13 @@
     <string name="style_clock_size">Cỡ đồng hồ: %1$d%%</string>
     <string name="style_reset">Đặt lại giao diện</string>
     <string name="weather_refreshing">Đang cập nhật thời tiết…</string>
+    <string name="widget_week_label">Widget Premium: Lịch tuần</string>
+    <string name="widget_week_desc">Giờ, ngày âm dương, thời tiết và bảy ngày trong tuần</string>
+    <string name="btn_add_week_widget">Thêm widget lịch tuần</string>
+    <string name="week_lunar_fmt">Âm lịch: %1$d/%2$d</string>
+    <string name="week_lunar_leap_fmt">Âm lịch: %1$d/%2$d (nhuận)</string>
+    <string name="week_pick_city">Chưa chọn thành phố</string>
+    <string name="week_no_data">Chưa có dữ liệu thời tiết</string>
     <string name="style_text">Màu chữ</string>
     <string name="style_text_auto">Mặc định</string>
     <string name="style_text_light">Chữ trắng</string>

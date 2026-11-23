@@ -183,6 +183,13 @@
     <string name="style_clock_size">Clock size: %1$d%%</string>
     <string name="style_reset">Reset appearance</string>
     <string name="weather_refreshing">Updating weather…</string>
+    <string name="widget_week_label">Widget Premium: Week</string>
+    <string name="widget_week_desc">Time, solar and lunar date, weather and the seven days of the week</string>
+    <string name="btn_add_week_widget">Add week widget</string>
+    <string name="week_lunar_fmt">Lunar: %1$d/%2$d</string>
+    <string name="week_lunar_leap_fmt">Lunar: %1$d/%2$d (leap)</string>
+    <string name="week_pick_city">No city selected</string>
+    <string name="week_no_data">No weather data yet</string>
     <string name="style_text">Text color</string>
     <string name="style_text_auto">Default</string>
     <string name="style_text_light">Light text</string>

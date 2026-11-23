@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/week_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/week_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:importantForAccessibility="no"
+        android:scaleType="fitXY"
+        android:src="@drawable/widget_bg" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="8dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <TextClock
+                    android:id="@+id/week_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:format12Hour="h:mm"
+                    android:format24Hour="HH:mm"
+                    android:includeFontPadding="false"
+                    android:textColor="#FFFFFFFF"
+                    android:textSize="40sp" />
+                <TextClock
+                    android:id="@+id/week_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:format12Hour="EEEE, dd/MM"
+                    android:format24Hour="EEEE, dd/MM"
+                    android:maxLines="1"
+                    android:textColor="#CCFFFFFF"
+                    android:textSize="13sp" />
+                <TextView
+                    android:id="@+id/week_lunar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:textColor="#B3FFFFFF"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/week_temp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:includeFontPadding="false"
+                    android:textColor="#FFFFFFFF"
+                    android:textSize="32sp" />
+                <TextView
+                    android:id="@+id/week_cond"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:textColor="#CCFFFFFF"
+                    android:textSize="13sp" />
+                <TextView
+                    android:id="@+id/week_range"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:textColor="#B3FFFFFF"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:orientation="horizontal">
+        <LinearLayout
+            android:id="@+id/wk_cell0"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+            <TextView android:id="@+id/wk_name0" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:includeFontPadding="false" android:textColor="#CCFFFFFF" android:textSize="11sp" />
+            <TextView android:id="@+id/wk_day0" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:includeFontPadding="false" android:textColor="#FFFFFFFF" android:textSize="16sp" android:textStyle="bold" />
+            <TextView android:id="@+id/wk_lunar0" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:includeFontPadding="false" android:textColor="#B3FFFFFF" android:textSize="10sp" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/wk_cell1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+            <TextView android:id="@+id/wk_name1" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:includeFontPadding="false" android:textColor="#CCFFFFFF" android:textSize="11sp" />
+            <TextView android:id="@+id/wk_day1" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:includeFontPadding="false" android:textColor="#FFFFFFFF" android:textSize="16sp" android:textStyle="bold" />
+            <TextView android:id="@+id/wk_lunar1" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:includeFontPadding="false" android:textColor="#B3FFFFFF" android:textSize="10sp" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/wk_cell2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+            <TextView android:id="@+id/wk_name2" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:includeFontPadding="false" android:textColor="#CCFFFFFF" android:textSize="11sp" />
+            <TextView android:id="@+id/wk_day2" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:includeFontPadding="false" android:textColor="#FFFFFFFF" android:textSize="16sp" android:textStyle="bold" />
+            <TextView android:id="@+id/wk_lunar2" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:includeFontPadding="false" android:textColor="#B3FFFFFF" android:textSize="10sp" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/wk_cell3"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+            <TextView android:id="@+id/wk_name3" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:includeFontPadding="false" android:textColor="#CCFFFFFF" android:textSize="11sp" />
+            <TextView android:id="@+id/wk_day3" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:includeFontPadding="false" android:textColor="#FFFFFFFF" android:textSize="16sp" android:textStyle="bold" />
+            <TextView android:id="@+id/wk_lunar3" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:includeFontPadding="false" android:textColor="#B3FFFFFF" android:textSize="10sp" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/wk_cell4"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+            <TextView android:id="@+id/wk_name4" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:includeFontPadding="false" android:textColor="#CCFFFFFF" android:textSize="11sp" />
+            <TextView android:id="@+id/wk_day4" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:includeFontPadding="false" android:textColor="#FFFFFFFF" android:textSize="16sp" android:textStyle="bold" />
+            <TextView android:id="@+id/wk_lunar4" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:includeFontPadding="false" android:textColor="#B3FFFFFF" android:textSize="10sp" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/wk_cell5"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+            <TextView android:id="@+id/wk_name5" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:includeFontPadding="false" android:textColor="#CCFFFFFF" android:textSize="11sp" />
+            <TextView android:id="@+id/wk_day5" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:includeFontPadding="false" android:textColor="#FFFFFFFF" android:textSize="16sp" android:textStyle="bold" />
+            <TextView android:id="@+id/wk_lunar5" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:includeFontPadding="false" android:textColor="#B3FFFFFF" android:textSize="10sp" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/wk_cell6"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+            <TextView android:id="@+id/wk_name6" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:includeFontPadding="false" android:textColor="#CCFFFFFF" android:textSize="11sp" />
+            <TextView android:id="@+id/wk_day6" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:includeFontPadding="false" android:textColor="#FFFFFFFF" android:textSize="16sp" android:textStyle="bold" />
+            <TextView android:id="@+id/wk_lunar6" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:includeFontPadding="false" android:textColor="#B3FFFFFF" android:textSize="10sp" />
+        </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>

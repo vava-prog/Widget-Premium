@@ -194,6 +194,18 @@ object VietCalendar {
 
     fun lunarOf(date: LocalDate): LunarDate = LunarCalendar.fromSolar(date.dayOfMonth, date.monthValue, date.year)
 
+    /** Bảy ngày của tuần chứa `date`, từ thứ Hai đến Chủ nhật. */
+    fun weekDays(date: LocalDate): List<LocalDate> {
+        val monday = date.minusDays((date.dayOfWeek.value - 1).toLong())
+        return List(7) { monday.plusDays(it.toLong()) }
+    }
+
+    /** Nhãn ngày âm trong dải tuần: mùng 1 ghi kèm tháng ("1/10"), ngày khác chỉ ghi số ngày. */
+    fun weekLunarLabel(date: LocalDate): String {
+        val l = lunarOf(date)
+        return if (l.day == 1) "${l.day}/${l.month}" else l.day.toString()
+    }
+
     /** Lưới tháng, tuần bắt đầu từ thứ Hai; ô trống là null. Số ô luôn chia hết cho 7. */
     fun monthCells(month: YearMonth): List<LocalDate?> {
         val offset = month.atDay(1).dayOfWeek.value - 1
