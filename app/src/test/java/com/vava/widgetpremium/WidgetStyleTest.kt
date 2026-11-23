@@ -170,4 +170,10 @@ class WidgetStyleTest {
         assertTrue((frosted.frost ushr 24) > 0)
         assertEquals(0, WidgetPalette.palette(WidgetStyle(theme = WidgetTheme.STANDARD, glassFrostPercent = 80), true).frost ushr 24)
     }
+
+    @Test fun textKeysAreSeparatePerTheme() {
+        assertEquals("text_GLASS", StyleStore.textKey("text", WidgetTheme.GLASS))
+        assertEquals("text_custom_WEATHER", StyleStore.textKey("text_custom", WidgetTheme.WEATHER))
+        assertNotEquals(StyleStore.textKey("text", WidgetTheme.STANDARD), StyleStore.textKey("text", WidgetTheme.GLASS))
+    }
 }

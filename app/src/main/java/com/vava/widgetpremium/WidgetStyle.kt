@@ -206,18 +206,19 @@ object StyleStore {
 
     fun load(context: Context): WidgetStyle {
         val p = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+        val theme = runCatching { WidgetTheme.valueOf(p.getString("theme", "STANDARD")!!) }.getOrDefault(WidgetTheme.STANDARD)
         return WidgetStyle(
-            theme = runCatching { WidgetTheme.valueOf(p.getString("theme", "STANDARD")!!) }.getOrDefault(WidgetTheme.STANDARD),
+            theme = theme,
             accentIndex = p.getInt("accent", 0),
             opacityPercent = p.getInt("opacity", 100),
             mode = runCatching { DayMode.valueOf(p.getString("mode", "AUTO")!!) }.getOrDefault(DayMode.AUTO),
             cornerDp = p.getInt("corner", WidgetPalette.DEFAULT_CORNER_DP),
-            textTone = runCatching { TextTone.valueOf(p.getString("text", "AUTO")!!) }.getOrDefault(TextTone.AUTO),
+            textTone = textFor(p, theme).first,
             clockScalePercent = p.getInt("clock_scale", WidgetPalette.DEFAULT_CLOCK_SCALE),
             borderDp = p.getInt("border", 0),
             showSeconds = p.getBoolean("seconds", false),
             label = p.getString("label", "") ?: "",
-            customTextColor = p.getInt("text_custom", WidgetPalette.CUSTOM_TEXT_COLORS[0]),
+            customTextColor = textFor(p, theme).second,
             showSolarDate = p.getBoolean("show_solar", true),
             showLunar = p.getBoolean("show_lunar", true),
             showWeather = p.getBoolean("show_weather", true),
@@ -231,6 +232,24 @@ object StyleStore {
         ).sanitized()
     }
 
+    /** Khóa lưu riêng cho từng giao diện, ví dụ "text_GLASS". Thuần, có test. */
+    fun textKey(base: String, theme: WidgetTheme): String = base + "_" + theme.name
+
+    /** Màu chữ đã lưu của một giao diện; chưa có thì dùng giá trị chung cũ rồi mới đến mặc định. */
+    private fun textFor(p: android.content.SharedPreferences, theme: WidgetTheme): Pair<TextTone, Int> {
+        val tone = p.getString(textKey("text", theme), null) ?: p.getString("text", "AUTO")
+        val color = if (p.contains(textKey("text_custom", theme))) p.getInt(textKey("text_custom", theme), 0)
+        else p.getInt("text_custom", WidgetPalette.CUSTOM_TEXT_COLORS[0])
+        return (runCatching { TextTone.valueOf(tone!!) }.getOrDefault(TextTone.AUTO)) to color
+    }
+
+    /** Đổi giao diện và nạp màu chữ riêng của giao diện đó (mỗi giao diện nhớ màu chữ của mình). */
+    fun withTheme(context: Context, current: WidgetStyle, theme: WidgetTheme): WidgetStyle {
+        val p = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+        val (tone, color) = textFor(p, theme)
+        return current.copy(theme = theme, textTone = tone, customTextColor = color)
+    }
+
     fun reset(context: Context) {
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().clear().apply()
     }
@@ -241,6 +260,7 @@ object StyleStore {
             .putString("theme", s.theme.name).putInt("accent", s.accentIndex)
             .putInt("opacity", s.opacityPercent).putString("mode", s.mode.name)
             .putInt("corner", s.cornerDp).putString("text", s.textTone.name)
+            .putString(textKey("text", s.theme), s.textTone.name).putInt(textKey("text_custom", s.theme), s.customTextColor)
             .putInt("clock_scale", s.clockScalePercent).putInt("border", s.borderDp).putBoolean("seconds", s.showSeconds).putString("label", s.label).putInt("text_custom", s.customTextColor)
             .putBoolean("show_solar", s.showSolarDate).putBoolean("show_lunar", s.showLunar)
             .putBoolean("show_weather", s.showWeather).putString("hour_format", s.hourFormat.name)

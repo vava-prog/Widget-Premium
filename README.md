@@ -28,6 +28,7 @@
 - **Chi tiết thời tiết:** dòng thấp/cao và khả năng mưa trên widget thông tin (tùy chọn, mặc định tắt); màu nổi cho hôm nay trên dải tuần.
 - **Số liệu hiện tại:** thẻ ở trang chủ hiện pin, nhiệt độ, RAM, bộ nhớ, lần cập nhật widget và thời tiết, tình trạng quyền nhắc việc (thông báo, báo thức chính xác, hạn chế pin).
 - **Kính mờ:** chỉnh độ mờ (lớp sương) và độ nổi khối (viền, mép sáng).
+- **Màu chữ riêng từng giao diện:** Standard, Kính mờ và Theo thời tiết mỗi loại nhớ màu chữ của mình.
 - **Vị trí:** nút "Dùng vị trí của máy" (xin quyền khi bấm, lấy một lần, không chạy nền).
 - **Theo thời tiết:** nền là bầu trời vẽ theo dữ liệu thời tiết đã lưu (trời xanh, mây, sương mù, mưa, tuyết, giông; ban đêm có sao và trăng). Chưa có dữ liệu thì dùng nền Standard.
 - **Tùy chỉnh:** độ đậm nền, bo góc, viền (0 = tự động), cỡ đồng hồ (60–130%), hiện giây, tên tự nhập, màu chữ (mặc định, trắng, tối hoặc tùy chọn), nút "Đặt lại giao diện".

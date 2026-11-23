@@ -62,17 +62,17 @@ fun StyleSection() {
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             FilterChip(
                 selected = style.theme == WidgetTheme.STANDARD,
-                onClick = { change(style.copy(theme = WidgetTheme.STANDARD)) },
+                onClick = { change(StyleStore.withTheme(context, style, WidgetTheme.STANDARD)) },
                 label = { Text(stringResource(R.string.style_theme_standard)) }
             )
             FilterChip(
                 selected = style.theme == WidgetTheme.GLASS,
-                onClick = { change(style.copy(theme = WidgetTheme.GLASS)) },
+                onClick = { change(StyleStore.withTheme(context, style, WidgetTheme.GLASS)) },
                 label = { Text(stringResource(R.string.style_theme_glass)) }
             )
             FilterChip(
                 selected = style.theme == WidgetTheme.WEATHER,
-                onClick = { change(style.copy(theme = WidgetTheme.WEATHER)) },
+                onClick = { change(StyleStore.withTheme(context, style, WidgetTheme.WEATHER)) },
                 label = { Text(stringResource(R.string.style_theme_weather)) }
             )
         }
