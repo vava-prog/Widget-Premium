@@ -184,4 +184,12 @@
     <string name="style_text_light">Chữ trắng</string>
     <string name="style_text_dark">Chữ tối</string>
     <string name="dash_feels_like">Cảm giác như %1$d°C</string>
+    <string name="alert_switch_title">Cảnh báo pin yếu và máy nóng</string>
+    <string name="alert_switch_hint">Báo khi pin xuống 15% trở xuống (chưa sạc) hoặc pin nóng từ 42°C. Chỉ kiểm tra khi widget thông tin cập nhật (khoảng 30 phút một lần và khi cắm hoặc rút sạc), nên cảnh báo nóng có thể trễ. Cần có widget thông tin trên màn hình chính.</string>
+    <string name="alert_channel_name">Cảnh báo thiết bị</string>
+    <string name="alert_channel_desc">Pin yếu và máy nóng</string>
+    <string name="alert_low_title">Pin yếu</string>
+    <string name="alert_low_text">Pin còn %1$d%%. Hãy cắm sạc.</string>
+    <string name="alert_hot_title">Máy đang nóng</string>
+    <string name="alert_hot_text">Nhiệt độ pin %1$.1f°C. Nên tạm nghỉ và tránh sạc khi đang nóng.</string>
 </resources>

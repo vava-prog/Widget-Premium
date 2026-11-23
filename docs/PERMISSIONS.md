@@ -17,3 +17,6 @@ Không dùng: vị trí nền, quyền lưu trữ rộng, dịch vụ nền ch�
 - `SCHEDULE_EXACT_ALARM`: nhắc đúng giờ. Nếu Android không cấp, ứng dụng tự dùng báo thức kiểu đồng hồ (`setAlarmClock`, đúng giờ, hiện biểu tượng báo thức), không bắt buộc người dùng cấp.
 - `RECEIVE_BOOT_COMPLETED`: Android xóa báo thức khi khởi động lại hoặc cập nhật app, nên ứng dụng đặt lại các nhắc còn hiệu lực từ cơ sở dữ liệu trên máy. Không có dịch vụ chạy nền liên tục.
 - Ghi chú lưu bằng Room trên máy, không gửi đi đâu (xem PRIVACY.md).
+
+## Cảnh báo pin yếu và máy nóng (mặc định tắt)
+Dùng lại quyền `POST_NOTIFICATIONS`, xin khi người dùng bật công tắc. Không có dịch vụ chạy nền: ứng dụng chỉ đọc mức pin và nhiệt độ pin khi widget thông tin cập nhật (tín hiệu pin yếu, cắm hoặc rút sạc, định kỳ khoảng 30 phút). Vì vậy cảnh báo nóng không theo thời gian thực. Giữa hai lần báo có thời gian nghỉ (pin yếu 3 giờ, nóng 2 giờ). Không gửi dữ liệu đi đâu.

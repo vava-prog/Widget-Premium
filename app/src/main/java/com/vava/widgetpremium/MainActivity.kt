@@ -3,6 +3,10 @@ package com.vava.widgetpremium
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.compose.rememberLauncherForActivityResult
+import android.os.Build
+import android.Manifest
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -119,6 +123,7 @@ private fun HomeScreen() {
             WeatherSection()
             StyleSection()
             IconSwitchRow()
+            AlertsRow()
             Text(stringResource(R.string.guide_title), style = MaterialTheme.typography.titleMedium)
             steps.forEachIndexed { index, res ->
                 Text("${index + 1}. " + stringResource(res), style = MaterialTheme.typography.bodyMedium)
@@ -145,6 +150,32 @@ private fun IconSwitchRow() {
         }
         Text(
             stringResource(R.string.icon_switch_hint),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+}
+
+@Composable
+private fun AlertsRow() {
+    val context = LocalContext.current
+    var enabled by remember { mutableStateOf(DeviceAlerts.isEnabled(context)) }
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+        if (!granted) Toast.makeText(context, R.string.notes_perm_denied, Toast.LENGTH_LONG).show()
+    }
+    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
+            Text(stringResource(R.string.alert_switch_title), modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodyLarge)
+            Switch(checked = enabled, onCheckedChange = {
+                enabled = it
+                DeviceAlerts.setEnabled(context, it)
+                if (it && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !ReminderScheduler.hasNotificationPermission(context)) {
+                    launcher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                }
+            })
+        }
+        Text(
+            stringResource(R.string.alert_switch_hint),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )

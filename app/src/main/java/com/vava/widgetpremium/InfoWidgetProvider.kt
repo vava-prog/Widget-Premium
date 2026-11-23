@@ -20,6 +20,7 @@ class InfoWidgetProvider : AppWidgetProvider() {
 
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
         for (id in appWidgetIds) update(context, appWidgetManager, id)
+        DeviceAlerts.check(context)
         DayNightScheduler.scheduleNext(context)
     }
 
@@ -31,7 +32,10 @@ class InfoWidgetProvider : AppWidgetProvider() {
 
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
-        if (intent.action in REFRESH_ACTIONS) updateAll(context)
+        if (intent.action in REFRESH_ACTIONS) {
+            updateAll(context)
+            DeviceAlerts.check(context)
+        }
     }
 
     companion object {

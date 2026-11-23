@@ -184,4 +184,12 @@
     <string name="style_text_light">Light text</string>
     <string name="style_text_dark">Dark text</string>
     <string name="dash_feels_like">Feels like %1$d°C</string>
+    <string name="alert_switch_title">Low battery and overheating alerts</string>
+    <string name="alert_switch_hint">Alerts when the battery is at 15% or less (not charging) or the battery reaches 42°C. It only checks when the info widget updates (about every 30 minutes and when charging starts or stops), so a heat alert can be late. Needs the info widget on the home screen.</string>
+    <string name="alert_channel_name">Device alerts</string>
+    <string name="alert_channel_desc">Low battery and overheating</string>
+    <string name="alert_low_title">Low battery</string>
+    <string name="alert_low_text">Battery at %1$d%%. Plug in the charger.</string>
+    <string name="alert_hot_title">Phone is hot</string>
+    <string name="alert_hot_text">Battery temperature %1$.1f°C. Take a break and avoid charging while hot.</string>
 </resources>
