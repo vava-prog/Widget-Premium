@@ -35,7 +35,8 @@ object WidgetBackground {
 
     /** Ép màu chữ theo lựa chọn; AUTO giữ nguyên màu trong layout. `primary` là chữ lớn, `secondary` là các dòng phụ. */
     fun applyText(context: Context, views: RemoteViews, primary: List<Int>, secondary: List<Int>) {
-        val colors = WidgetPalette.textColors(StyleStore.load(context).textTone) ?: return
+        val style = StyleStore.load(context)
+        val colors = WidgetPalette.textColors(style.textTone, style.customTextColor) ?: return
         primary.forEach { views.setTextColor(it, colors.first) }
         secondary.forEach { views.setTextColor(it, colors.second) }
     }

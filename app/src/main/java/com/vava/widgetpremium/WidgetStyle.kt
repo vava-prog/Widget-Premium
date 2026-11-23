@@ -6,7 +6,7 @@ import android.content.Context
 enum class WidgetTheme { STANDARD, GLASS, WEATHER }
 
 /** Màu chữ trên widget: AUTO giữ màu mặc định (chữ sáng), LIGHT luôn chữ trắng, DARK luôn chữ tối. */
-enum class TextTone { AUTO, LIGHT, DARK }
+enum class TextTone { AUTO, LIGHT, DARK, CUSTOM }
 
 /** AUTO: theo giờ mặt trời mọc/lặn thật; DAY và NIGHT: ép cố định. */
 enum class DayMode { AUTO, DAY, NIGHT }
@@ -24,7 +24,9 @@ data class WidgetStyle(
     /** Hiện giây trên đồng hồ widget. Tắt mặc định vì TextClock phải vẽ lại mỗi giây. */
     val showSeconds: Boolean = false,
     /** Dòng tên tự nhập hiện trên widget; rỗng thì ẩn. */
-    val label: String = ""
+    val label: String = "",
+    /** Màu chữ khi chọn TextTone.CUSTOM (ARGB, luôn đục). */
+    val customTextColor: Int = WidgetPalette.CUSTOM_TEXT_COLORS[0]
 ) {
     fun sanitized(): WidgetStyle = copy(
         accentIndex = accentIndex.coerceIn(0, WidgetPalette.ACCENTS.size - 1),
@@ -32,7 +34,8 @@ data class WidgetStyle(
         cornerDp = cornerDp.coerceIn(0, WidgetPalette.MAX_CORNER_DP),
         clockScalePercent = clockScalePercent.coerceIn(WidgetPalette.MIN_CLOCK_SCALE, WidgetPalette.MAX_CLOCK_SCALE),
         borderDp = borderDp.coerceIn(0, WidgetPalette.MAX_BORDER_DP),
-        label = WidgetPalette.cleanLabel(label)
+        label = WidgetPalette.cleanLabel(label),
+        customTextColor = customTextColor or (0xFF shl 24)
     )
 }
 
@@ -67,7 +70,14 @@ object WidgetPalette {
         if (showSeconds) "h:mm:ss" to "HH:mm:ss" else "h:mm" to "HH:mm"
 
     /** Màu chữ chính và phụ (ARGB) khi người dùng ép tông chữ; null nghĩa là giữ màu mặc định của widget. */
-    fun textColors(tone: TextTone): Pair<Int, Int>? = when (tone) {
+    /** Các ô màu chữ gợi ý cho chế độ tùy chỉnh. */
+    val CUSTOM_TEXT_COLORS = intArrayOf(
+        0xFFFFF3B0.toInt(), 0xFFB8F0D0.toInt(), 0xFF9FE3FF.toInt(), 0xFFFFC2D9.toInt(),
+        0xFFFFD2A3.toInt(), 0xFFE0D2FF.toInt(), 0xFF0D2B52.toInt(), 0xFF4A1F2E.toInt()
+    )
+
+    fun textColors(tone: TextTone, custom: Int = CUSTOM_TEXT_COLORS[0]): Pair<Int, Int>? = when (tone) {
+        TextTone.CUSTOM -> (custom or (0xFF shl 24)) to withAlpha(custom, 0xCC)
         TextTone.AUTO -> null
         TextTone.LIGHT -> 0xFFFFFFFF.toInt() to 0xCCFFFFFF.toInt()
         TextTone.DARK -> 0xFF101820.toInt() to 0xCC101820.toInt()
@@ -143,7 +153,8 @@ object StyleStore {
             clockScalePercent = p.getInt("clock_scale", WidgetPalette.DEFAULT_CLOCK_SCALE),
             borderDp = p.getInt("border", 0),
             showSeconds = p.getBoolean("seconds", false),
-            label = p.getString("label", "") ?: ""
+            label = p.getString("label", "") ?: "",
+            customTextColor = p.getInt("text_custom", WidgetPalette.CUSTOM_TEXT_COLORS[0])
         ).sanitized()
     }
 
@@ -157,6 +168,6 @@ object StyleStore {
             .putString("theme", s.theme.name).putInt("accent", s.accentIndex)
             .putInt("opacity", s.opacityPercent).putString("mode", s.mode.name)
             .putInt("corner", s.cornerDp).putString("text", s.textTone.name)
-            .putInt("clock_scale", s.clockScalePercent).putInt("border", s.borderDp).putBoolean("seconds", s.showSeconds).putString("label", s.label).apply()
+            .putInt("clock_scale", s.clockScalePercent).putInt("border", s.borderDp).putBoolean("seconds", s.showSeconds).putString("label", s.label).putInt("text_custom", s.customTextColor).apply()
     }
 }

@@ -112,4 +112,16 @@ class WidgetStyleTest {
         assertEquals(WidgetPalette.MAX_LABEL_LENGTH, WidgetPalette.cleanLabel("a".repeat(100)).length)
         assertEquals("abc", WidgetStyle(label = " abc ").sanitized().label)
     }
+
+    @Test fun customTextColorIsOpaqueAndUsed() {
+        val c = 0x00FF8800
+        val s = WidgetStyle(textTone = TextTone.CUSTOM, customTextColor = c).sanitized()
+        assertEquals(0xFFFF8800.toInt(), s.customTextColor)
+        val (primary, secondary) = WidgetPalette.textColors(TextTone.CUSTOM, s.customTextColor)!!
+        assertEquals(0xFFFF8800.toInt(), primary)
+        assertEquals(0xCC, secondary ushr 24)
+        assertEquals(0xFF8800, secondary and 0xFFFFFF)
+        assertEquals(null, WidgetPalette.textColors(TextTone.AUTO, s.customTextColor))
+        WidgetPalette.CUSTOM_TEXT_COLORS.forEach { assertEquals(0xFF, it ushr 24) }
+    }
 }

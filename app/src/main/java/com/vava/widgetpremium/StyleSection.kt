@@ -164,6 +164,26 @@ fun StyleSection() {
             FilterChip(selected = style.textTone == TextTone.DARK, onClick = { change(style.copy(textTone = TextTone.DARK)) },
                 label = { Text(stringResource(R.string.style_text_dark)) })
         }
+        FilterChip(selected = style.textTone == TextTone.CUSTOM, onClick = { change(style.copy(textTone = TextTone.CUSTOM)) },
+            label = { Text(stringResource(R.string.style_text_custom)) })
+        if (style.textTone == TextTone.CUSTOM) {
+            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                WidgetPalette.CUSTOM_TEXT_COLORS.forEach { color ->
+                    val selected = (color or (0xFF shl 24)) == style.customTextColor
+                    Box(
+                        Modifier
+                            .size(32.dp)
+                            .clip(CircleShape)
+                            .background(Color(color))
+                            .border(
+                                BorderStroke(if (selected) 3.dp else 1.dp, if (selected) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.outline),
+                                CircleShape
+                            )
+                            .clickable { change(style.copy(customTextColor = color)) }
+                    )
+                }
+            }
+        }
         Text(stringResource(R.string.style_mode), style = MaterialTheme.typography.labelLarge)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             FilterChip(selected = style.mode == DayMode.AUTO, onClick = { change(style.copy(mode = DayMode.AUTO)) },
@@ -219,7 +239,7 @@ private fun StylePreview(style: WidgetStyle) {
                 .padding(8.dp),
             contentAlignment = Alignment.Center
         ) {
-            val textColor = WidgetPalette.textColors(style.textTone)?.first?.let { Color(it) } ?: Color.White
+            val textColor = WidgetPalette.textColors(style.textTone, style.customTextColor)?.first?.let { Color(it) } ?: Color.White
             Text("09:41", color = textColor, fontSize = 40.sp, fontWeight = FontWeight.Bold)
         }
     }
