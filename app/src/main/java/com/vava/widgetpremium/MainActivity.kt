@@ -130,6 +130,7 @@ private fun HomeScreen() {
             StyleSection()
             IconSwitchRow()
             AlertsRow()
+            DiagnosticsCard()
             Text(stringResource(R.string.guide_title), style = MaterialTheme.typography.titleMedium)
             steps.forEachIndexed { index, res ->
                 Text("${index + 1}. " + stringResource(res), style = MaterialTheme.typography.bodyMedium)

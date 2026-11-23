@@ -71,6 +71,7 @@ class InfoWidgetProvider : AppWidgetProvider() {
 
         private fun update(context: Context, manager: AppWidgetManager, id: Int) {
             manager.updateAppWidget(id, buildViews(context, manager, id))
+            Diagnostics.markWidgetUpdate(context)
         }
 
         private fun weatherLine(context: Context, isDay: Boolean): String? {
