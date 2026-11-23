@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,6 +42,7 @@ fun StyleSection() {
     var style by remember { mutableStateOf(StyleStore.load(context)) }
     var opacity by remember { mutableStateOf(style.opacityPercent.toFloat()) }
     var corner by remember { mutableStateOf(style.cornerDp.toFloat()) }
+    var clockScale by remember { mutableStateOf(style.clockScalePercent.toFloat()) }
 
     fun change(new: WidgetStyle) {
         style = new.sanitized()
@@ -94,6 +96,13 @@ fun StyleSection() {
             valueRange = 0f..WidgetPalette.MAX_CORNER_DP.toFloat(),
             onValueChangeFinished = { change(style.copy(cornerDp = corner.toInt())) }
         )
+        Text(stringResource(R.string.style_clock_size, clockScale.toInt()), style = MaterialTheme.typography.labelLarge)
+        Slider(
+            value = clockScale,
+            onValueChange = { clockScale = it },
+            valueRange = WidgetPalette.MIN_CLOCK_SCALE.toFloat()..WidgetPalette.MAX_CLOCK_SCALE.toFloat(),
+            onValueChangeFinished = { change(style.copy(clockScalePercent = clockScale.toInt())) }
+        )
         Text(stringResource(R.string.style_text), style = MaterialTheme.typography.labelLarge)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             FilterChip(selected = style.textTone == TextTone.AUTO, onClick = { change(style.copy(textTone = TextTone.AUTO)) },
@@ -112,6 +121,14 @@ fun StyleSection() {
             FilterChip(selected = style.mode == DayMode.NIGHT, onClick = { change(style.copy(mode = DayMode.NIGHT)) },
                 label = { Text(stringResource(R.string.style_mode_night)) })
         }
+        OutlinedButton(onClick = {
+            StyleStore.reset(context)
+            val fresh = StyleStore.load(context)
+            opacity = fresh.opacityPercent.toFloat()
+            corner = fresh.cornerDp.toFloat()
+            clockScale = fresh.clockScalePercent.toFloat()
+            change(fresh)
+        }) { Text(stringResource(R.string.style_reset)) }
         Text(
             stringResource(R.string.style_hint),
             style = MaterialTheme.typography.bodySmall,

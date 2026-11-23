@@ -78,4 +78,12 @@ class WidgetStyleTest {
         assertEquals(0xFF, alpha(dark.first))
         assertNotEquals(light.first, dark.first)
     }
+
+    @Test fun clockScaleClampedAndApplied() {
+        assertEquals(WidgetPalette.MIN_CLOCK_SCALE, WidgetStyle(clockScalePercent = 5).sanitized().clockScalePercent)
+        assertEquals(WidgetPalette.MAX_CLOCK_SCALE, WidgetStyle(clockScalePercent = 999).sanitized().clockScalePercent)
+        assertEquals(56f, WidgetPalette.clockSizeSp(56f, 100), 0.001f)
+        assertEquals(33.6f, WidgetPalette.clockSizeSp(56f, 50), 0.001f) // dưới mức tối thiểu bị nâng lên 60%
+        assertEquals(33.6f, WidgetPalette.clockSizeSp(56f, 60), 0.001f)
+    }
 }

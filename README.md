@@ -24,6 +24,7 @@
 ### Giao diện
 - **Chuẩn:** sạch, đơn giản, tự chuyển sáng/tối theo hệ thống.
 - **Kính mờ:** nền trong suốt, bo góc mềm.
+- **Tùy chỉnh:** độ đậm nền, bo góc, cỡ đồng hồ (60–130%), màu chữ, nút "Đặt lại giao diện".
 - Tùy chỉnh màu, biểu tượng và độ trong suốt.
 
 ## Công nghệ

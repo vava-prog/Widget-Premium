@@ -35,6 +35,12 @@ object WidgetBackground {
         secondary.forEach { views.setTextColor(it, colors.second) }
     }
 
+    /** Đổi cỡ chữ giờ theo tỉ lệ người dùng chọn; baseSp là cỡ mặc định trong layout. */
+    fun applyClockSize(context: Context, views: RemoteViews, timeId: Int, baseSp: Float) {
+        val sp = WidgetPalette.clockSizeSp(baseSp, StyleStore.load(context).clockScalePercent)
+        views.setTextViewTextSize(timeId, android.util.TypedValue.COMPLEX_UNIT_SP, sp)
+    }
+
     fun render(context: Context, widthDp: Int, heightDp: Int, palette: Palette, cornerDp: Int): Bitmap {
         val density = context.resources.displayMetrics.density
         var w = widthDp * density

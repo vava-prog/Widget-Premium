@@ -16,12 +16,14 @@ data class WidgetStyle(
     val opacityPercent: Int = 100,
     val mode: DayMode = DayMode.AUTO,
     val cornerDp: Int = WidgetPalette.DEFAULT_CORNER_DP,
-    val textTone: TextTone = TextTone.AUTO
+    val textTone: TextTone = TextTone.AUTO,
+    val clockScalePercent: Int = WidgetPalette.DEFAULT_CLOCK_SCALE
 ) {
     fun sanitized(): WidgetStyle = copy(
         accentIndex = accentIndex.coerceIn(0, WidgetPalette.ACCENTS.size - 1),
         opacityPercent = opacityPercent.coerceIn(WidgetPalette.MIN_OPACITY, 100),
-        cornerDp = cornerDp.coerceIn(0, WidgetPalette.MAX_CORNER_DP)
+        cornerDp = cornerDp.coerceIn(0, WidgetPalette.MAX_CORNER_DP),
+        clockScalePercent = clockScalePercent.coerceIn(WidgetPalette.MIN_CLOCK_SCALE, WidgetPalette.MAX_CLOCK_SCALE)
     )
 }
 
@@ -34,6 +36,13 @@ object WidgetPalette {
     const val MIN_OPACITY = 20
     const val DEFAULT_CORNER_DP = 26
     const val MAX_CORNER_DP = 40
+    const val MIN_CLOCK_SCALE = 60
+    const val DEFAULT_CLOCK_SCALE = 100
+    const val MAX_CLOCK_SCALE = 130
+
+    /** Cỡ chữ (sp) của giờ sau khi nhân tỉ lệ người dùng chọn. */
+    fun clockSizeSp(baseSp: Float, scalePercent: Int): Float =
+        baseSp * scalePercent.coerceIn(MIN_CLOCK_SCALE, MAX_CLOCK_SCALE) / 100f
 
     /** Màu chữ chính và phụ (ARGB) khi người dùng ép tông chữ; null nghĩa là giữ màu mặc định của widget. */
     fun textColors(tone: TextTone): Pair<Int, Int>? = when (tone) {
@@ -95,8 +104,13 @@ object StyleStore {
             opacityPercent = p.getInt("opacity", 100),
             mode = runCatching { DayMode.valueOf(p.getString("mode", "AUTO")!!) }.getOrDefault(DayMode.AUTO),
             cornerDp = p.getInt("corner", WidgetPalette.DEFAULT_CORNER_DP),
-            textTone = runCatching { TextTone.valueOf(p.getString("text", "AUTO")!!) }.getOrDefault(TextTone.AUTO)
+            textTone = runCatching { TextTone.valueOf(p.getString("text", "AUTO")!!) }.getOrDefault(TextTone.AUTO),
+            clockScalePercent = p.getInt("clock_scale", WidgetPalette.DEFAULT_CLOCK_SCALE)
         ).sanitized()
+    }
+
+    fun reset(context: Context) {
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().clear().apply()
     }
 
     fun save(context: Context, style: WidgetStyle) {
@@ -104,6 +118,7 @@ object StyleStore {
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
             .putString("theme", s.theme.name).putInt("accent", s.accentIndex)
             .putInt("opacity", s.opacityPercent).putString("mode", s.mode.name)
-            .putInt("corner", s.cornerDp).putString("text", s.textTone.name).apply()
+            .putInt("corner", s.cornerDp).putString("text", s.textTone.name)
+            .putInt("clock_scale", s.clockScalePercent).apply()
     }
 }
