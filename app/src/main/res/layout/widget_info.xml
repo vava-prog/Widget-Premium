@@ -19,19 +19,40 @@
         android:orientation="vertical"
         android:padding="12dp">
 
-    <TextClock
-        android:id="@+id/info_time"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:format12Hour="h:mm"
-        android:format24Hour="HH:mm"
-        android:includeFontPadding="false"
-        android:shadowColor="#80000000"
-        android:shadowDx="0"
-        android:shadowDy="1"
-        android:shadowRadius="3"
-        android:textColor="#FFFFFFFF"
-        android:textSize="60sp" />
+        android:gravity="top"
+        android:orientation="horizontal">
+        <TextClock
+            android:id="@+id/info_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:format12Hour="h:mm"
+            android:format24Hour="HH:mm"
+            android:includeFontPadding="false"
+            android:shadowColor="#80000000"
+            android:shadowDx="0"
+            android:shadowDy="1"
+            android:shadowRadius="3"
+            android:textColor="#FFFFFFFF"
+            android:textSize="60sp" />
+        <TextClock
+            android:id="@+id/info_sec"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:format12Hour="ss"
+            android:format24Hour="ss"
+            android:includeFontPadding="false"
+            android:shadowColor="#80000000"
+            android:shadowDx="0"
+            android:shadowDy="1"
+            android:shadowRadius="3"
+            android:textColor="#CCFFFFFF"
+            android:textSize="20sp"
+            android:visibility="gone" />
+    </LinearLayout>
 
     <TextClock
         android:id="@+id/info_date"

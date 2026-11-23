@@ -113,9 +113,10 @@ class InfoWidgetProvider : AppWidgetProvider() {
             WidgetBackground.applyText(
                 context, views,
                 listOf(R.id.info_time, R.id.stat_battery, R.id.stat_temp, R.id.stat_ram, R.id.stat_storage),
-                listOf(R.id.info_date, R.id.info_label, R.id.info_lunar, R.id.info_weather, R.id.info_detail)
+                listOf(R.id.info_sec, R.id.info_date, R.id.info_label, R.id.info_lunar, R.id.info_weather, R.id.info_detail)
             )
-            WidgetBackground.applyClockSize(context, views, R.id.info_time, 60f)
+            WidgetBackground.applyClockSize(context, views, R.id.info_time, 60f, splitSeconds = true)
+            WidgetBackground.applySeconds(context, views, R.id.info_sec, 60f)
             WidgetBackground.applyLabel(context, views, R.id.info_label)
 
             val opts = StyleStore.load(context)

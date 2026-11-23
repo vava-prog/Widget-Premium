@@ -46,6 +46,14 @@ object WidgetBackground {
         views.setViewVisibility(viewId, if (shown) android.view.View.VISIBLE else android.view.View.GONE)
     }
 
+    /** Giây là một TextClock nhỏ riêng cạnh giờ: hiện theo tùy chọn, cỡ bằng một phần ba chữ giờ. */
+    fun applySeconds(context: Context, views: RemoteViews, secId: Int, baseTimeSp: Float) {
+        val style = StyleStore.load(context)
+        setShown(views, secId, style.showSeconds)
+        val sp = WidgetPalette.clockSizeSp(baseTimeSp / 3f, style.clockScalePercent)
+        views.setTextViewTextSize(secId, android.util.TypedValue.COMPLEX_UNIT_SP, sp)
+    }
+
     /** Hiện dòng tên tự nhập; rỗng thì ẩn dòng đó. */
     fun applyLabel(context: Context, views: RemoteViews, labelId: Int) {
         val label = StyleStore.load(context).label

@@ -245,7 +245,7 @@
     <string name="style_glass_hint">Độ mờ: phủ lớp sương trắng lên mặt kính (0 = trong suốt). Độ nổi khối: viền và mép sáng dày, rõ hơn. Chỉ áp dụng cho giao diện Kính mờ.</string>
     <string name="disp_location">Tên thành phố cạnh nhiệt độ</string>
     <string name="style_seconds">Hiện số giây trên đồng hồ</string>
-    <string name="style_seconds_hint">Hiện giây thì chữ giờ tự thu nhỏ để vừa widget và máy phải vẽ lại mỗi giây nên tốn pin hơn một chút. Tắt nếu không cần.</string>
+    <string name="style_seconds_hint">Hiện giây thì giây là chữ nhỏ cạnh giờ. Máy phải vẽ lại mỗi giây nên tốn pin hơn một chút. Tắt nếu không cần.</string>
     <string name="style_text">Màu chữ</string>
     <string name="style_text_auto">Mặc định</string>
     <string name="style_text_light">Chữ trắng</string>
