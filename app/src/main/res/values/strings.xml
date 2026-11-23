@@ -186,8 +186,9 @@
     <string name="widget_week_label">Widget Premium: Lịch tuần</string>
     <string name="widget_week_desc">Giờ, ngày âm dương, thời tiết và bảy ngày trong tuần</string>
     <string name="btn_add_week_widget">Thêm widget lịch tuần</string>
-    <string name="week_lunar_fmt">Âm lịch: %1$d/%2$d</string>
-    <string name="week_lunar_leap_fmt">Âm lịch: %1$d/%2$d (nhuận)</string>
+    <string name="week_lunar_fmt">Âm lịch: %1$d tháng %2$d</string>
+    <string name="week_date_format">EEEE, d \'tháng\' M</string>
+    <string name="week_lunar_leap_fmt">Âm lịch: %1$d tháng %2$d (nhuận)</string>
     <string name="week_pick_city">Chưa chọn thành phố</string>
     <string name="week_no_data">Chưa có dữ liệu thời tiết</string>
     <string name="style_theme_weather">Theo thời tiết</string>
