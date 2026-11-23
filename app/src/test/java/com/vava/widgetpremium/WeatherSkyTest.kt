@@ -49,6 +49,6 @@ class WeatherSkyTest {
 
     @Test fun opacityScalesWeatherBackground() {
         val p = WidgetPalette.palette(WidgetStyle(theme = WidgetTheme.WEATHER, opacityPercent = 50), true, Sky.RAIN)
-        assertEquals(0x80, p.top ushr 24)
+        assertEquals(0x7F, p.top ushr 24) // 255 * 50% làm tròn xuống
     }
 }
