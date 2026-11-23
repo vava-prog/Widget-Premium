@@ -195,6 +195,8 @@
     <string name="week_no_data">Chưa có dữ liệu thời tiết</string>
     <string name="style_theme_weather">Theo thời tiết</string>
     <string name="style_weather_hint">Nền theo thời tiết: bầu trời xanh, mây, sương mù, mưa, tuyết hoặc giông theo dữ liệu thời tiết đã lưu. Chưa chọn thành phố thì dùng nền Standard.</string>
+    <string name="style_seconds">Hiện số giây trên đồng hồ</string>
+    <string name="style_seconds_hint">Hiện giây thì chữ giờ tự thu nhỏ để vừa widget và máy phải vẽ lại mỗi giây nên tốn pin hơn một chút. Tắt nếu không cần.</string>
     <string name="style_text">Màu chữ</string>
     <string name="style_text_auto">Mặc định</string>
     <string name="style_text_light">Chữ trắng</string>

@@ -20,7 +20,9 @@ data class WidgetStyle(
     val textTone: TextTone = TextTone.AUTO,
     val clockScalePercent: Int = WidgetPalette.DEFAULT_CLOCK_SCALE,
     /** Độ rộng viền (dp). 0 = tự động theo giao diện (Kính mờ có viền mảnh, còn lại không viền). */
-    val borderDp: Int = 0
+    val borderDp: Int = 0,
+    /** Hiện giây trên đồng hồ widget. Tắt mặc định vì TextClock phải vẽ lại mỗi giây. */
+    val showSeconds: Boolean = false
 ) {
     fun sanitized(): WidgetStyle = copy(
         accentIndex = accentIndex.coerceIn(0, WidgetPalette.ACCENTS.size - 1),
@@ -46,8 +48,15 @@ object WidgetPalette {
     const val MAX_CLOCK_SCALE = 130
 
     /** Cỡ chữ (sp) của giờ sau khi nhân tỉ lệ người dùng chọn. */
-    fun clockSizeSp(baseSp: Float, scalePercent: Int): Float =
-        baseSp * scalePercent.coerceIn(MIN_CLOCK_SCALE, MAX_CLOCK_SCALE) / 100f
+    fun clockSizeSp(baseSp: Float, scalePercent: Int, showSeconds: Boolean = false): Float =
+        baseSp * scalePercent.coerceIn(MIN_CLOCK_SCALE, MAX_CLOCK_SCALE) / 100f * (if (showSeconds) SECONDS_SHRINK else 1f)
+
+    /** Khi hiện giây, chuỗi giờ dài hơn nên thu chữ lại để vẫn vừa widget. */
+    const val SECONDS_SHRINK = 0.72f
+
+    /** Định dạng TextClock (kiểu 12 giờ, kiểu 24 giờ) cho đồng hồ widget. */
+    fun timeFormats(showSeconds: Boolean): Pair<String, String> =
+        if (showSeconds) "h:mm:ss" to "HH:mm:ss" else "h:mm" to "HH:mm"
 
     /** Màu chữ chính và phụ (ARGB) khi người dùng ép tông chữ; null nghĩa là giữ màu mặc định của widget. */
     fun textColors(tone: TextTone): Pair<Int, Int>? = when (tone) {
@@ -124,7 +133,8 @@ object StyleStore {
             cornerDp = p.getInt("corner", WidgetPalette.DEFAULT_CORNER_DP),
             textTone = runCatching { TextTone.valueOf(p.getString("text", "AUTO")!!) }.getOrDefault(TextTone.AUTO),
             clockScalePercent = p.getInt("clock_scale", WidgetPalette.DEFAULT_CLOCK_SCALE),
-            borderDp = p.getInt("border", 0)
+            borderDp = p.getInt("border", 0),
+            showSeconds = p.getBoolean("seconds", false)
         ).sanitized()
     }
 
@@ -138,6 +148,6 @@ object StyleStore {
             .putString("theme", s.theme.name).putInt("accent", s.accentIndex)
             .putInt("opacity", s.opacityPercent).putString("mode", s.mode.name)
             .putInt("corner", s.cornerDp).putString("text", s.textTone.name)
-            .putInt("clock_scale", s.clockScalePercent).putInt("border", s.borderDp).apply()
+            .putInt("clock_scale", s.clockScalePercent).putInt("border", s.borderDp).putBoolean("seconds", s.showSeconds).apply()
     }
 }

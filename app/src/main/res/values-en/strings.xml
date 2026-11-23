@@ -195,6 +195,8 @@
     <string name="week_no_data">No weather data yet</string>
     <string name="style_theme_weather">Weather</string>
     <string name="style_weather_hint">Weather background: clear sky, clouds, fog, rain, snow or storm drawn from the saved weather data. With no city selected, the Standard background is used.</string>
+    <string name="style_seconds">Show seconds on the clock</string>
+    <string name="style_seconds_hint">With seconds shown, the time shrinks to fit the widget and the phone redraws it every second, which uses slightly more battery. Turn it off if you do not need it.</string>
     <string name="style_text">Text color</string>
     <string name="style_text_auto">Default</string>
     <string name="style_text_light">Light text</string>

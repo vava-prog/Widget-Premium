@@ -97,4 +97,12 @@ class WidgetStyleTest {
         assertEquals(WidgetPalette.MAX_BORDER_DP, WidgetStyle(borderDp = 99).sanitized().borderDp)
         assertEquals(0, WidgetStyle(borderDp = -2).sanitized().borderDp)
     }
+
+    @Test fun secondsFormatAndShrink() {
+        assertEquals("h:mm" to "HH:mm", WidgetPalette.timeFormats(false))
+        assertEquals("h:mm:ss" to "HH:mm:ss", WidgetPalette.timeFormats(true))
+        assertFalse(WidgetStyle().showSeconds)
+        assertEquals(56f, WidgetPalette.clockSizeSp(56f, 100, false), 0.001f)
+        assertEquals(56f * WidgetPalette.SECONDS_SHRINK, WidgetPalette.clockSizeSp(56f, 100, true), 0.001f)
+    }
 }

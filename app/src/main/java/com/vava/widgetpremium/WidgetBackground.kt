@@ -42,7 +42,11 @@ object WidgetBackground {
 
     /** Đổi cỡ chữ giờ theo tỉ lệ người dùng chọn; baseSp là cỡ mặc định trong layout. */
     fun applyClockSize(context: Context, views: RemoteViews, timeId: Int, baseSp: Float) {
-        val sp = WidgetPalette.clockSizeSp(baseSp, StyleStore.load(context).clockScalePercent)
+        val style = StyleStore.load(context)
+        val sp = WidgetPalette.clockSizeSp(baseSp, style.clockScalePercent, style.showSeconds)
+        val (f12, f24) = WidgetPalette.timeFormats(style.showSeconds)
+        views.setCharSequence(timeId, "setFormat12Hour", f12)
+        views.setCharSequence(timeId, "setFormat24Hour", f24)
         views.setTextViewTextSize(timeId, android.util.TypedValue.COMPLEX_UNIT_SP, sp)
     }
 

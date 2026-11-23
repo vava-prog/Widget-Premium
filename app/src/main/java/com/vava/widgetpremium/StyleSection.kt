@@ -18,6 +18,7 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Slider
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -125,6 +126,15 @@ fun StyleSection() {
             onValueChange = { clockScale = it },
             valueRange = WidgetPalette.MIN_CLOCK_SCALE.toFloat()..WidgetPalette.MAX_CLOCK_SCALE.toFloat(),
             onValueChangeFinished = { change(style.copy(clockScalePercent = clockScale.toInt())) }
+        )
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(stringResource(R.string.style_seconds), modifier = Modifier.weight(1f), style = MaterialTheme.typography.labelLarge)
+            Switch(checked = style.showSeconds, onCheckedChange = { change(style.copy(showSeconds = it)) })
+        }
+        Text(
+            stringResource(R.string.style_seconds_hint),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         Text(stringResource(R.string.style_text), style = MaterialTheme.typography.labelLarge)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
