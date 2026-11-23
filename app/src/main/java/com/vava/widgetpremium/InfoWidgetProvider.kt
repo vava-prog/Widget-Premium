@@ -32,6 +32,13 @@ class InfoWidgetProvider : AppWidgetProvider() {
 
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
+        if (intent.action == ACTION_REFRESH_WEATHER) {
+            if (WeatherStore.city(context) != null) {
+                WeatherScheduler.refreshNow(context)
+                android.widget.Toast.makeText(context, R.string.weather_refreshing, android.widget.Toast.LENGTH_SHORT).show()
+            }
+            return
+        }
         if (intent.action in REFRESH_ACTIONS) {
             updateAll(context)
             DeviceAlerts.check(context)
@@ -39,6 +46,9 @@ class InfoWidgetProvider : AppWidgetProvider() {
     }
 
     companion object {
+        /** Hành động riêng: chạm dòng thời tiết trên widget để tải lại ngay. */
+        private const val ACTION_REFRESH_WEATHER = "com.vava.widgetpremium.action.REFRESH_WEATHER"
+
         private val REFRESH_ACTIONS = setOf(
             Intent.ACTION_DATE_CHANGED,
             Intent.ACTION_TIME_CHANGED,
@@ -159,6 +169,11 @@ class InfoWidgetProvider : AppWidgetProvider() {
             )
             views.setOnClickPendingIntent(R.id.info_root, pending)
             views.setOnClickPendingIntent(R.id.info_time, WidgetTap.pending(context, TapTarget.ALARMS))
+            val refresh = Intent(context, InfoWidgetProvider::class.java).setAction(ACTION_REFRESH_WEATHER)
+            views.setOnClickPendingIntent(
+                R.id.info_weather,
+                PendingIntent.getBroadcast(context, 20, refresh, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+            )
             views.setOnClickPendingIntent(R.id.info_date, WidgetTap.pending(context, TapTarget.CALENDAR))
             views.setOnClickPendingIntent(R.id.info_lunar, WidgetTap.pending(context, TapTarget.CALENDAR))
             views.setOnClickPendingIntent(R.id.stat_battery, WidgetTap.pending(context, TapTarget.BATTERY))

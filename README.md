@@ -14,7 +14,7 @@
 - **Thời tiết** theo vị trí hoặc thành phố bạn chọn: hiện tại, theo giờ và 7 ngày tới.
 - **Tình trạng máy:** mức pin và trạng thái sạc, nhiệt độ, RAM, dung lượng lưu trữ.
 - Cảnh báo nhẹ khi pin yếu hoặc máy nóng.
-- Kéo to nhỏ widget thì chữ và bố cục tự co giãn. Chạm vào từng phần để mở ứng dụng liên quan.
+- Kéo to nhỏ widget thì chữ và bố cục tự co giãn. Chạm vào từng phần để mở ứng dụng liên quan. Chạm dòng thời tiết để tải lại ngay (cần mạng; chưa chọn thành phố thì không làm gì).
 
 ### Lịch Việt trong ứng dụng
 - Xem ngày âm, can chi, tiết khí.

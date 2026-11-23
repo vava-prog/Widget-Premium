@@ -49,6 +49,15 @@ class WeatherWorker(context: Context, params: WorkerParameters) : CoroutineWorke
 object WeatherScheduler {
     private const val UNIQUE_NAME = "weather_periodic"
 
+    /** Tải lại ngay một lần (khi người dùng chạm widget); cần mạng, chạy khi có mạng. */
+    fun refreshNow(context: Context) {
+        val request = androidx.work.OneTimeWorkRequestBuilder<WeatherWorker>()
+            .setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
+            .build()
+        androidx.work.WorkManager.getInstance(context)
+            .enqueueUniqueWork("weather_now", androidx.work.ExistingWorkPolicy.REPLACE, request)
+    }
+
     /** Làm mới thời tiết mỗi 30 phút khi có mạng. Chỉ gọi khi đã chọn thành phố. */
     fun schedule(context: Context) {
         val request = PeriodicWorkRequestBuilder<WeatherWorker>(30, TimeUnit.MINUTES)
