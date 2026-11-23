@@ -180,6 +180,8 @@
     <string name="cal_luc_dieu">Six stars (Lục diệu): %1$s</string>
     <string name="cal_clash">Clashing zodiac: %1$s (people born in a year with this branch)</string>
     <string name="style_corner">Widget corner radius: %1$d dp</string>
+    <string name="style_border_auto">Widget border: auto (0)</string>
+    <string name="style_border">Widget border: %1$d dp</string>
     <string name="style_clock_size">Clock size: %1$d%%</string>
     <string name="style_reset">Reset appearance</string>
     <string name="weather_refreshing">Updating weather…</string>

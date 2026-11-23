@@ -42,6 +42,7 @@ fun StyleSection() {
     var style by remember { mutableStateOf(StyleStore.load(context)) }
     var opacity by remember { mutableStateOf(style.opacityPercent.toFloat()) }
     var corner by remember { mutableStateOf(style.cornerDp.toFloat()) }
+    var border by remember { mutableStateOf(style.borderDp.toFloat()) }
     var clockScale by remember { mutableStateOf(style.clockScalePercent.toFloat()) }
 
     fun change(new: WidgetStyle) {
@@ -108,6 +109,16 @@ fun StyleSection() {
             valueRange = 0f..WidgetPalette.MAX_CORNER_DP.toFloat(),
             onValueChangeFinished = { change(style.copy(cornerDp = corner.toInt())) }
         )
+        Text(
+            if (border.toInt() == 0) stringResource(R.string.style_border_auto) else stringResource(R.string.style_border, border.toInt()),
+            style = MaterialTheme.typography.labelLarge
+        )
+        Slider(
+            value = border,
+            onValueChange = { border = it },
+            valueRange = 0f..WidgetPalette.MAX_BORDER_DP.toFloat(),
+            onValueChangeFinished = { change(style.copy(borderDp = border.toInt())) }
+        )
         Text(stringResource(R.string.style_clock_size, clockScale.toInt()), style = MaterialTheme.typography.labelLarge)
         Slider(
             value = clockScale,
@@ -139,6 +150,7 @@ fun StyleSection() {
             opacity = fresh.opacityPercent.toFloat()
             corner = fresh.cornerDp.toFloat()
             clockScale = fresh.clockScalePercent.toFloat()
+            border = fresh.borderDp.toFloat()
             change(fresh)
         }) { Text(stringResource(R.string.style_reset)) }
         Text(

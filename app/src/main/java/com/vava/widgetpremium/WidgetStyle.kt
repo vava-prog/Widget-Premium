@@ -18,13 +18,16 @@ data class WidgetStyle(
     val mode: DayMode = DayMode.AUTO,
     val cornerDp: Int = WidgetPalette.DEFAULT_CORNER_DP,
     val textTone: TextTone = TextTone.AUTO,
-    val clockScalePercent: Int = WidgetPalette.DEFAULT_CLOCK_SCALE
+    val clockScalePercent: Int = WidgetPalette.DEFAULT_CLOCK_SCALE,
+    /** Độ rộng viền (dp). 0 = tự động theo giao diện (Kính mờ có viền mảnh, còn lại không viền). */
+    val borderDp: Int = 0
 ) {
     fun sanitized(): WidgetStyle = copy(
         accentIndex = accentIndex.coerceIn(0, WidgetPalette.ACCENTS.size - 1),
         opacityPercent = opacityPercent.coerceIn(WidgetPalette.MIN_OPACITY, 100),
         cornerDp = cornerDp.coerceIn(0, WidgetPalette.MAX_CORNER_DP),
-        clockScalePercent = clockScalePercent.coerceIn(WidgetPalette.MIN_CLOCK_SCALE, WidgetPalette.MAX_CLOCK_SCALE)
+        clockScalePercent = clockScalePercent.coerceIn(WidgetPalette.MIN_CLOCK_SCALE, WidgetPalette.MAX_CLOCK_SCALE),
+        borderDp = borderDp.coerceIn(0, WidgetPalette.MAX_BORDER_DP)
     )
 }
 
@@ -37,6 +40,7 @@ object WidgetPalette {
     const val MIN_OPACITY = 20
     const val DEFAULT_CORNER_DP = 26
     const val MAX_CORNER_DP = 40
+    const val MAX_BORDER_DP = 6
     const val MIN_CLOCK_SCALE = 60
     const val DEFAULT_CLOCK_SCALE = 100
     const val MAX_CLOCK_SCALE = 130
@@ -91,7 +95,11 @@ object WidgetPalette {
                 else Palette(withAlpha(mix(accent, black, 0.6f), 0x99), withAlpha(mix(accent, black, 0.85f), 0x66), withAlpha(white, 0x30), withAlpha(white, 0x66), 1.5f)
         }
         val p = s.opacityPercent
-        return raw.copy(top = scale(raw.top, p), bottom = scale(raw.bottom, p), sheen = scale(raw.sheen, p), stroke = scale(raw.stroke, p))
+        val scaled = raw.copy(top = scale(raw.top, p), bottom = scale(raw.bottom, p), sheen = scale(raw.sheen, p), stroke = scale(raw.stroke, p))
+        if (s.borderDp <= 0) return scaled
+        // Người dùng chọn viền: dùng màu viền sẵn có của giao diện, hoặc trắng mờ nếu giao diện không có viền.
+        val color = if ((raw.stroke ushr 24) > 0) scaled.stroke else scale(withAlpha(white, if (isDay) 0xB0 else 0x80), p)
+        return scaled.copy(stroke = color, strokeDp = s.borderDp.toFloat())
     }
 
     private fun standard(accent: Int, isDay: Boolean): Palette {
@@ -115,7 +123,8 @@ object StyleStore {
             mode = runCatching { DayMode.valueOf(p.getString("mode", "AUTO")!!) }.getOrDefault(DayMode.AUTO),
             cornerDp = p.getInt("corner", WidgetPalette.DEFAULT_CORNER_DP),
             textTone = runCatching { TextTone.valueOf(p.getString("text", "AUTO")!!) }.getOrDefault(TextTone.AUTO),
-            clockScalePercent = p.getInt("clock_scale", WidgetPalette.DEFAULT_CLOCK_SCALE)
+            clockScalePercent = p.getInt("clock_scale", WidgetPalette.DEFAULT_CLOCK_SCALE),
+            borderDp = p.getInt("border", 0)
         ).sanitized()
     }
 
@@ -129,6 +138,6 @@ object StyleStore {
             .putString("theme", s.theme.name).putInt("accent", s.accentIndex)
             .putInt("opacity", s.opacityPercent).putString("mode", s.mode.name)
             .putInt("corner", s.cornerDp).putString("text", s.textTone.name)
-            .putInt("clock_scale", s.clockScalePercent).apply()
+            .putInt("clock_scale", s.clockScalePercent).putInt("border", s.borderDp).apply()
     }
 }

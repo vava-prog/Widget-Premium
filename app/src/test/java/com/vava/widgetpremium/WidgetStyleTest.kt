@@ -86,4 +86,15 @@ class WidgetStyleTest {
         assertEquals(33.6f, WidgetPalette.clockSizeSp(56f, 50), 0.001f) // dưới mức tối thiểu bị nâng lên 60%
         assertEquals(33.6f, WidgetPalette.clockSizeSp(56f, 60), 0.001f)
     }
+
+    @Test fun borderZeroKeepsThemeDefaultAndPositiveOverrides() {
+        assertEquals(0f, WidgetPalette.palette(WidgetStyle(theme = WidgetTheme.STANDARD), true).strokeDp, 0f)
+        assertEquals(1.5f, WidgetPalette.palette(WidgetStyle(theme = WidgetTheme.GLASS), true).strokeDp, 0f)
+        val custom = WidgetPalette.palette(WidgetStyle(theme = WidgetTheme.STANDARD, borderDp = 3), true)
+        assertEquals(3f, custom.strokeDp, 0f)
+        assertTrue((custom.stroke ushr 24) > 0)
+        assertEquals(3f, WidgetPalette.palette(WidgetStyle(theme = WidgetTheme.GLASS, borderDp = 3), false).strokeDp, 0f)
+        assertEquals(WidgetPalette.MAX_BORDER_DP, WidgetStyle(borderDp = 99).sanitized().borderDp)
+        assertEquals(0, WidgetStyle(borderDp = -2).sanitized().borderDp)
+    }
 }
