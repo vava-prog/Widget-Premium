@@ -124,4 +124,18 @@ class WidgetStyleTest {
         assertEquals(null, WidgetPalette.textColors(TextTone.AUTO, s.customTextColor))
         WidgetPalette.CUSTOM_TEXT_COLORS.forEach { assertEquals(0xFF, it ushr 24) }
     }
+
+    @Test fun hourFormatForcesOrFollowsSystem() {
+        assertEquals("h:mm" to "HH:mm", WidgetPalette.timeFormats(false, HourFormat.SYSTEM))
+        assertEquals("HH:mm" to "HH:mm", WidgetPalette.timeFormats(false, HourFormat.H24))
+        assertEquals("h:mm:ss" to "h:mm:ss", WidgetPalette.timeFormats(true, HourFormat.H12))
+        assertEquals("HH:mm:ss" to "HH:mm:ss", WidgetPalette.timeFormats(true, HourFormat.H24))
+    }
+
+    @Test fun displayDefaultsShowEverything() {
+        val d = WidgetStyle()
+        assertTrue(d.showSolarDate && d.showLunar && d.showWeather && d.tapEnabled)
+        assertEquals(HourFormat.SYSTEM, d.hourFormat)
+        assertEquals(WeekMode.LUNAR, d.weekMode)
+    }
 }

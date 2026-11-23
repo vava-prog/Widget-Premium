@@ -193,6 +193,29 @@ fun StyleSection() {
             FilterChip(selected = style.mode == DayMode.NIGHT, onClick = { change(style.copy(mode = DayMode.NIGHT)) },
                 label = { Text(stringResource(R.string.style_mode_night)) })
         }
+        Text(stringResource(R.string.disp_title), style = MaterialTheme.typography.titleMedium)
+        @Composable
+        fun toggle(labelRes: Int, checked: Boolean, onChange: (Boolean) -> Unit) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(stringResource(labelRes), modifier = Modifier.weight(1f))
+                Switch(checked = checked, onCheckedChange = onChange)
+            }
+        }
+        toggle(R.string.disp_solar, style.showSolarDate) { change(style.copy(showSolarDate = it)) }
+        toggle(R.string.disp_lunar, style.showLunar) { change(style.copy(showLunar = it)) }
+        toggle(R.string.disp_weather, style.showWeather) { change(style.copy(showWeather = it)) }
+        toggle(R.string.disp_tap, style.tapEnabled) { change(style.copy(tapEnabled = it)) }
+        Text(stringResource(R.string.disp_hour_format), style = MaterialTheme.typography.labelLarge)
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            FilterChip(selected = style.hourFormat == HourFormat.SYSTEM, onClick = { change(style.copy(hourFormat = HourFormat.SYSTEM)) }, label = { Text(stringResource(R.string.disp_hour_system)) })
+            FilterChip(selected = style.hourFormat == HourFormat.H24, onClick = { change(style.copy(hourFormat = HourFormat.H24)) }, label = { Text(stringResource(R.string.disp_hour_24)) })
+            FilterChip(selected = style.hourFormat == HourFormat.H12, onClick = { change(style.copy(hourFormat = HourFormat.H12)) }, label = { Text(stringResource(R.string.disp_hour_12)) })
+        }
+        Text(stringResource(R.string.disp_week_mode), style = MaterialTheme.typography.labelLarge)
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            FilterChip(selected = style.weekMode == WeekMode.LUNAR, onClick = { change(style.copy(weekMode = WeekMode.LUNAR)) }, label = { Text(stringResource(R.string.disp_week_lunar)) })
+            FilterChip(selected = style.weekMode == WeekMode.WEATHER, onClick = { change(style.copy(weekMode = WeekMode.WEATHER)) }, label = { Text(stringResource(R.string.disp_week_weather)) })
+        }
         OutlinedButton(onClick = {
             StyleStore.reset(context)
             val fresh = StyleStore.load(context)

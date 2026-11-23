@@ -45,14 +45,15 @@ class ClockWidgetProvider : AppWidgetProvider() {
             WidgetBackground.applyText(context, views, listOf(R.id.clock_time), listOf(R.id.clock_date, R.id.clock_label))
             WidgetBackground.applyClockSize(context, views, R.id.clock_time, 56f)
             WidgetBackground.applyLabel(context, views, R.id.clock_label)
+            WidgetBackground.setShown(views, R.id.clock_date, StyleStore.load(context).showSolarDate)
             val open = Intent(context, MainActivity::class.java)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
             val pending = PendingIntent.getActivity(
                 context, 0, open, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
             views.setOnClickPendingIntent(R.id.widget_root, pending)
-            views.setOnClickPendingIntent(R.id.clock_time, WidgetTap.pending(context, TapTarget.ALARMS))
-            views.setOnClickPendingIntent(R.id.clock_date, WidgetTap.pending(context, TapTarget.CALENDAR))
+            WidgetTap.bind(context, views, R.id.clock_time, TapTarget.ALARMS)
+            WidgetTap.bind(context, views, R.id.clock_date, TapTarget.CALENDAR)
             return views
         }
     }

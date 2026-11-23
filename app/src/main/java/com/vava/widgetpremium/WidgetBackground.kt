@@ -41,6 +41,11 @@ object WidgetBackground {
         secondary.forEach { views.setTextColor(it, colors.second) }
     }
 
+    /** Ẩn hoặc hiện một view theo tùy chọn hiển thị. */
+    fun setShown(views: RemoteViews, viewId: Int, shown: Boolean) {
+        views.setViewVisibility(viewId, if (shown) android.view.View.VISIBLE else android.view.View.GONE)
+    }
+
     /** Hiện dòng tên tự nhập; rỗng thì ẩn dòng đó. */
     fun applyLabel(context: Context, views: RemoteViews, labelId: Int) {
         val label = StyleStore.load(context).label
@@ -52,7 +57,7 @@ object WidgetBackground {
     fun applyClockSize(context: Context, views: RemoteViews, timeId: Int, baseSp: Float) {
         val style = StyleStore.load(context)
         val sp = WidgetPalette.clockSizeSp(baseSp, style.clockScalePercent, style.showSeconds)
-        val (f12, f24) = WidgetPalette.timeFormats(style.showSeconds)
+        val (f12, f24) = WidgetPalette.timeFormats(style.showSeconds, style.hourFormat)
         views.setCharSequence(timeId, "setFormat12Hour", f12)
         views.setCharSequence(timeId, "setFormat24Hour", f24)
         views.setTextViewTextSize(timeId, android.util.TypedValue.COMPLEX_UNIT_SP, sp)

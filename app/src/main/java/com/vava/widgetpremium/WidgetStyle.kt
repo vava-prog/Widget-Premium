@@ -6,6 +6,12 @@ import android.content.Context
 enum class WidgetTheme { STANDARD, GLASS, WEATHER }
 
 /** Màu chữ trên widget: AUTO giữ màu mặc định (chữ sáng), LIGHT luôn chữ trắng, DARK luôn chữ tối. */
+/** Kiểu giờ: theo hệ thống, ép 24 giờ hoặc ép 12 giờ. */
+enum class HourFormat { SYSTEM, H24, H12 }
+
+/** Hàng thứ ba của dải tuần: ngày âm hoặc thời tiết từng ngày. */
+enum class WeekMode { LUNAR, WEATHER }
+
 enum class TextTone { AUTO, LIGHT, DARK, CUSTOM }
 
 /** AUTO: theo giờ mặt trời mọc/lặn thật; DAY và NIGHT: ép cố định. */
@@ -26,7 +32,14 @@ data class WidgetStyle(
     /** Dòng tên tự nhập hiện trên widget; rỗng thì ẩn. */
     val label: String = "",
     /** Màu chữ khi chọn TextTone.CUSTOM (ARGB, luôn đục). */
-    val customTextColor: Int = WidgetPalette.CUSTOM_TEXT_COLORS[0]
+    val customTextColor: Int = WidgetPalette.CUSTOM_TEXT_COLORS[0],
+    val showSolarDate: Boolean = true,
+    val showLunar: Boolean = true,
+    val showWeather: Boolean = true,
+    val hourFormat: HourFormat = HourFormat.SYSTEM,
+    /** Tắt thì chạm vào widget không mở gì. */
+    val tapEnabled: Boolean = true,
+    val weekMode: WeekMode = WeekMode.LUNAR
 ) {
     fun sanitized(): WidgetStyle = copy(
         accentIndex = accentIndex.coerceIn(0, WidgetPalette.ACCENTS.size - 1),
@@ -65,9 +78,20 @@ object WidgetPalette {
     /** Khi hiện giây, chuỗi giờ dài hơn nên thu chữ lại để vẫn vừa widget. */
     const val SECONDS_SHRINK = 0.72f
 
-    /** Định dạng TextClock (kiểu 12 giờ, kiểu 24 giờ) cho đồng hồ widget. */
-    fun timeFormats(showSeconds: Boolean): Pair<String, String> =
-        if (showSeconds) "h:mm:ss" to "HH:mm:ss" else "h:mm" to "HH:mm"
+    /**
+     * Định dạng TextClock (kiểu 12 giờ, kiểu 24 giờ) cho đồng hồ widget. TextClock chọn một trong hai
+     * theo cài đặt hệ thống, nên muốn ép một kiểu thì đặt cả hai thành cùng một mẫu.
+     */
+    fun timeFormats(showSeconds: Boolean, hourFormat: HourFormat = HourFormat.SYSTEM): Pair<String, String> {
+        val sec = if (showSeconds) ":ss" else ""
+        val f12 = "h:mm$sec"
+        val f24 = "HH:mm$sec"
+        return when (hourFormat) {
+            HourFormat.SYSTEM -> f12 to f24
+            HourFormat.H24 -> f24 to f24
+            HourFormat.H12 -> f12 to f12
+        }
+    }
 
     /** Màu chữ chính và phụ (ARGB) khi người dùng ép tông chữ; null nghĩa là giữ màu mặc định của widget. */
     /** Các ô màu chữ gợi ý cho chế độ tùy chỉnh. */
@@ -154,7 +178,13 @@ object StyleStore {
             borderDp = p.getInt("border", 0),
             showSeconds = p.getBoolean("seconds", false),
             label = p.getString("label", "") ?: "",
-            customTextColor = p.getInt("text_custom", WidgetPalette.CUSTOM_TEXT_COLORS[0])
+            customTextColor = p.getInt("text_custom", WidgetPalette.CUSTOM_TEXT_COLORS[0]),
+            showSolarDate = p.getBoolean("show_solar", true),
+            showLunar = p.getBoolean("show_lunar", true),
+            showWeather = p.getBoolean("show_weather", true),
+            hourFormat = enumOrDefault(p.getString("hour_format", null), HourFormat.SYSTEM),
+            tapEnabled = p.getBoolean("tap_enabled", true),
+            weekMode = enumOrDefault(p.getString("week_mode", null), WeekMode.LUNAR)
         ).sanitized()
     }
 
@@ -168,6 +198,12 @@ object StyleStore {
             .putString("theme", s.theme.name).putInt("accent", s.accentIndex)
             .putInt("opacity", s.opacityPercent).putString("mode", s.mode.name)
             .putInt("corner", s.cornerDp).putString("text", s.textTone.name)
-            .putInt("clock_scale", s.clockScalePercent).putInt("border", s.borderDp).putBoolean("seconds", s.showSeconds).putString("label", s.label).putInt("text_custom", s.customTextColor).apply()
+            .putInt("clock_scale", s.clockScalePercent).putInt("border", s.borderDp).putBoolean("seconds", s.showSeconds).putString("label", s.label).putInt("text_custom", s.customTextColor)
+            .putBoolean("show_solar", s.showSolarDate).putBoolean("show_lunar", s.showLunar)
+            .putBoolean("show_weather", s.showWeather).putString("hour_format", s.hourFormat.name)
+            .putBoolean("tap_enabled", s.tapEnabled).putString("week_mode", s.weekMode.name).apply()
     }
 }
+
+private inline fun <reified E : Enum<E>> enumOrDefault(name: String?, default: E): E =
+    enumValues<E>().firstOrNull { it.name == name } ?: default

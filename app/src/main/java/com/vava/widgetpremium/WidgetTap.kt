@@ -32,6 +32,11 @@ object WidgetTap {
         TapTarget.HOME, TapTarget.CALENDAR -> emptyList()
     }
 
+    /** Gắn thao tác chạm cho một view; người dùng tắt "chạm để mở" thì gỡ thao tác. */
+    fun bind(context: Context, views: android.widget.RemoteViews, viewId: Int, target: TapTarget) {
+        views.setOnClickPendingIntent(viewId, if (StyleStore.load(context).tapEnabled) pending(context, target) else null)
+    }
+
     fun pending(context: Context, target: TapTarget): PendingIntent {
         val intent = Intent(context, TapActivity::class.java)
             .putExtra(EXTRA_TARGET, target.name)

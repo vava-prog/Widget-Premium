@@ -60,7 +60,12 @@ class WeekWidgetProvider : AppWidgetProvider() {
             val (w, h) = WidgetBackground.sizeDp(manager, id, 250, 110)
             WidgetBackground.apply(context, views, R.id.week_bg, w, h)
 
+            val opts = StyleStore.load(context)
+            WidgetBackground.setShown(views, R.id.week_date, opts.showSolarDate)
+            WidgetBackground.setShown(views, R.id.week_lunar, opts.showLunar)
+            WidgetBackground.setShown(views, R.id.week_weather_box, opts.showWeather)
             val today = LocalDate.now()
+            val forecast = WeatherStore.cached(context)?.days.orEmpty()
             val l = VietCalendar.lunarOf(today)
             val lunarRes = if (l.isLeap) R.string.week_lunar_leap_fmt else R.string.week_lunar_fmt
             views.setTextViewText(R.id.week_lunar, context.getString(lunarRes, l.day, l.month))
@@ -68,9 +73,12 @@ class WeekWidgetProvider : AppWidgetProvider() {
             VietCalendar.weekDays(today).forEachIndexed { i, date ->
                 views.setTextViewText(NAME[i], context.getString(NAME_RES[i]))
                 views.setTextViewText(DAY[i], date.dayOfMonth.toString())
-                views.setTextViewText(LUNAR[i], VietCalendar.weekLunarLabel(date))
+                views.setTextViewText(
+                    LUNAR[i],
+                    if (opts.weekMode == WeekMode.WEATHER) WeekStrip.weatherLabel(date, forecast) else VietCalendar.weekLunarLabel(date)
+                )
                 views.setInt(CELL[i], "setBackgroundResource", if (date == today) R.drawable.week_today_bg else 0)
-                views.setOnClickPendingIntent(CELL[i], WidgetTap.pending(context, TapTarget.CALENDAR))
+                WidgetTap.bind(context, views, CELL[i], TapTarget.CALENDAR)
             }
 
             val city = WeatherStore.city(context)
@@ -100,11 +108,11 @@ class WeekWidgetProvider : AppWidgetProvider() {
                 listOf(R.id.week_date, R.id.week_lunar, R.id.week_cond, R.id.week_range) + NAME.toList() + LUNAR.toList()
             )
             WidgetBackground.applyClockSize(context, views, R.id.week_time, 40f)
-            views.setOnClickPendingIntent(R.id.week_time, WidgetTap.pending(context, TapTarget.ALARMS))
-            views.setOnClickPendingIntent(R.id.week_date, WidgetTap.pending(context, TapTarget.CALENDAR))
-            views.setOnClickPendingIntent(R.id.week_lunar, WidgetTap.pending(context, TapTarget.CALENDAR))
-            views.setOnClickPendingIntent(R.id.week_temp, WidgetTap.pending(context, TapTarget.HOME))
-            views.setOnClickPendingIntent(R.id.week_cond, WidgetTap.pending(context, TapTarget.HOME))
+            WidgetTap.bind(context, views, R.id.week_time, TapTarget.ALARMS)
+            WidgetTap.bind(context, views, R.id.week_date, TapTarget.CALENDAR)
+            WidgetTap.bind(context, views, R.id.week_lunar, TapTarget.CALENDAR)
+            WidgetTap.bind(context, views, R.id.week_temp, TapTarget.HOME)
+            WidgetTap.bind(context, views, R.id.week_cond, TapTarget.HOME)
             return views
         }
     }
