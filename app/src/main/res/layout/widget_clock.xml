@@ -26,6 +26,10 @@
         android:format12Hour="h:mm"
         android:format24Hour="HH:mm"
         android:includeFontPadding="false"
+        android:shadowColor="#80000000"
+        android:shadowDx="0"
+        android:shadowDy="1"
+        android:shadowRadius="3"
         android:textColor="#FFFFFFFF"
         android:textSize="56sp" />
 
@@ -35,6 +39,10 @@
         android:layout_height="wrap_content"
         android:format12Hour="EEEE, dd/MM/yyyy"
         android:format24Hour="EEEE, dd/MM/yyyy"
+        android:shadowColor="#80000000"
+        android:shadowDx="0"
+        android:shadowDy="1"
+        android:shadowRadius="3"
         android:textColor="#CCFFFFFF"
         android:textSize="16sp" />
 </LinearLayout>

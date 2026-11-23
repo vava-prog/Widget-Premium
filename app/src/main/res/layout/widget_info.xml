@@ -26,6 +26,10 @@
         android:format12Hour="h:mm"
         android:format24Hour="HH:mm"
         android:includeFontPadding="false"
+        android:shadowColor="#80000000"
+        android:shadowDx="0"
+        android:shadowDy="1"
+        android:shadowRadius="3"
         android:textColor="#FFFFFFFF"
         android:textSize="60sp" />
 
@@ -35,6 +39,10 @@
         android:layout_height="wrap_content"
         android:format12Hour="EEEE, dd/MM/yyyy"
         android:format24Hour="EEEE, dd/MM/yyyy"
+        android:shadowColor="#80000000"
+        android:shadowDx="0"
+        android:shadowDy="1"
+        android:shadowRadius="3"
         android:textColor="#CCFFFFFF"
         android:textSize="16sp" />
 
@@ -43,6 +51,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
+        android:shadowColor="#80000000"
+        android:shadowDx="0"
+        android:shadowDy="1"
+        android:shadowRadius="3"
         android:textColor="#CCFFFFFF"
         android:textSize="16sp" />
 
@@ -53,6 +65,10 @@
         android:layout_marginTop="2dp"
         android:ellipsize="end"
         android:maxLines="1"
+        android:shadowColor="#80000000"
+        android:shadowDx="0"
+        android:shadowDy="1"
+        android:shadowRadius="3"
         android:textColor="#CCFFFFFF"
         android:textSize="16sp" />
 
@@ -68,7 +84,11 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:textColor="#FFFFFFFF"
+            android:shadowColor="#80000000"
+        android:shadowDx="0"
+        android:shadowDy="1"
+        android:shadowRadius="3"
+        android:textColor="#FFFFFFFF"
             android:textSize="14sp" />
 
         <TextView
@@ -77,7 +97,11 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:textColor="#FFFFFFFF"
+            android:shadowColor="#80000000"
+        android:shadowDx="0"
+        android:shadowDy="1"
+        android:shadowRadius="3"
+        android:textColor="#FFFFFFFF"
             android:textSize="14sp" />
 
         <TextView
@@ -86,7 +110,11 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:textColor="#FFFFFFFF"
+            android:shadowColor="#80000000"
+        android:shadowDx="0"
+        android:shadowDy="1"
+        android:shadowRadius="3"
+        android:textColor="#FFFFFFFF"
             android:textSize="14sp" />
 
         <TextView
@@ -95,7 +123,11 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:textColor="#FFFFFFFF"
+            android:shadowColor="#80000000"
+        android:shadowDx="0"
+        android:shadowDy="1"
+        android:shadowRadius="3"
+        android:textColor="#FFFFFFFF"
             android:textSize="14sp" />
     </LinearLayout>
 </LinearLayout>
