@@ -37,11 +37,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-/** Chọn giao diện widget (Standard hoặc Kính mờ), màu chủ đạo, độ đậm của nền và chế độ sáng/tối. */
+/**
+ * Các điều khiển giao diện widget. Trạng thái `style` do màn hình cha giữ để khung xem trước
+ * có thể được ghim cố định phía trên trong lúc cuộn qua các thanh chỉnh.
+ */
 @Composable
-fun StyleSection() {
+fun StyleSection(style: WidgetStyle, onChange: (WidgetStyle) -> Unit) {
     val context = LocalContext.current
-    var style by remember { mutableStateOf(StyleStore.load(context)) }
     var opacity by remember { mutableStateOf(style.opacityPercent.toFloat()) }
     var corner by remember { mutableStateOf(style.cornerDp.toFloat()) }
     var labelText by remember { mutableStateOf(style.label) }
@@ -50,15 +52,9 @@ fun StyleSection() {
     var border by remember { mutableStateOf(style.borderDp.toFloat()) }
     var clockScale by remember { mutableStateOf(style.clockScalePercent.toFloat()) }
 
-    fun change(new: WidgetStyle) {
-        style = new.sanitized()
-        StyleStore.save(context, style)
-        WidgetUpdater.updateWidgets(context)
-    }
+    fun change(new: WidgetStyle) = onChange(new)
 
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        Text(stringResource(R.string.style_title), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-        StylePreview(style)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             FilterChip(
                 selected = style.theme == WidgetTheme.STANDARD,
@@ -280,7 +276,7 @@ fun StyleSection() {
 
 /** Xem trước nền widget trên một hình nền mẫu nhiều màu để thấy rõ độ trong suốt. */
 @Composable
-private fun StylePreview(style: WidgetStyle) {
+fun StylePreview(style: WidgetStyle) {
     val isDay = WidgetPalette.resolveDay(style.mode, WidgetUpdater.isDay(LocalContext.current))
     val sky = if (style.theme == WidgetTheme.WEATHER) WeatherSky.current(LocalContext.current, isDay) else null
     val palette = WidgetPalette.palette(style, isDay, sky)
@@ -288,7 +284,7 @@ private fun StylePreview(style: WidgetStyle) {
     Box(
         Modifier
             .fillMaxWidth()
-            .height(120.dp)
+            .height(104.dp)
             .clip(RoundedCornerShape(12.dp))
             .background(Brush.horizontalGradient(listOf(Color(0xFF3A8D5C), Color(0xFFE9B949), Color(0xFFD9534F)))),
         contentAlignment = Alignment.Center
@@ -296,7 +292,7 @@ private fun StylePreview(style: WidgetStyle) {
         Box(
             Modifier
                 .fillMaxWidth(0.85f)
-                .height(88.dp)
+                .height(76.dp)
                 .clip(shape)
                 .background(Brush.verticalGradient(listOf(Color(palette.top), Color(palette.bottom))))
                 .then(
@@ -307,7 +303,14 @@ private fun StylePreview(style: WidgetStyle) {
             contentAlignment = Alignment.Center
         ) {
             val textColor = WidgetPalette.textColors(style.textTone, style.customTextColor)?.first?.let { Color(it) } ?: Color.White
-            Text("09:41", color = textColor, fontSize = 40.sp, fontWeight = FontWeight.Bold)
+            val now = java.time.LocalDateTime.now()
+            val timeText = now.format(java.time.format.DateTimeFormatter.ofPattern(if (style.hourFormat == HourFormat.H12) "h:mm" else "HH:mm"))
+            val dateText = now.format(java.time.format.DateTimeFormatter.ofPattern("EEEE, d/M", java.util.Locale.getDefault()))
+            val soft = WidgetPalette.textColors(style.textTone, style.customTextColor)?.second?.let { Color(it) } ?: Color(0xCCFFFFFF)
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(timeText, color = textColor, fontSize = 32.sp, fontWeight = FontWeight.Bold)
+                Text(dateText, color = soft, fontSize = 13.sp)
+            }
         }
     }
 }

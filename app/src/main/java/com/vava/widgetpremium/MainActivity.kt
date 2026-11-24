@@ -18,6 +18,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -89,52 +95,76 @@ private fun AppRoot(startTab: Int) {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun HomeScreen() {
     val context = LocalContext.current
     val steps = listOf(R.string.guide_step1, R.string.guide_step2, R.string.guide_step3)
+    var style by remember { mutableStateOf(StyleStore.load(context)) }
+    val onStyleChange: (WidgetStyle) -> Unit = { new ->
+        style = new.sanitized()
+        StyleStore.save(context, style)
+        WidgetUpdater.updateWidgets(context)
+    }
     Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-        Column(
-            modifier = Modifier
-                .verticalScroll(rememberScrollState())
-                .padding(24.dp),
+        LazyColumn(
+            // Chỉ đệm hai bên: khung xem trước được ghim sát mép trên, không cách 24dp.
+            contentPadding = PaddingValues(horizontal = 24.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Dashboard()
-            LiveLogo(Modifier.fillMaxWidth(0.8f).align(Alignment.CenterHorizontally))
-            Text(
-                stringResource(R.string.app_name),
-                style = MaterialTheme.typography.headlineLarge,
-                fontWeight = FontWeight.Bold
-            )
-            Text(stringResource(R.string.home_intro), style = MaterialTheme.typography.bodyLarge)
-            Button(
-                onClick = { requestPinWidget(context, ClockWidgetProvider::class.java) },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(stringResource(R.string.btn_add_widget))
+            item { Box(Modifier.padding(top = 24.dp)) { Dashboard() } }
+            item {
+                Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                    LiveLogo(Modifier.fillMaxWidth(0.8f))
+                }
             }
-            Button(
-                onClick = { requestPinWidget(context, InfoWidgetProvider::class.java) },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(stringResource(R.string.btn_add_info_widget))
+            item {
+                Text(
+                    stringResource(R.string.app_name),
+                    style = MaterialTheme.typography.headlineLarge,
+                    fontWeight = FontWeight.Bold
+                )
             }
-            Button(
-                onClick = { requestPinWidget(context, WeekWidgetProvider::class.java) },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(stringResource(R.string.btn_add_week_widget))
+            item { Text(stringResource(R.string.home_intro), style = MaterialTheme.typography.bodyLarge) }
+            item {
+                Button(
+                    onClick = { requestPinWidget(context, ClockWidgetProvider::class.java) },
+                    modifier = Modifier.fillMaxWidth()
+                ) { Text(stringResource(R.string.btn_add_widget)) }
             }
-            WeatherSection()
-            StyleSection()
-            IconSwitchRow()
-            AlertsRow()
-            DiagnosticsCard()
-            Text(stringResource(R.string.guide_title), style = MaterialTheme.typography.titleMedium)
-            steps.forEachIndexed { index, res ->
-                Text("${index + 1}. " + stringResource(res), style = MaterialTheme.typography.bodyMedium)
+            item {
+                Button(
+                    onClick = { requestPinWidget(context, InfoWidgetProvider::class.java) },
+                    modifier = Modifier.fillMaxWidth()
+                ) { Text(stringResource(R.string.btn_add_info_widget)) }
             }
+            item {
+                Button(
+                    onClick = { requestPinWidget(context, WeekWidgetProvider::class.java) },
+                    modifier = Modifier.fillMaxWidth()
+                ) { Text(stringResource(R.string.btn_add_week_widget)) }
+            }
+            item { WeatherSection() }
+            item {
+                Text(stringResource(R.string.style_title), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+            }
+            // Khung xem trước được ghim phía trên khi cuộn qua các thanh chỉnh giao diện.
+            stickyHeader {
+                Surface(Modifier.fillMaxWidth(), color = MaterialTheme.colorScheme.background) {
+                    Column(Modifier.padding(vertical = 6.dp)) { StylePreview(style) }
+                }
+            }
+            item { StyleSection(style, onStyleChange) }
+            // Tiêu đề rỗng kế tiếp thay thế khung xem trước, để nó không che các phần phía dưới.
+            stickyHeader { Spacer(Modifier.height(0.dp)) }
+            item { IconSwitchRow() }
+            item { AlertsRow() }
+            item { DiagnosticsCard() }
+            item { Text(stringResource(R.string.guide_title), style = MaterialTheme.typography.titleMedium) }
+            items(steps.size) { index ->
+                Text("${index + 1}. " + stringResource(steps[index]), style = MaterialTheme.typography.bodyMedium)
+            }
+            item { Spacer(Modifier.height(8.dp)) }
         }
     }
 }
