@@ -262,5 +262,5 @@
     <string name="alert_hot_title">Máy đang nóng</string>
     <string name="alert_hot_text">Nhiệt độ pin %1$.1f°C. Nên tạm nghỉ và tránh sạc khi đang nóng.</string>
     <string name="disp_motion">Hiệu ứng thời tiết chuyển động</string>
-    <string name="disp_motion_hint">Mưa, nắng, mây, sao… chạy khoảng 1 phút mỗi khi màn hình chính hiện ra hoặc widget được cập nhật, rồi đứng yên để tiết kiệm pin. Tự tắt khi bật tiết kiệm pin hoặc tắt hoạt ảnh hệ thống. Cần có thành phố và dữ liệu thời tiết.</string>
+    <string name="disp_motion_hint">Giọt mưa bám kính, nắng, mây, sao… chạy khoảng 1 phút mỗi khi màn hình chính hiện ra hoặc widget được cập nhật, rồi đứng yên để tiết kiệm pin. Tự tắt khi bật tiết kiệm pin hoặc tắt hoạt ảnh hệ thống. Cần có thành phố và dữ liệu thời tiết.</string>
 </resources>

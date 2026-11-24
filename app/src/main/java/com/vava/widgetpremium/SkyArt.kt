@@ -105,7 +105,7 @@ object SkyArt {
 
     /**
      * `animated`: widget đang có lớp hiệu ứng chuyển động phủ lên, nên nền chỉ vẽ ít hạt (mưa, tuyết, sao)
-     * để hai lớp không chồng thành dày đặc và cứng.
+     * để hai lớp không chồng thành dày đặc và cứng. Mưa và giông không vẽ vạch mưa (lớp hiệu ứng là giọt nước bám kính).
      */
     fun draw(c: Canvas, w: Float, h: Float, unit: Float, sky: Sky, alpha: Float, animated: Boolean = false) {
         val rnd = Random(7)
@@ -158,12 +158,13 @@ object SkyArt {
             Sky.RAIN -> {
                 cumulus(c, w * 0.25f, h * 0.2f, h * 0.85f, alpha, darkTop, darkShade, 6)
                 cumulus(c, w * 0.72f, h * 0.15f, h * 0.9f, alpha, darkTop, darkShade, 8)
-                rain(c, w, h, unit, alpha, (w / unit / 4).toInt().coerceIn(20, 90) * (if (animated) 35 else 100) / 100)
+                if (!animated) rain(c, w, h, unit, alpha, (w / unit / 4).toInt().coerceIn(20, 90))
             }
             Sky.THUNDER -> {
                 cumulus(c, w * 0.25f, h * 0.2f, h * 0.9f, alpha, 0xFF565466.toInt(), 0xFF14141F.toInt(), 6)
                 cumulus(c, w * 0.72f, h * 0.15f, h * 0.95f, alpha, 0xFF565466.toInt(), 0xFF14141F.toInt(), 8)
-                rain(c, w, h, unit, alpha, (w / unit / 5).toInt().coerceIn(16, 70) * (if (animated) 35 else 100) / 100)
+                if (!animated) rain(c, w, h, unit, alpha, (w / unit / 5).toInt().coerceIn(16, 70))
+                if (animated) return // tia sét do lớp hiệu ứng chớp vẽ
                 val bolt = Path().apply {
                     val x = w * 0.58f; val y = h * 0.25f; val s = h * 0.5f
                     moveTo(x, y); lineTo(x - s * 0.22f, y + s * 0.55f); lineTo(x - s * 0.02f, y + s * 0.55f)

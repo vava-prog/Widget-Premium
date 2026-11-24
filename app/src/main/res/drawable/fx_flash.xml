@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Sinh tự động bởi tools/gen_weather_fx.py, không sửa tay. -->
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/fx_flash_vec">
+    <target
+        android:name="flash"
+        android:animation="@animator/fx_flash_flash" />
+    <target
+        android:name="bolt"
+        android:animation="@animator/fx_flash_bolt" />
+</animated-vector>

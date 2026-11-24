@@ -35,6 +35,12 @@ object WeatherMotion {
         }
     }
 
+    /** Các lớp hiệu ứng (tên tài nguyên `fx_<tên>`) hiện cùng lúc cho một loại; giông là mưa kính cộng chớp sáng. */
+    fun layers(motion: Motion): List<String> = when (motion) {
+        Motion.STORM -> listOf("rain", "flash")
+        else -> listOf(motion.name.lowercase())
+    }
+
     /**
      * Lề (dp) để lớp hiệu ứng nằm gọn trong hình chữ nhật bo góc của nền: góc vuông cách mép `inset`
      * vẫn nằm trong cung bo khi inset >= r * (1 - 1/√2) ≈ 0,293 r. Dùng 0,3 r làm tròn lên.
@@ -44,15 +50,10 @@ object WeatherMotion {
 
 /** Gắn lớp hiệu ứng vào RemoteViews: hiện đúng một ProgressBar theo thời tiết, ẩn các cái còn lại. */
 object WidgetMotion {
-    private fun viewId(m: Motion): Int = when (m) {
-        Motion.SUN -> R.id.fx_sun
-        Motion.STARS -> R.id.fx_stars
-        Motion.CLOUDS -> R.id.fx_clouds
-        Motion.RAIN -> R.id.fx_rain
-        Motion.STORM -> R.id.fx_storm
-        Motion.SNOW -> R.id.fx_snow
-        Motion.FOG -> R.id.fx_fog
-    }
+    private val LAYER_IDS = mapOf(
+        "sun" to R.id.fx_sun, "stars" to R.id.fx_stars, "clouds" to R.id.fx_clouds, "rain" to R.id.fx_rain,
+        "flash" to R.id.fx_flash, "snow" to R.id.fx_snow, "fog" to R.id.fx_fog
+    )
 
     /** Hiệu ứng sẽ chạy cho bầu trời này (null nếu tắt, tiết kiệm pin hoặc hệ thống tắt hoạt ảnh). */
     fun resolve(context: Context, style: WidgetStyle, sky: Sky?): Motion? {
@@ -65,11 +66,11 @@ object WidgetMotion {
         val inset = (WeatherMotion.insetDp(style.cornerDp) * context.resources.displayMetrics.density).toInt()
         views.setViewPadding(R.id.fx_box, inset, inset, inset, inset)
         views.setViewVisibility(R.id.fx_box, if (motion != null) View.VISIBLE else View.GONE)
-        for (m in Motion.values()) {
-            val id = viewId(m)
+        val active = motion?.let { m -> WeatherMotion.layers(m).mapNotNull { LAYER_IDS[it] } }.orEmpty()
+        for (id in LAYER_IDS.values) {
             // Ẩn rồi hiện lại ngay trong cùng một lần cập nhật để hoạt ảnh chạy lại từ đầu mỗi khi widget được vẽ lại.
-            if (m == motion) views.setViewVisibility(id, View.GONE)
-            views.setViewVisibility(id, if (m == motion) View.VISIBLE else View.GONE)
+            if (id in active) views.setViewVisibility(id, View.GONE)
+            views.setViewVisibility(id, if (id in active) View.VISIBLE else View.GONE)
         }
     }
 }

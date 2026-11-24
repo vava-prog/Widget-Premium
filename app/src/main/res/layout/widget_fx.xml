@@ -52,12 +52,12 @@
         android:visibility="gone" />
 
     <ProgressBar
-        android:id="@+id/fx_storm"
+        android:id="@+id/fx_flash"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:importantForAccessibility="no"
         android:indeterminate="true"
-        android:indeterminateDrawable="@drawable/fx_storm"
+        android:indeterminateDrawable="@drawable/fx_flash"
         android:indeterminateOnly="false"
         android:visibility="gone" />
 

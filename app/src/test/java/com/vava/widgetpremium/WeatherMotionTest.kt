@@ -64,12 +64,19 @@ class WeatherMotionTest {
     private fun attr(text: String, name: String): String? =
         Regex("android:$name=\"([^\"]*)\"").find(text)?.groupValues?.get(1)
 
+    private fun allLayers(): List<String> = Motion.values().flatMap { WeatherMotion.layers(it) }.distinct()
+
+    @Test
+    fun stormIsGlassRainPlusFlashOnTop() {
+        assertEquals(listOf("rain", "flash"), WeatherMotion.layers(Motion.STORM))
+        assertEquals(listOf("snow"), WeatherMotion.layers(Motion.SNOW))
+    }
+
     @Test
     fun everyMotionHasItsResourcesAndViewId() {
         val res = resDir()
         val layout = File(res, "layout/widget_fx.xml").readText()
-        for (m in Motion.values()) {
-            val n = m.name.lowercase()
+        for (n in allLayers()) {
             assertTrue("thiếu fx_$n.xml", File(res, "drawable/fx_$n.xml").isFile)
             assertTrue("thiếu fx_${n}_vec.xml", File(res, "drawable/fx_${n}_vec.xml").isFile)
             assertTrue("thiếu id fx_$n", layout.contains("@+id/fx_$n\""))
@@ -80,8 +87,7 @@ class WeatherMotionTest {
     @Test
     fun everyAvdTargetExistsAndHasAnAnimator() {
         val res = resDir()
-        for (m in Motion.values()) {
-            val n = m.name.lowercase()
+        for (n in allLayers()) {
             val avd = File(res, "drawable/fx_$n.xml").readText()
             val vec = File(res, "drawable/fx_${n}_vec.xml").readText()
             val targets = Regex("<target\\s+android:name=\"([^\"]+)\"\\s+android:animation=\"@animator/([^\"]+)\"").findAll(avd).toList()

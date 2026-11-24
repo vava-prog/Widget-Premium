@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Sinh tự động bởi tools/gen_weather_fx.py, không sửa tay. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="240dp"
+    android:height="120dp"
+    android:viewportWidth="240"
+    android:viewportHeight="120">
+    <clip-path android:pathData="M0,0H240V120H0Z" />
+    <path
+        android:name="flash"
+        android:fillAlpha="0"
+        android:fillColor="#FFFFFF"
+        android:pathData="M0,0H240V120H0Z" />
+    <path
+        android:name="bolt"
+        android:fillAlpha="0"
+        android:fillColor="#FFF3A8"
+        android:pathData="M139,30L125.8,63L137.8,63L127,90L151,54L139,54Z" />
+</vector>

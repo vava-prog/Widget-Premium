@@ -7,8 +7,9 @@ Mỗi hiệu ứng là một AnimatedVectorDrawable (fx_<tên>.xml) trỏ tới 
 và các animator (fx_<tên>_<đích>.xml). Mọi animator chạy đúng TOTAL ms (số vòng nguyên, kiểu
 reverse thì số lượt chẵn) nên hết giờ trở lại đúng khung ban đầu và dừng. Có test kiểm tra điều này.
 
-Để chuyển động bớt "cứng": nhiều lớp tốc độ khác nhau (không đồng bộ), gió lắc ngang chậm,
-nét mảnh và nhiều mức độ mờ, sấm chớp ở các thời điểm không đều.
+Để chuyển động bớt "cứng": nhiều lớp tốc độ khác nhau (không đồng bộ), nét mảnh và nhiều mức độ mờ.
+Mưa là giọt nước bám trên kính (như kính xe ôtô): hạt li ti, giọt bóng trượt từng nấc để lại vệt rồi tan,
+giọt mới ngưng tụ lại; sấm chớp ở các thời điểm không đều (lớp fx_flash phủ lên lớp mưa).
 Vector 240x120, widget kéo giãn vừa khung; nội dung nằm gọn trong khung để không tràn mép bo góc.
 """
 import math
@@ -19,7 +20,6 @@ ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "app", "sr
 TOTAL = 60000
 W, H = 240, 120
 HEADER = '<?xml version="1.0" encoding="utf-8"?>\n<!-- Sinh tự động bởi tools/gen_weather_fx.py, không sửa tay. -->\n'
-SLANT = 0.3  # độ nghiêng của hạt mưa (dx = -SLANT * độ dài)
 
 
 def n(x):
@@ -61,10 +61,11 @@ def vector(body, gradient=False):
 
 
 def avd(name, targets):
-    t = "".join(
-        '    <target\n        android:name="%s"\n        android:animation="@animator/fx_%s_%s" />\n' % (tn, name, tn)
-        for tn in targets
-    )
+    """targets: tên đích (animator là fx_<name>_<đích>) hoặc cặp (đích, tên animator có sẵn)."""
+    t = ""
+    for tg in targets:
+        tn, res = tg if isinstance(tg, tuple) else (tg, "fx_%s_%s" % (name, tg))
+        t += '    <target\n        android:name="%s"\n        android:animation="@animator/%s" />\n' % (tn, res)
     return (
         HEADER
         + '<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"\n'
@@ -121,16 +122,25 @@ def circle(cx, cy, r):
     return "M%s,%sa%s,%s 0 1,0 %s,0a%s,%s 0 1,0 %s,0Z" % (n(cx - r), n(cy), n(r), n(r), n(2 * r), n(r), n(r), n(-2 * r))
 
 
-def radial(d, cx, cy, r, start, center, end):
+def radial(d, cx, cy, r, start, center, end, stroke=None, sw=0.3):
+    st = ('\n            android:strokeColor="%s"\n            android:strokeWidth="%s"' % (stroke, n(sw))) if stroke else ""
     return (
-        '        <path android:pathData="%s">\n'
+        '        <path\n            android:pathData="%s"%s>\n'
         '            <aapt:attr name="android:fillColor">\n'
         '                <gradient\n                    android:centerX="%s"\n                    android:centerY="%s"\n'
         '                    android:gradientRadius="%s"\n                    android:startColor="%s"\n'
         '                    android:centerColor="%s"\n                    android:endColor="%s"\n'
         '                    android:type="radial" />\n'
         '            </aapt:attr>\n        </path>\n'
-    ) % (d, n(cx), n(cy), n(r), start, center, end)
+    ) % (d, st, n(cx), n(cy), n(r), start, center, end)
+
+
+def solid(d, color):
+    return '        <path\n            android:fillColor="%s"\n            android:pathData="%s" />\n' % (color, d)
+
+
+def ellipse(cx, cy, rx, ry):
+    return "M%s,%sa%s,%s 0 1,0 %s,0a%s,%s 0 1,0 %s,0Z" % (n(cx - rx), n(cy), n(rx), n(ry), n(2 * rx), n(rx), n(ry), n(-2 * rx))
 
 
 def stratified(rng, count, lo, hi):
@@ -140,55 +150,140 @@ def stratified(rng, count, lo, hi):
     return xs
 
 
-# ---------------------------------------------------------------- mưa và giông
+# ---------------------------------------------------------------- mưa trên kính (kiểu kính xe ôtô)
 
 
-def streak_layer(rng, name, period, count, length, buckets, indent):
-    """Một lớp hạt mưa lặp theo chu kỳ `period` (tịnh tiến đúng một chu kỳ thì khung hình y hệt).
-    buckets: [(màu, độ mờ, độ dày)], mỗi hạt rơi ngẫu nhiên vào một mức."""
-    rows = int(math.ceil(H / period)) + 1
-    ds = [[] for _ in buckets]
-    for x in stratified(rng, count, 4, 236):
-        b = rng.randrange(len(buckets))
-        ln = rng.uniform(*length)
-        y = rng.uniform(0, period)
-        for k in range(-1, rows):
-            yy = y + k * period
-            ds[b].append("M%s,%sL%s,%s" % (n(x), n(yy), n(x - SLANT * ln), n(yy + ln)))
-    pad = " " * indent
-    out = '%s<group android:name="%s">\n' % (pad, name)
-    for d, (color, alpha, width) in zip(ds, buckets):
-        if not d:
-            continue
-        out += (
-            '%s    <path\n%s        android:pathData="%s"\n%s        android:strokeAlpha="%s"\n'
-            '%s        android:strokeColor="%s"\n%s        android:strokeLineCap="round"\n'
-            '%s        android:strokeWidth="%s" />\n'
-        ) % (pad, pad, "".join(d), pad, n(alpha), pad, color, pad, pad, n(width))
-    return out + pad + "</group>\n"
+def multi(holders):
+    """Animator keyframe nhiều thuộc tính trong một file. holders: {thuộc tính: [(ms, giá trị, nội suy|None)]}."""
+    out = (
+        HEADER
+        + '<objectAnimator xmlns:android="http://schemas.android.com/apk/res/android"\n'
+        + '    android:duration="%d"\n    android:interpolator="@android:interpolator/linear">\n' % TOTAL
+    )
+    for prop, pts in holders.items():
+        pts = list(pts)
+        if pts[0][0] > 0:
+            pts.insert(0, (0, pts[0][1], None))
+        if pts[-1][0] < TOTAL:
+            pts.append((TOTAL, pts[-1][1], None))
+        assert pts[0][0] == 0 and pts[-1][0] == TOTAL, prop
+        assert all(pts[i][0] < pts[i + 1][0] for i in range(len(pts) - 1)), (prop, [p[0] for p in pts])
+        out += '    <propertyValuesHolder\n        android:propertyName="%s"\n        android:valueType="floatType">\n' % prop
+        for ms, v, ip in pts:
+            ia = ('\n            android:interpolator="@android:interpolator/%s"' % ip) if ip else ""
+            out += '        <keyframe\n            android:fraction="%s"\n            android:value="%s"%s />\n' % (nf(ms / TOTAL), n(v), ia)
+        out += "    </propertyValuesHolder>\n"
+    return out + "</objectAnimator>\n"
 
 
-def rain_parts(seed, scale, boost):
-    rng = random.Random(seed)
-    far = streak_layer(rng, "far", 34, int(12 * scale), (5, 8), [("#DCE9F7", 0.16 * boost, 0.45), ("#E6F0FB", 0.26 * boost, 0.5)], 8)
-    mid = streak_layer(rng, "mid", 48, int(8 * scale), (8, 12), [("#DCE9F7", 0.22 * boost, 0.6), ("#EAF3FF", 0.34 * boost, 0.65)], 8)
-    near = streak_layer(rng, "near", 70, int(5 * scale), (12, 18), [("#EAF3FF", 0.3 * boost, 0.85), ("#FFFFFF", 0.44 * boost, 0.9)], 8)
-    body = '    <group android:name="wind">\n' + far + mid + near + "    </group>\n"
-    anims = {
-        "wind": loop("translateX", 0, -6, 5000, 12, "accelerate_decelerate", True),
-        "far": anim_set([attrs_of("translateY", 0, 34, 1500, 40), attrs_of("translateX", 0, 3, 3000, 20, "accelerate_decelerate", True)]),
-        "mid": anim_set([attrs_of("translateY", 0, 48, 1250, 48), attrs_of("translateX", 0, -3, 2500, 24, "accelerate_decelerate", True)]),
-        "near": anim_set([attrs_of("translateY", 0, 70, 1000, 60), attrs_of("translateX", 0, 4, 2000, 30, "accelerate_decelerate", True)]),
-    }
-    return body, anims
+def place(rng, placed, r, y_lo=9, y_hi=111):
+    """Chọn chỗ cho giọt bán kính r, không chồng lên giọt đã đặt."""
+    import math as m
+    for _ in range(400):
+        x, y = rng.uniform(9, 231), rng.uniform(y_lo, y_hi)
+        if all(m.hypot(x - px, y - py) >= (r + pr) * 1.2 for px, py, pr in placed):
+            placed.append((x, y, r))
+            return x, y
+    raise RuntimeError("không đặt được giọt")
+
+
+def drop_group(name, cx, cy, r):
+    """Giọt nước như thấu kính trên kính: thân trong suốt viền sáng ở mép dưới phải, bóng đổ mềm,
+    điểm sáng phản chiếu ở góc trên trái."""
+    rx, ry = r, r * 1.12
+    out = '    <group\n        android:name="%s"\n        android:pivotX="%s"\n        android:pivotY="%s">\n' % (name, n(cx), n(cy))
+    big = r >= 2.2
+    if big:
+        out += radial(ellipse(cx + 0.3 * r, cy + 0.5 * r, rx * 1.1, ry * 1.05), cx + 0.3 * r, cy + 0.5 * r, r * 1.35, "#40000000", "#1A000000", "#00000000")
+    out += radial(ellipse(cx, cy, rx, ry), cx - 0.18 * r, cy - 0.22 * r, r * 1.15, "#0FFFFFFF", "#22FFFFFF", "#66FFFFFF", "#8CFFFFFF", 0.3)
+    out += solid(ellipse(cx - 0.36 * r, cy - 0.42 * r, 0.27 * r, 0.17 * r), "#E6FFFFFF")
+    if big:
+        out += solid(circle(cx + 0.42 * r, cy + 0.52 * r, 0.12 * r), "#70FFFFFF")
+    return out + "    </group>\n"
+
+
+def slide_profile(rng):
+    """Giọt trượt theo từng nấc (dính rồi tuột): (phần thời gian, phần quãng đường)."""
+    a1 = rng.uniform(0.16, 0.24)
+    a2 = a1 + rng.uniform(0.10, 0.16)
+    a3 = a2 + rng.uniform(0.26, 0.34)
+    a4 = a3 + rng.uniform(0.06, 0.12)
+    d1, d2 = rng.uniform(0.12, 0.20), rng.uniform(0.55, 0.65)
+    return [(a1, d1), (a2, d1), (a3, d2), (a4, d2), (1.0, 1.0)]
 
 
 def gen_rain():
-    body, anims = rain_parts(11, 1.0, 1.0)
-    write("drawable", "fx_rain_vec", vector(body))
-    write("drawable", "fx_rain", avd("rain", list(anims)))
-    for k, v in anims.items():
-        write("animator", "fx_rain_" + k, v)
+    rng = random.Random(11)
+    placed = []
+    large = [(3.4 + rng.random() * 1.0) for _ in range(5)]
+    medium = [(2.2 + rng.random() * 0.8) for _ in range(10)]
+    small = [(1.3 + rng.random() * 0.7) for _ in range(20)]
+    # Giọt trượt cần chỗ trống bên dưới nên đặt ở nửa trên; còn lại rải đều.
+    drops = []  # (tên, x, y, r, loại)
+    kinds = (["slide"] * 3 + ["churn"] + ["wobble"]) + (["slide"] * 3 + ["churn"] * 4 + ["wobble"] * 3) + (["churn"] * 8 + ["wobble"] * 4 + ["still"] * 8)
+    sizes = large + medium + small
+    for kind, r in zip(kinds, sizes):
+        x, y = place(rng, placed, r, 10, 60 if kind == "slide" else 111)
+        drops.append((kind, x, y, r))
+    for i, (kind, x, y, r) in enumerate(drops):
+        drops[i] = ("d%d" % (i + 1), kind, x, y, r)
+
+    # Các hạt nước li ti bám dày: gộp mỗi loại vào một path để nhẹ.
+    beads, glints = [], []
+    for _ in range(46):
+        x, y, r = rng.uniform(6, 234), rng.uniform(6, 114), rng.uniform(0.6, 1.2)
+        beads.append(circle(x, y, r))
+        glints.append(circle(x - 0.35 * r, y - 0.4 * r, 0.3))
+    body = (
+        '    <path\n        android:fillColor="#1FFFFFFF"\n        android:pathData="%s"\n        android:strokeColor="#4DFFFFFF"\n        android:strokeWidth="0.22" />\n' % "".join(beads)
+        + '    <path\n        android:name="glint"\n        android:fillAlpha="0.55"\n        android:fillColor="#FFFFFF"\n        android:pathData="%s" />\n' % "".join(glints)
+    )
+    targets = [("glint", "fx_rain_glint")]
+    anims = {"fx_rain_glint": loop("fillAlpha", 0.55, 1.0, 2500, 24, "accelerate_decelerate", True)}
+    for k, (dur, passes) in enumerate([(2500, 24), (3000, 20), (3750, 16)]):
+        anims["fx_rain_wobble_%s" % "abc"[k]] = anim_set([
+            attrs_of("scaleX", 1, 1.07, dur, passes, "accelerate_decelerate", True),
+            attrs_of("scaleY", 1, 0.93, dur, passes, "accelerate_decelerate", True),
+        ])
+
+    trails, groups, wob = "", "", 0
+    ease = "accelerate_decelerate"
+    for name, kind, x, y, r in sorted(drops, key=lambda d: d[4]):
+        groups += drop_group(name, x, y, r)
+        idx = name[1:]
+        if kind == "slide":
+            D = min(rng.uniform(30, 58), 112 - y - r)
+            ts, dur, gap = rng.uniform(1500, 38000), rng.uniform(3500, 6500), rng.uniform(1500, 6000)
+            t_end = ts + dur
+            t_re = t_end + 800 + gap
+            prof = slide_profile(rng)
+            ty = [(ts, 0, None)] + [(ts + a * dur, d * D, ease) for a, d in prof] + [(t_end + 800, D, None), (t_end + 900, 0, None)]
+            sc = [(0, 1, None), (ts - 1000, 1, None), (ts, 1.12, ease), (t_end, 0.62, ease), (t_end + 800, 0, ease), (t_re, 0, None), (t_re + 2500, 1, ease)]
+            anims["fx_rain_" + name] = multi({"translateY": ty, "scaleX": sc, "scaleY": sc})
+            targets.append((name, "fx_rain_" + name))
+            ty_trail = [(0, 0, None), (ts, 0, None)] + [(ts + a * dur, d, ease) for a, d in prof] + [(t_end + 3500, 1, None), (t_end + 3600, 0, None)]
+            sx_trail = [(0, 1, None), (t_end, 1, None), (t_end + 3500, 0, ease)]
+            anims["fx_rain_t" + idx] = multi({"scaleY": ty_trail, "scaleX": sx_trail})
+            targets.append(("t" + idx, "fx_rain_t" + idx))
+            tw = 0.5 + r * 0.22
+            trails += (
+                '    <group\n        android:name="t%s"\n        android:pivotX="%s"\n        android:pivotY="%s"\n        android:scaleY="0">\n'
+                '        <path\n            android:pathData="M%s,%sL%s,%s"\n            android:strokeAlpha="0.28"\n            android:strokeColor="#FFFFFF"\n'
+                '            android:strokeLineCap="round"\n            android:strokeWidth="%s" />\n    </group>\n'
+            ) % (idx, n(x), n(y), n(x), n(y), n(x), n(y + D), n(tw))
+        elif kind == "churn":
+            t_hide, shrink, gap, grow = rng.uniform(2500, 36000), rng.uniform(1200, 2200), rng.uniform(1500, 9000), rng.uniform(2200, 3500)
+            sc = [(0, 1, None), (t_hide, 1, None), (t_hide + shrink, 0, ease), (t_hide + shrink + gap, 0, None), (t_hide + shrink + gap + grow, 1, ease)]
+            anims["fx_rain_" + name] = multi({"scaleX": sc, "scaleY": sc})
+            targets.append((name, "fx_rain_" + name))
+        elif kind == "wobble":
+            targets.append((name, "fx_rain_wobble_" + "abc"[wob % 3]))
+            wob += 1
+
+    write("drawable", "fx_rain_vec", vector(body + trails + groups, gradient=True))
+    write("drawable", "fx_rain", avd("rain", targets))
+    for res, xml in anims.items():
+        write("animator", res, xml)
 
 
 def flash_pattern(events):
@@ -207,10 +302,10 @@ def flash_pattern(events):
     return out
 
 
-def gen_storm():
-    body, anims = rain_parts(23, 1.5, 1.2)
+def gen_flash():
+    """Lớp chớp sáng và tia sét cho giông, phủ cùng lớp giọt mưa."""
     bolt = "M139,30L125.8,63L137.8,63L127,90L151,54L139,54Z"
-    body += (
+    body = (
         '    <path\n        android:name="flash"\n        android:fillAlpha="0"\n        android:fillColor="#FFFFFF"\n'
         '        android:pathData="M0,0H240V120H0Z" />\n'
         '    <path\n        android:name="bolt"\n        android:fillAlpha="0"\n        android:fillColor="#FFF3A8"\n'
@@ -218,12 +313,10 @@ def gen_storm():
     )
     events = [(3000, 1.0), (11500, 0.7), (12200, 1.0), (27000, 0.9), (38500, 0.6), (39100, 1.0), (52000, 0.8)]
     pattern = flash_pattern(events)
-    write("drawable", "fx_storm_vec", vector(body))
-    write("drawable", "fx_storm", avd("storm", list(anims) + ["flash", "bolt"]))
-    for k, v in anims.items():
-        write("animator", "fx_storm_" + k, v)
-    write("animator", "fx_storm_flash", keyframes("fillAlpha", [(f, 0.4 * v) for f, v in pattern]))
-    write("animator", "fx_storm_bolt", keyframes("fillAlpha", [(f, 0.85 * v) for f, v in pattern]))
+    write("drawable", "fx_flash_vec", vector(body))
+    write("drawable", "fx_flash", avd("flash", ["flash", "bolt"]))
+    write("animator", "fx_flash_flash", keyframes("fillAlpha", [(f, 0.4 * v) for f, v in pattern]))
+    write("animator", "fx_flash_bolt", keyframes("fillAlpha", [(f, 0.85 * v) for f, v in pattern]))
 
 
 # ---------------------------------------------------------------- tuyết
@@ -351,7 +444,7 @@ def gen_sun():
 if __name__ == "__main__":
     clean()
     gen_rain()
-    gen_storm()
+    gen_flash()
     gen_snow()
     gen_clouds()
     gen_fog()
