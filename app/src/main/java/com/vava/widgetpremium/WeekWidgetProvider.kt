@@ -69,13 +69,29 @@ class WeekWidgetProvider : AppWidgetProvider() {
             WidgetBackground.setShown(views, R.id.week_lunar, opts.showLunar)
             WidgetBackground.setShown(views, R.id.week_weather_box, opts.showWeather)
             val today = LocalDate.now()
-            val forecast = WeatherStore.cached(context)?.days.orEmpty()
+            val cachedWeather = WeatherStore.cached(context)
+            val forecast = cachedWeather?.days.orEmpty()
+            val hourCells = if (opts.weekMode == WeekMode.HOURLY) WeekStrip.hourly(cachedWeather, System.currentTimeMillis()) else emptyList()
             val l = VietCalendar.lunarOf(today)
             val lunarRes = if (l.isLeap) R.string.week_lunar_leap_fmt else R.string.week_lunar_fmt
             views.setTextViewText(R.id.week_lunar, context.getString(lunarRes, l.day, l.month))
 
             VietCalendar.weekDays(today).forEachIndexed { i, date ->
+                if (hourCells.isNotEmpty()) {
+                    // Dự báo theo giờ: giờ ở trên, biểu tượng ở giữa, nhiệt độ ở dưới; ô đầu là giờ hiện tại.
+                    val cell = hourCells.getOrNull(i)
+                    views.setTextViewText(NAME[i], cell?.label.orEmpty())
+                    views.setTextViewTextSize(NAME[i], android.util.TypedValue.COMPLEX_UNIT_SP, 10f)
+                    views.setTextViewText(DAY[i], cell?.icon.orEmpty())
+                    views.setTextViewTextSize(DAY[i], android.util.TypedValue.COMPLEX_UNIT_SP, 15f)
+                    views.setTextViewText(LUNAR[i], cell?.temp.orEmpty())
+                    views.setTextViewTextSize(LUNAR[i], android.util.TypedValue.COMPLEX_UNIT_SP, 11f)
+                    views.setInt(CELL[i], "setBackgroundResource", if (i == 0) TODAY_BG[opts.todayColorIndex.coerceIn(0, TODAY_BG.size - 1)] else 0)
+                    WidgetTap.bind(context, views, CELL[i], TapTarget.HOME)
+                    return@forEachIndexed
+                }
                 views.setTextViewText(NAME[i], context.getString(NAME_RES[i]))
+                views.setTextViewTextSize(NAME[i], android.util.TypedValue.COMPLEX_UNIT_SP, 11f)
                 if (opts.weekMode == WeekMode.WEATHER) {
                     // Như app mẫu: biểu tượng thời tiết thay cho số ngày, bên dưới là "thấp° cao°".
                     val icon = WeekStrip.icon(date, forecast)

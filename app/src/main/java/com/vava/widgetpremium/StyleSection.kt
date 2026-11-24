@@ -261,6 +261,7 @@ fun StyleSection(style: WidgetStyle, onChange: (WidgetStyle) -> Unit) {
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             FilterChip(selected = style.weekMode == WeekMode.LUNAR, onClick = { change(style.copy(weekMode = WeekMode.LUNAR)) }, label = { Text(stringResource(R.string.disp_week_lunar)) })
             FilterChip(selected = style.weekMode == WeekMode.WEATHER, onClick = { change(style.copy(weekMode = WeekMode.WEATHER)) }, label = { Text(stringResource(R.string.disp_week_weather)) })
+            FilterChip(selected = style.weekMode == WeekMode.HOURLY, onClick = { change(style.copy(weekMode = WeekMode.HOURLY)) }, label = { Text(stringResource(R.string.disp_week_hourly)) })
         }
         OutlinedButton(onClick = {
             StyleStore.reset(context)

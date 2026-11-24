@@ -24,7 +24,7 @@
 ### Giao diện
 - **Chuẩn:** sạch, đơn giản, tự chuyển sáng/tối theo hệ thống.
 - **Kính mờ:** nền trong suốt, bo góc mềm.
-- **Hiển thị:** bật/tắt ngày dương, âm lịch, thời tiết, chạm mở app; kiểu giờ hệ thống/24/12; dải tuần hiện ngày âm hoặc thời tiết 7 ngày.
+- **Hiển thị:** bật/tắt ngày dương, âm lịch, thời tiết, chạm mở app; kiểu giờ hệ thống/24/12; dải tuần hiện ngày âm, thời tiết 7 ngày hoặc dự báo 7 giờ tới (giờ, biểu tượng ngày/đêm, nhiệt độ).
 - **Chi tiết thời tiết:** dòng thấp/cao và khả năng mưa trên widget thông tin (tùy chọn, mặc định tắt); màu nổi cho hôm nay trên dải tuần.
 - **Số liệu hiện tại:** thẻ ở trang chủ hiện pin, nhiệt độ, RAM, bộ nhớ, lần cập nhật widget và thời tiết, tình trạng quyền nhắc việc (thông báo, báo thức chính xác, hạn chế pin).
 - **Kính mờ:** chỉnh độ mờ (lớp sương) và độ nổi khối (viền, mép sáng).

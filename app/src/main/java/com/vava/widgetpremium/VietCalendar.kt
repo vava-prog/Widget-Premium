@@ -240,7 +240,28 @@ object ReminderRules {
 }
 
 /** Nội dung ô thời tiết của dải tuần: biểu tượng và "thấp° cao°"; thiếu dữ liệu thì rỗng. */
+/** Một ô của dải dự báo theo giờ: giờ ("18:00"), biểu tượng và nhiệt độ ("27°"). */
+data class HourCell(val label: String, val icon: String, val temp: String)
+
 object WeekStrip {
+    /**
+     * Các giờ tới (từ giờ hiện tại ở thành phố, mỗi giờ một ô) để hiện trên dải tuần. Rỗng nếu chưa có dữ liệu
+     * theo giờ (bản lưu cũ hoặc chưa tải), khi đó widget quay về dải ngày. Biểu tượng theo ngày hoặc đêm tại
+     * giờ đó; nhiệt độ thiếu thì để trống, không hiện số giả.
+     */
+    fun hourly(weather: Weather?, nowMs: Long, count: Int = 7): List<HourCell> {
+        if (weather == null || weather.hourly.isEmpty()) return emptyList()
+        val nowIso = Astro.cityLocalIso(nowMs, weather.utcOffsetSec)
+        return Astro.nextHours(weather.hourly, nowIso, step = 1, count = count).map {
+            val day = Astro.isDayAt(it.time, weather.days)
+            HourCell(
+                label = it.time.takeLast(5),
+                icon = Condition.fromWmo(it.code).emoji(day),
+                temp = if (it.tempC.isNaN()) "" else "${Math.round(it.tempC)}°"
+            )
+        }
+    }
+
     private fun day(date: java.time.LocalDate, days: List<DayForecast>): DayForecast? =
         days.firstOrNull { it.date == date.toString() }
 

@@ -10,7 +10,7 @@ enum class WidgetTheme { STANDARD, GLASS, WEATHER }
 enum class HourFormat { SYSTEM, H24, H12 }
 
 /** Hàng thứ ba của dải tuần: ngày âm hoặc thời tiết từng ngày. */
-enum class WeekMode { LUNAR, WEATHER }
+enum class WeekMode { LUNAR, WEATHER, HOURLY }
 
 enum class TextTone { AUTO, LIGHT, DARK, CUSTOM }
 

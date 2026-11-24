@@ -214,6 +214,7 @@
     <string name="disp_week_mode">Week strip (Week widget)</string>
     <string name="disp_week_lunar">Lunar day</string>
     <string name="disp_week_weather">7-day weather</string>
+    <string name="disp_week_hourly">Hourly forecast</string>
     <string name="disp_weather_detail">Weather detail line (low/high, chance of rain)</string>
     <string name="disp_today_color">Today highlight color (week strip)</string>
     <string name="weather_detail_range_fmt">Low – high: %1$d° – %2$d°</string>

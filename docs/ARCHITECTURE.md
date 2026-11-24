@@ -35,7 +35,7 @@ GitHub Actions: job `build` dựng APK debug và đăng lên pre-release `latest
 | Thành phần | Việc làm | Ghi chú |
 |---|---|---|
 | `WeatherSky`, `SkyArt` | Chọn và vẽ bầu trời theo thời tiết đã lưu cho giao diện "Theo thời tiết" | Logic chọn loại trời và màu là thuần, có test; việc vẽ bằng Canvas, tự thiết kế |
-| `WeekWidgetProvider` | Widget Lịch tuần 4×2: giờ, ngày âm dương, thẻ thời tiết, dải 7 ngày | Dải tuần hiện ngày âm hoặc thời tiết 7 ngày (`WeekStrip`, `VietCalendar.weekDays`) |
+| `WeekWidgetProvider` | Widget Lịch tuần 4×2: giờ, ngày âm dương, thẻ thời tiết, dải 7 ngày | Dải tuần hiện ngày âm, thời tiết 7 ngày hoặc dự báo theo giờ (`WeekStrip`, `VietCalendar.weekDays`; dải giờ lấy từ `Weather.hourly`, có test) |
 | `DeviceLocation` | Nút "Dùng vị trí của máy" | Quyền vị trí gần đúng, chỉ khi bấm, lấy một lần, làm tròn ~1 km, không chạy nền |
 | `Diagnostics`, `Age` | Thẻ "Số liệu hiện tại" và tình trạng nhắc việc | Đọc trực tiếp từ máy, không gửi đi đâu |
 | `WidgetStyle` (mở rộng) | Viền, cỡ đồng hồ, giây, tên tự nhập, màu chữ (mỗi giao diện một màu), độ mờ/nổi khối kính, tùy chọn hiển thị | Lưu trong SharedPreferences "style"; hàm tính màu và định dạng là thuần, có test |

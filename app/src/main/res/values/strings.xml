@@ -214,6 +214,7 @@
     <string name="disp_week_mode">Dải tuần (widget Lịch tuần)</string>
     <string name="disp_week_lunar">Ngày âm</string>
     <string name="disp_week_weather">Thời tiết 7 ngày</string>
+    <string name="disp_week_hourly">Dự báo theo giờ</string>
     <string name="disp_weather_detail">Dòng chi tiết thời tiết (thấp/cao, khả năng mưa)</string>
     <string name="disp_today_color">Màu nổi của hôm nay (dải tuần)</string>
     <string name="weather_detail_range_fmt">Thấp – cao: %1$d° – %2$d°</string>
