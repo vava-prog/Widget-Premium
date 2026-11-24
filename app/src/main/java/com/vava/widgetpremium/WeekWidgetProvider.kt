@@ -80,7 +80,7 @@ class WeekWidgetProvider : AppWidgetProvider() {
                     // Như app mẫu: biểu tượng thời tiết thay cho số ngày, bên dưới là "thấp° cao°".
                     val icon = WeekStrip.icon(date, forecast)
                     views.setTextViewText(DAY[i], icon.ifEmpty { date.dayOfMonth.toString() })
-                    views.setTextViewTextSize(DAY[i], android.util.TypedValue.COMPLEX_UNIT_SP, if (icon.isEmpty()) 16f else 18f)
+                    views.setTextViewTextSize(DAY[i], android.util.TypedValue.COMPLEX_UNIT_SP, if (icon.isEmpty()) 16f else 15f)
                     views.setTextViewText(LUNAR[i], WeekStrip.range(date, forecast))
                     views.setTextViewTextSize(LUNAR[i], android.util.TypedValue.COMPLEX_UNIT_SP, 9f)
                 } else {
