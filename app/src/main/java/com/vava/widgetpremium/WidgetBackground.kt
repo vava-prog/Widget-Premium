@@ -27,11 +27,13 @@ object WidgetBackground {
         val day = WidgetUpdater.widgetIsDay(context)
         val sky = if (style.theme == WidgetTheme.WEATHER) WeatherSky.current(context, day) else null
         val palette = WidgetPalette.palette(style, day, sky)
+        val motion = WidgetMotion.resolve(context, style, sky)
         views.setImageViewBitmap(
             imageId,
-            render(context, widthDp, heightDp, palette, style.cornerDp, sky, style.opacityPercent / 100f)
+            // Có lớp hiệu ứng chuyển động thì nền chỉ vẽ ít hạt mưa, tuyết, sao để không bị dày đặc chồng nhau.
+            render(context, widthDp, heightDp, palette, style.cornerDp, sky, style.opacityPercent / 100f, animated = motion != null)
         )
-        WidgetMotion.apply(context, views, style, sky)
+        WidgetMotion.apply(context, views, style, motion)
     }
 
     /** Ép màu chữ theo lựa chọn; AUTO giữ nguyên màu trong layout. `primary` là chữ lớn, `secondary` là các dòng phụ. */
@@ -76,7 +78,7 @@ object WidgetBackground {
 
     fun render(
         context: Context, widthDp: Int, heightDp: Int, palette: Palette, cornerDp: Int,
-        sky: Sky? = null, artAlpha: Float = 1f
+        sky: Sky? = null, artAlpha: Float = 1f, animated: Boolean = false
     ): Bitmap {
         val density = context.resources.displayMetrics.density
         var w = widthDp * density
@@ -100,7 +102,7 @@ object WidgetBackground {
             canvas.save()
             val clip = android.graphics.Path().apply { addRoundRect(rect, radius, radius, android.graphics.Path.Direction.CW) }
             canvas.clipPath(clip)
-            SkyArt.draw(canvas, bitmap.width.toFloat(), bitmap.height.toFloat(), density * k, sky, artAlpha)
+            SkyArt.draw(canvas, bitmap.width.toFloat(), bitmap.height.toFloat(), density * k, sky, artAlpha, animated)
             canvas.restore()
         }
 

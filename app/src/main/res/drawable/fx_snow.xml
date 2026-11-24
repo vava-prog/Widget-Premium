@@ -6,12 +6,9 @@
         android:name="far"
         android:animation="@animator/fx_snow_far" />
     <target
-        android:name="far_sway"
-        android:animation="@animator/fx_snow_far_sway" />
+        android:name="mid"
+        android:animation="@animator/fx_snow_mid" />
     <target
         android:name="near"
         android:animation="@animator/fx_snow_near" />
-    <target
-        android:name="near_sway"
-        android:animation="@animator/fx_snow_near_sway" />
 </animated-vector>

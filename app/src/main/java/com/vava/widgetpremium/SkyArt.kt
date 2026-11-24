@@ -103,7 +103,11 @@ object SkyArt {
         c.drawCircle(cx, cy, r, paint(0xFFF6F3E8.toInt(), alpha * 0.95f, 1.2f * unit))
     }
 
-    fun draw(c: Canvas, w: Float, h: Float, unit: Float, sky: Sky, alpha: Float) {
+    /**
+     * `animated`: widget đang có lớp hiệu ứng chuyển động phủ lên, nên nền chỉ vẽ ít hạt (mưa, tuyết, sao)
+     * để hai lớp không chồng thành dày đặc và cứng.
+     */
+    fun draw(c: Canvas, w: Float, h: Float, unit: Float, sky: Sky, alpha: Float, animated: Boolean = false) {
         val rnd = Random(7)
         val lightTop = 0xFFFFFFFF.toInt()
         val lightShade = 0xFF9DB3CC.toInt()
@@ -122,7 +126,7 @@ object SkyArt {
                 sun(c, w * 0.82f, h * 0.16f, h, alpha)
             }
             Sky.CLEAR_NIGHT -> {
-                stars(c, w, h, unit, alpha, rnd, 30)
+                stars(c, w, h, unit, alpha, rnd, if (animated) 12 else 30)
                 moon(c, w, h, unit, alpha)
             }
             Sky.PARTLY_DAY -> {
@@ -133,7 +137,7 @@ object SkyArt {
                 cumulus(c, w * 0.78f, h * 0.8f, h * 0.55f, alpha, lightTop, lightShade, 5)
             }
             Sky.PARTLY_NIGHT -> {
-                stars(c, w, h, unit, alpha, rnd, 16)
+                stars(c, w, h, unit, alpha, rnd, if (animated) 7 else 16)
                 moon(c, w, h, unit, alpha)
                 cumulus(c, w * 0.3f, h * 0.6f, h * 0.65f, alpha * 0.8f, nightTop, nightShade, 3)
                 cumulus(c, w * 0.78f, h * 0.82f, h * 0.5f, alpha * 0.8f, nightTop, nightShade, 5)
@@ -154,12 +158,12 @@ object SkyArt {
             Sky.RAIN -> {
                 cumulus(c, w * 0.25f, h * 0.2f, h * 0.85f, alpha, darkTop, darkShade, 6)
                 cumulus(c, w * 0.72f, h * 0.15f, h * 0.9f, alpha, darkTop, darkShade, 8)
-                rain(c, w, h, unit, alpha, (w / unit / 4).toInt().coerceIn(20, 90))
+                rain(c, w, h, unit, alpha, (w / unit / 4).toInt().coerceIn(20, 90) * (if (animated) 35 else 100) / 100)
             }
             Sky.THUNDER -> {
                 cumulus(c, w * 0.25f, h * 0.2f, h * 0.9f, alpha, 0xFF565466.toInt(), 0xFF14141F.toInt(), 6)
                 cumulus(c, w * 0.72f, h * 0.15f, h * 0.95f, alpha, 0xFF565466.toInt(), 0xFF14141F.toInt(), 8)
-                rain(c, w, h, unit, alpha, (w / unit / 5).toInt().coerceIn(16, 70))
+                rain(c, w, h, unit, alpha, (w / unit / 5).toInt().coerceIn(16, 70) * (if (animated) 35 else 100) / 100)
                 val bolt = Path().apply {
                     val x = w * 0.58f; val y = h * 0.25f; val s = h * 0.5f
                     moveTo(x, y); lineTo(x - s * 0.22f, y + s * 0.55f); lineTo(x - s * 0.02f, y + s * 0.55f)
@@ -171,7 +175,7 @@ object SkyArt {
                 cumulus(c, w * 0.3f, h * 0.2f, h * 0.75f, alpha, greyTop, greyShade, 9)
                 cumulus(c, w * 0.78f, h * 0.15f, h * 0.7f, alpha, greyTop, greyShade, 10)
                 val p = paint(WHITE, alpha * 0.85f, 0.6f * unit)
-                repeat(34) { c.drawCircle(rnd.nextFloat() * w, rnd.nextFloat() * h, (1f + rnd.nextFloat() * 2f) * unit, p) }
+                repeat(if (animated) 12 else 34) { c.drawCircle(rnd.nextFloat() * w, rnd.nextFloat() * h, (1f + rnd.nextFloat() * 2f) * unit, p) }
             }
         }
     }

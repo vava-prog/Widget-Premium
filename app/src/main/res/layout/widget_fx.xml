@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
     Lớp hiệu ứng thời tiết phủ lên nền widget. Mỗi ProgressBar mang một AnimatedVectorDrawable hữu hạn:
-    launcher tự chạy hoạt ảnh mỗi khi view hiện ra (ví dụ vuốt tới trang có widget), hết giờ thì đứng yên.
+    launcher tự chạy hoạt ảnh mỗi khi view hiện ra (màn hình chính hiện lại, widget cập nhật), hết giờ (khoảng 1 phút) thì đứng yên.
     Chỉ một ProgressBar được hiện (xem WidgetMotion); các cái còn lại GONE nên không chạy.
     indeterminateOnly=false để vector kéo giãn vừa khung thay vì giữ tỉ lệ.
 -->

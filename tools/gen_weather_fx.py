@@ -6,6 +6,9 @@ Chạy: python3 tools/gen_weather_fx.py   (ghi vào app/src/main/res/drawable v�
 Mỗi hiệu ứng là một AnimatedVectorDrawable (fx_<tên>.xml) trỏ tới vector tĩnh (fx_<tên>_vec.xml)
 và các animator (fx_<tên>_<đích>.xml). Mọi animator chạy đúng TOTAL ms (số vòng nguyên, kiểu
 reverse thì số lượt chẵn) nên hết giờ trở lại đúng khung ban đầu và dừng. Có test kiểm tra điều này.
+
+Để chuyển động bớt "cứng": nhiều lớp tốc độ khác nhau (không đồng bộ), gió lắc ngang chậm,
+nét mảnh và nhiều mức độ mờ, sấm chớp ở các thời điểm không đều.
 Vector 240x120, widget kéo giãn vừa khung; nội dung nằm gọn trong khung để không tràn mép bo góc.
 """
 import math
@@ -13,13 +16,19 @@ import os
 import random
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "app", "src", "main", "res")
-TOTAL = 3600
+TOTAL = 60000
 W, H = 240, 120
 HEADER = '<?xml version="1.0" encoding="utf-8"?>\n<!-- Sinh tự động bởi tools/gen_weather_fx.py, không sửa tay. -->\n'
+SLANT = 0.3  # độ nghiêng của hạt mưa (dx = -SLANT * độ dài)
 
 
 def n(x):
     s = ("%.2f" % x).rstrip("0").rstrip(".")
+    return "0" if s in ("", "-0") else s
+
+
+def nf(x):
+    s = ("%.5f" % x).rstrip("0").rstrip(".")
     return "0" if s in ("", "-0") else s
 
 
@@ -30,11 +39,20 @@ def write(kind, name, text):
         f.write(text)
 
 
+def clean():
+    for kind in ("drawable", "animator"):
+        folder = os.path.join(ROOT, kind)
+        if os.path.isdir(folder):
+            for name in os.listdir(folder):
+                if name.startswith("fx_"):
+                    os.remove(os.path.join(folder, name))
+
+
 def vector(body, gradient=False):
     ns = '\n    xmlns:aapt="http://schemas.android.com/aapt"' if gradient else ""
     return (
         HEADER
-        + '<vector xmlns:android="http://schemas.android.com/apk/res/android"' + ns + '\n'
+        + '<vector xmlns:android="http://schemas.android.com/apk/res/android"' + ns + "\n"
         + '    android:width="240dp"\n    android:height="120dp"\n'
         + '    android:viewportWidth="240"\n    android:viewportHeight="120">\n'
         + '    <clip-path android:pathData="M0,0H240V120H0Z" />\n'
@@ -74,18 +92,22 @@ def loop(prop, a, b, dur, passes, interp="linear", reverse=False):
     return HEADER + '<objectAnimator xmlns:android="http://schemas.android.com/apk/res/android"\n    ' + "\n    ".join(attrs) + " />\n"
 
 
-def scale_set(a, b, dur, passes):
-    """Phóng/thu đều theo cả hai trục: một đích (nhóm) cần một animator set gồm hai objectAnimator."""
+def anim_set(items):
+    """Nhiều thuộc tính của cùng một đích (nhóm) chạy song song: một animator set gồm nhiều objectAnimator."""
     out = HEADER + '<set xmlns:android="http://schemas.android.com/apk/res/android"\n    android:ordering="together">\n'
-    for prop in ("scaleX", "scaleY"):
-        attrs = attrs_of(prop, a, b, dur, passes, "accelerate_decelerate", True)
+    for attrs in items:
         out += "    <objectAnimator\n        " + "\n        ".join(attrs) + " />\n"
     return out + "</set>\n"
 
 
+def scale_set(a, b, dur, passes):
+    return anim_set([attrs_of(p, a, b, dur, passes, "accelerate_decelerate", True) for p in ("scaleX", "scaleY")])
+
+
 def keyframes(prop, pts):
     assert pts[0][0] == 0 and pts[-1][0] == 1
-    kf = "".join('        <keyframe android:fraction="%s" android:value="%s" />\n' % (n(f), n(v)) for f, v in pts)
+    assert all(pts[i][0] < pts[i + 1][0] for i in range(len(pts) - 1)), "fraction phải tăng dần"
+    kf = "".join('        <keyframe android:fraction="%s" android:value="%s" />\n' % (nf(f), n(v)) for f, v in pts)
     return (
         HEADER
         + '<objectAnimator xmlns:android="http://schemas.android.com/apk/res/android"\n'
@@ -118,48 +140,75 @@ def stratified(rng, count, lo, hi):
     return xs
 
 
-def streak_path(rng, count, period, length, dx):
+# ---------------------------------------------------------------- mưa và giông
+
+
+def streak_layer(rng, name, period, count, length, buckets, indent):
+    """Một lớp hạt mưa lặp theo chu kỳ `period` (tịnh tiến đúng một chu kỳ thì khung hình y hệt).
+    buckets: [(màu, độ mờ, độ dày)], mỗi hạt rơi ngẫu nhiên vào một mức."""
     rows = int(math.ceil(H / period)) + 1
-    segs = []
+    ds = [[] for _ in buckets]
     for x in stratified(rng, count, 4, 236):
-        y = rng.uniform(0, period - length * 0.2)
+        b = rng.randrange(len(buckets))
+        ln = rng.uniform(*length)
+        y = rng.uniform(0, period)
         for k in range(-1, rows):
             yy = y + k * period
-            segs.append("M%s,%sL%s,%s" % (n(x), n(yy), n(x + dx), n(yy + length)))
-    return "".join(segs)
+            ds[b].append("M%s,%sL%s,%s" % (n(x), n(yy), n(x - SLANT * ln), n(yy + ln)))
+    pad = " " * indent
+    out = '%s<group android:name="%s">\n' % (pad, name)
+    for d, (color, alpha, width) in zip(ds, buckets):
+        if not d:
+            continue
+        out += (
+            '%s    <path\n%s        android:pathData="%s"\n%s        android:strokeAlpha="%s"\n'
+            '%s        android:strokeColor="%s"\n%s        android:strokeLineCap="round"\n'
+            '%s        android:strokeWidth="%s" />\n'
+        ) % (pad, pad, "".join(d), pad, n(alpha), pad, color, pad, pad, n(width))
+    return out + pad + "</group>\n"
 
 
-def streak_group(name, d, color, alpha, width):
-    return (
-        '    <group android:name="%s">\n'
-        '        <path\n            android:pathData="%s"\n            android:strokeAlpha="%s"\n'
-        '            android:strokeColor="%s"\n            android:strokeLineCap="round"\n'
-        '            android:strokeWidth="%s" />\n    </group>\n'
-    ) % (name, d, n(alpha), color, n(width))
-
-
-def rain_layers(seed, far_count, near_count):
+def rain_parts(seed, scale, boost):
     rng = random.Random(seed)
-    far = streak_path(rng, far_count, 30, 8, -2.6)
-    near = streak_path(rng, near_count, 48, 14, -4.5)
-    body = streak_group("far", far, "#DCE9F7", 0.38, 0.7) + streak_group("near", near, "#EAF3FF", 0.5, 1.1)
+    far = streak_layer(rng, "far", 34, int(12 * scale), (5, 8), [("#DCE9F7", 0.16 * boost, 0.45), ("#E6F0FB", 0.26 * boost, 0.5)], 8)
+    mid = streak_layer(rng, "mid", 48, int(8 * scale), (8, 12), [("#DCE9F7", 0.22 * boost, 0.6), ("#EAF3FF", 0.34 * boost, 0.65)], 8)
+    near = streak_layer(rng, "near", 70, int(5 * scale), (12, 18), [("#EAF3FF", 0.3 * boost, 0.85), ("#FFFFFF", 0.44 * boost, 0.9)], 8)
+    body = '    <group android:name="wind">\n' + far + mid + near + "    </group>\n"
     anims = {
-        "far": loop("translateY", 0, 30, 600, 6),
-        "near": loop("translateY", 0, 48, 450, 8),
+        "wind": loop("translateX", 0, -6, 5000, 12, "accelerate_decelerate", True),
+        "far": anim_set([attrs_of("translateY", 0, 34, 1500, 40), attrs_of("translateX", 0, 3, 3000, 20, "accelerate_decelerate", True)]),
+        "mid": anim_set([attrs_of("translateY", 0, 48, 1250, 48), attrs_of("translateX", 0, -3, 2500, 24, "accelerate_decelerate", True)]),
+        "near": anim_set([attrs_of("translateY", 0, 70, 1000, 60), attrs_of("translateX", 0, 4, 2000, 30, "accelerate_decelerate", True)]),
     }
     return body, anims
 
 
 def gen_rain():
-    body, anims = rain_layers(11, 22, 12)
+    body, anims = rain_parts(11, 1.0, 1.0)
     write("drawable", "fx_rain_vec", vector(body))
-    write("drawable", "fx_rain", avd("rain", ["far", "near"]))
+    write("drawable", "fx_rain", avd("rain", list(anims)))
     for k, v in anims.items():
         write("animator", "fx_rain_" + k, v)
 
 
+def flash_pattern(events):
+    """Các lần chớp (thời điểm ms, cường độ 0..1): bật nhanh, nhấp nháy, tắt dần. Trả về (phân số, giá trị)."""
+    pts = [(0.0, 0.0)]
+    for t, s in events:
+        for dt, v in ((-1, 0.0), (60, s), (160, 0.15 * s), (240, 0.75 * s), (420, 0.0)):
+            pts.append(((t + dt) / TOTAL, v))
+    pts.append((1.0, 0.0))
+    pts.sort(key=lambda p: p[0])
+    out = []
+    for f, v in pts:
+        if out and f <= out[-1][0]:
+            continue
+        out.append((f, v))
+    return out
+
+
 def gen_storm():
-    body, anims = rain_layers(23, 26, 16)
+    body, anims = rain_parts(23, 1.5, 1.2)
     bolt = "M139,30L125.8,63L137.8,63L127,90L151,54L139,54Z"
     body += (
         '    <path\n        android:name="flash"\n        android:fillAlpha="0"\n        android:fillColor="#FFFFFF"\n'
@@ -167,44 +216,49 @@ def gen_storm():
         '    <path\n        android:name="bolt"\n        android:fillAlpha="0"\n        android:fillColor="#FFF3A8"\n'
         '        android:pathData="%s" />\n' % bolt
     )
-    pattern = [(0, 0), (0.10, 0), (0.115, 1), (0.15, 0.15), (0.17, 0.75), (0.23, 0), (0.55, 0), (0.565, 0.6), (0.60, 0), (1, 0)]
+    events = [(3000, 1.0), (11500, 0.7), (12200, 1.0), (27000, 0.9), (38500, 0.6), (39100, 1.0), (52000, 0.8)]
+    pattern = flash_pattern(events)
     write("drawable", "fx_storm_vec", vector(body))
-    write("drawable", "fx_storm", avd("storm", ["far", "near", "flash", "bolt"]))
+    write("drawable", "fx_storm", avd("storm", list(anims) + ["flash", "bolt"]))
     for k, v in anims.items():
         write("animator", "fx_storm_" + k, v)
-    write("animator", "fx_storm_flash", keyframes("fillAlpha", [(f, 0.45 * p) for f, p in pattern]))
-    write("animator", "fx_storm_bolt", keyframes("fillAlpha", [(f, 0.9 * p) for f, p in pattern]))
+    write("animator", "fx_storm_flash", keyframes("fillAlpha", [(f, 0.4 * v) for f, v in pattern]))
+    write("animator", "fx_storm_bolt", keyframes("fillAlpha", [(f, 0.85 * v) for f, v in pattern]))
 
 
-def flake_path(rng, count, period, r, rows_extra=1):
-    rows = int(math.ceil(H / period)) + rows_extra
+# ---------------------------------------------------------------- tuyết
+
+
+def flake_layer(rng, name, period, count, r, alpha, indent):
+    rows = int(math.ceil(H / period)) + 1
     d = []
     for x in stratified(rng, count, 6, 234):
         y = rng.uniform(0, period)
+        rr = r * rng.uniform(0.8, 1.2)
         for k in range(-1, rows):
-            d.append(circle(x, y + k * period, r))
-    return "".join(d)
+            d.append(circle(x, y + k * period, rr))
+    pad = " " * indent
+    return (
+        '%s<group android:name="%s">\n%s    <path\n%s        android:fillAlpha="%s"\n%s        android:fillColor="#FFFFFF"\n'
+        '%s        android:pathData="%s" />\n%s</group>\n'
+    ) % (pad, name, pad, pad, n(alpha), pad, pad, "".join(d), pad)
 
 
 def gen_snow():
     rng = random.Random(31)
-    far = flake_path(rng, 16, 60, 0.9)
-    near = flake_path(rng, 9, 80, 1.5)
-
-    def layer(move, sway, d, alpha):
-        return (
-            '    <group android:name="%s">\n        <group android:name="%s">\n'
-            '            <path\n                android:fillAlpha="%s"\n                android:fillColor="#FFFFFF"\n'
-            '                android:pathData="%s" />\n        </group>\n    </group>\n'
-        ) % (move, sway, n(alpha), d)
-
-    body = layer("far", "far_sway", far, 0.7) + layer("near", "near_sway", near, 0.9)
+    body = (
+        flake_layer(rng, "far", 60, 14, 0.7, 0.55, 4)
+        + flake_layer(rng, "mid", 70, 9, 1.1, 0.7, 4)
+        + flake_layer(rng, "near", 84, 6, 1.6, 0.85, 4)
+    )
     write("drawable", "fx_snow_vec", vector(body))
-    write("drawable", "fx_snow", avd("snow", ["far", "far_sway", "near", "near_sway"]))
-    write("animator", "fx_snow_far", loop("translateY", 0, 60, 1800, 2))
-    write("animator", "fx_snow_far_sway", loop("translateX", -2, 2, 900, 4, "accelerate_decelerate", True))
-    write("animator", "fx_snow_near", loop("translateY", 0, 80, 1200, 3))
-    write("animator", "fx_snow_near_sway", loop("translateX", -3.5, 3.5, 600, 6, "accelerate_decelerate", True))
+    write("drawable", "fx_snow", avd("snow", ["far", "mid", "near"]))
+    write("animator", "fx_snow_far", anim_set([attrs_of("translateY", 0, 60, 5000, 12), attrs_of("translateX", -2, 2, 3000, 20, "accelerate_decelerate", True)]))
+    write("animator", "fx_snow_mid", anim_set([attrs_of("translateY", 0, 70, 3750, 16), attrs_of("translateX", -3, 3, 2500, 24, "accelerate_decelerate", True)]))
+    write("animator", "fx_snow_near", anim_set([attrs_of("translateY", 0, 84, 3000, 20), attrs_of("translateX", -4, 4, 2000, 30, "accelerate_decelerate", True)]))
+
+
+# ---------------------------------------------------------------- mây và sương
 
 
 def gen_clouds():
@@ -219,11 +273,12 @@ def gen_clouds():
         + cloud("b", [(168, 72, 28), (194, 66, 24), (146, 78, 22), (184, 82, 26)], ("5A", "2A"))
         + cloud("c", [(70, 100, 22), (96, 96, 18), (52, 104, 16)], ("4D", "24"))
     )
+    ease = "accelerate_decelerate"
     write("drawable", "fx_clouds_vec", vector(body, gradient=True))
     write("drawable", "fx_clouds", avd("clouds", ["a", "b", "c"]))
-    write("animator", "fx_clouds_a", loop("translateX", 0, 14, 1800, 2, "accelerate_decelerate", True))
-    write("animator", "fx_clouds_b", loop("translateX", 0, -12, 1800, 2, "accelerate_decelerate", True))
-    write("animator", "fx_clouds_c", loop("translateX", 0, 8, 900, 4, "accelerate_decelerate", True))
+    write("animator", "fx_clouds_a", anim_set([attrs_of("translateX", 0, 16, 7500, 8, ease, True), attrs_of("translateY", 0, 2, 5000, 12, ease, True)]))
+    write("animator", "fx_clouds_b", anim_set([attrs_of("translateX", 0, -14, 10000, 6, ease, True), attrs_of("translateY", 0, -2, 6000, 10, ease, True)]))
+    write("animator", "fx_clouds_c", loop("translateX", 0, 10, 6000, 10, ease, True))
 
 
 def gen_fog():
@@ -233,11 +288,15 @@ def gen_fog():
         return g + "    </group>\n"
 
     body = band("a", 120, 24, 100, 0.24) + band("b", 150, 62, 110, 0.22) + band("c", 90, 98, 100, 0.24)
+    ease = "accelerate_decelerate"
     write("drawable", "fx_fog_vec", vector(body, gradient=True))
     write("drawable", "fx_fog", avd("fog", ["a", "b", "c"]))
-    write("animator", "fx_fog_a", loop("translateX", 0, 12, 1800, 2, "accelerate_decelerate", True))
-    write("animator", "fx_fog_b", loop("translateX", 0, -14, 900, 4, "accelerate_decelerate", True))
-    write("animator", "fx_fog_c", loop("translateX", 0, 10, 1800, 2, "accelerate_decelerate", True))
+    write("animator", "fx_fog_a", loop("translateX", 0, 14, 7500, 8, ease, True))
+    write("animator", "fx_fog_b", loop("translateX", 0, -16, 10000, 6, ease, True))
+    write("animator", "fx_fog_c", loop("translateX", 0, 12, 6000, 10, ease, True))
+
+
+# ---------------------------------------------------------------- sao và nắng
 
 
 def sparkle(cx, cy, s):
@@ -248,21 +307,19 @@ def sparkle(cx, cy, s):
 
 def gen_stars():
     rng = random.Random(47)
-    spots = []
-    for x in stratified(rng, 15, 8, 184):
-        spots.append((x, rng.uniform(8, 78), rng.choice([2.2, 2.8, 3.4])))
+    spots = [(x, rng.uniform(8, 78), rng.choice([2.2, 2.8, 3.4])) for x in stratified(rng, 15, 8, 184)]
     groups = [spots[i::5] for i in range(5)]
-    specs = [  # (từ, tới, ms, số lượt)
-        (0.25, 1.0, 600, 6), (1.0, 0.3, 900, 4), (0.4, 1.0, 450, 8), (0.2, 0.9, 1800, 2), (1.0, 0.35, 600, 6),
+    specs = [  # (từ, tới, ms, số lượt): nhấp nháy chậm, mỗi nhóm một nhịp
+        (0.25, 1.0, 1200, 50), (1.0, 0.3, 1500, 40), (0.4, 1.0, 2000, 30), (0.2, 0.9, 2500, 24), (1.0, 0.35, 3000, 20),
     ]
-    body = radial(circle(201, 24, 42), 201, 24, 42, "#59DCE6FF", "#26DCE6FF", "#00DCE6FF")
-    body = '    <group\n        android:name="moon"\n        android:pivotX="201"\n        android:pivotY="24"\n        android:scaleX="0.9"\n        android:scaleY="0.9">\n' + body + "    </group>\n"
+    glow = radial(circle(201, 24, 42), 201, 24, 42, "#59DCE6FF", "#26DCE6FF", "#00DCE6FF")
+    body = '    <group\n        android:name="moon"\n        android:pivotX="201"\n        android:pivotY="24"\n        android:scaleX="0.9"\n        android:scaleY="0.9">\n' + glow + "    </group>\n"
     for i, grp in enumerate(groups):
         d = "".join(sparkle(x, y, s) for x, y, s in grp)
         body += '    <path\n        android:name="s%d"\n        android:fillAlpha="%s"\n        android:fillColor="#FFFFFF"\n        android:pathData="%s" />\n' % (i + 1, n(specs[i][0]), d)
     write("drawable", "fx_stars_vec", vector(body, gradient=True))
     write("drawable", "fx_stars", avd("stars", ["moon"] + ["s%d" % (i + 1) for i in range(5)]))
-    write("animator", "fx_stars_moon", scale_set(0.9, 1.12, 1800, 2))
+    write("animator", "fx_stars_moon", scale_set(0.9, 1.12, 3000, 20))
     for i, (a, b, dur, passes) in enumerate(specs):
         write("animator", "fx_stars_s%d" % (i + 1), loop("fillAlpha", a, b, dur, passes, "accelerate_decelerate", True))
 
@@ -287,11 +344,12 @@ def gen_sun():
     )
     write("drawable", "fx_sun_vec", vector(glow + rays_xml, gradient=True))
     write("drawable", "fx_sun", avd("sun", ["glow", "rays"]))
-    write("animator", "fx_sun_glow", scale_set(0.88, 1.12, 900, 4))
-    write("animator", "fx_sun_rays", loop("rotation", -4, 4, 1800, 2, "accelerate_decelerate", True))
+    write("animator", "fx_sun_glow", scale_set(0.88, 1.12, 3000, 20))
+    write("animator", "fx_sun_rays", loop("rotation", -4, 4, 6000, 10, "accelerate_decelerate", True))
 
 
 if __name__ == "__main__":
+    clean()
     gen_rain()
     gen_storm()
     gen_snow()
