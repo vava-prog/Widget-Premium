@@ -12,6 +12,8 @@
         android:scaleType="fitXY"
         android:src="@drawable/widget_bg" />
 
+    <include layout="@layout/widget_fx" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Sinh tự động bởi tools/gen_weather_fx.py, không sửa tay. -->
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/fx_snow_vec">
+    <target
+        android:name="far"
+        android:animation="@animator/fx_snow_far" />
+    <target
+        android:name="far_sway"
+        android:animation="@animator/fx_snow_far_sway" />
+    <target
+        android:name="near"
+        android:animation="@animator/fx_snow_near" />
+    <target
+        android:name="near_sway"
+        android:animation="@animator/fx_snow_near_sway" />
+</animated-vector>

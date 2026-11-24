@@ -31,6 +31,7 @@ object WidgetBackground {
             imageId,
             render(context, widthDp, heightDp, palette, style.cornerDp, sky, style.opacityPercent / 100f)
         )
+        WidgetMotion.apply(context, views, style, sky)
     }
 
     /** Ép màu chữ theo lựa chọn; AUTO giữ nguyên màu trong layout. `primary` là chữ lớn, `secondary` là các dòng phụ. */

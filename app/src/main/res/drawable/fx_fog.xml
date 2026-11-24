@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Sinh tự động bởi tools/gen_weather_fx.py, không sửa tay. -->
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/fx_fog_vec">
+    <target
+        android:name="a"
+        android:animation="@animator/fx_fog_a" />
+    <target
+        android:name="b"
+        android:animation="@animator/fx_fog_b" />
+    <target
+        android:name="c"
+        android:animation="@animator/fx_fog_c" />
+</animated-vector>

@@ -260,4 +260,6 @@
     <string name="alert_low_text">Battery at %1$d%%. Plug in the charger.</string>
     <string name="alert_hot_title">Phone is hot</string>
     <string name="alert_hot_text">Battery temperature %1$.1f°C. Take a break and avoid charging while hot.</string>
+    <string name="disp_motion">Animated weather effect</string>
+    <string name="disp_motion_hint">Rain, sun, clouds, stars… play for a few seconds when you swipe to the widget, then stop. Turns itself off in battery saver or when system animations are off. Needs a city and weather data.</string>
 </resources>

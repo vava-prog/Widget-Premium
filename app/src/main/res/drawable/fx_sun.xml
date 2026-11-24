@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Sinh tự động bởi tools/gen_weather_fx.py, không sửa tay. -->
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/fx_sun_vec">
+    <target
+        android:name="glow"
+        android:animation="@animator/fx_sun_glow" />
+    <target
+        android:name="rays"
+        android:animation="@animator/fx_sun_rays" />
+</animated-vector>

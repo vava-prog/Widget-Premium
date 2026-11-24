@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Sinh tự động bởi tools/gen_weather_fx.py, không sửa tay. -->
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/fx_stars_vec">
+    <target
+        android:name="moon"
+        android:animation="@animator/fx_stars_moon" />
+    <target
+        android:name="s1"
+        android:animation="@animator/fx_stars_s1" />
+    <target
+        android:name="s2"
+        android:animation="@animator/fx_stars_s2" />
+    <target
+        android:name="s3"
+        android:animation="@animator/fx_stars_s3" />
+    <target
+        android:name="s4"
+        android:animation="@animator/fx_stars_s4" />
+    <target
+        android:name="s5"
+        android:animation="@animator/fx_stars_s5" />
+</animated-vector>

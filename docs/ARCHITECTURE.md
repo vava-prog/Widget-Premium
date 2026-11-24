@@ -39,3 +39,11 @@ GitHub Actions: job `build` dựng APK debug và đăng lên pre-release `latest
 | `DeviceLocation` | Nút "Dùng vị trí của máy" | Quyền vị trí gần đúng, chỉ khi bấm, lấy một lần, làm tròn ~1 km, không chạy nền |
 | `Diagnostics`, `Age` | Thẻ "Số liệu hiện tại" và tình trạng nhắc việc | Đọc trực tiếp từ máy, không gửi đi đâu |
 | `WidgetStyle` (mở rộng) | Viền, cỡ đồng hồ, giây, tên tự nhập, màu chữ (mỗi giao diện một màu), độ mờ/nổi khối kính, tùy chọn hiển thị | Lưu trong SharedPreferences "style"; hàm tính màu và định dạng là thuần, có test |
+| `WeatherMotion`, `WidgetMotion`, `res/drawable/fx_*`, `res/animator/fx_*` | Hiệu ứng thời tiết bán động trên nền bầu trời | Logic chọn hiệu ứng là thuần, có test; tài nguyên do `tools/gen_weather_fx.py` sinh ra và có test kiểm tra thời lượng |
+
+## Hiệu ứng thời tiết bán động: cách làm và giới hạn
+- **Giới hạn của Android:** widget là RemoteViews do launcher dựng, không chạy được mã của app, không phát GIF và không có vòng lặp vẽ liên tục. Cập nhật widget theo giây hoặc dựng sẵn nhiều ảnh động đều tốn pin và vượt giới hạn bộ nhớ bitmap của RemoteViews.
+- **Cách làm:** mỗi hiệu ứng là một `AnimatedVectorDrawable` hữu hạn (vài chục KB XML, không bitmap) đặt làm `indeterminateDrawable` của một `ProgressBar`. `ProgressBar` là lớp RemoteViews cho phép, và tự chạy hoạt ảnh mỗi khi view hiện ra hoặc được gắn lại, nên mỗi lần vuốt tới trang có widget hiệu ứng chạy lại. Chạy đủ 3,6 giây thì dừng ở khung hình tĩnh, không còn tốn tài nguyên.
+- **Chỉ một hiệu ứng hiện:** `WidgetMotion` bật đúng một `ProgressBar` theo thời tiết, các cái khác `GONE` nên không chạy. Lớp này được đệm 0,3 lần độ bo góc để không tràn ra ngoài mép bo.
+- **Phương án thay thế:** nếu launcher không chạy hoạt ảnh (hoặc người dùng tắt, bật tiết kiệm pin, tắt hoạt ảnh hệ thống), widget vẫn hiện nền bầu trời tĩnh như trước, không lỗi.
+- **Chưa kiểm chứng trên máy thật:** launcher Xiaomi có chạy lại hoạt ảnh khi vuốt trang hay không, và hình dáng hiệu ứng trên các cỡ widget khác nhau. Đổi chế độ tiết kiệm pin chỉ có hiệu lực ở lần cập nhật widget kế tiếp.

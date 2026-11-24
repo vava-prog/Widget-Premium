@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Sinh tự động bởi tools/gen_weather_fx.py, không sửa tay. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="240dp"
+    android:height="120dp"
+    android:viewportWidth="240"
+    android:viewportHeight="120">
+    <clip-path android:pathData="M0,0H240V120H0Z" />
+    <group
+        android:name="glow"
+        android:pivotX="201"
+        android:pivotY="13"
+        android:scaleX="0.88"
+        android:scaleY="0.88">
+        <path android:pathData="M141,13a60,60 0 1,0 120,0a60,60 0 1,0 -120,0Z">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:centerX="201"
+                    android:centerY="13"
+                    android:gradientRadius="60"
+                    android:startColor="#66FFF1C2"
+                    android:centerColor="#26FFE9A8"
+                    android:endColor="#00FFE9A8"
+                    android:type="radial" />
+            </aapt:attr>
+        </path>
+    </group>
+    <group
+        android:name="rays"
+        android:pivotX="201"
+        android:pivotY="13"
+        android:rotation="-4">
+        <path android:pathData="M201,13L186.36,162.28L173.92,160.54ZM201,13L153.16,155.17L141.43,150.66ZM201,13L122.4,140.76L111.99,133.73ZM201,13L95.68,119.8L87.11,110.62ZM201,13L74.35,93.37L68.07,82.49ZM201,13L59.52,62.82L55.84,50.81ZM201,13L51.93,29.72L51.06,17.19ZM201,13L51.99,-4.24L53.96,-16.65Z">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:centerX="201"
+                    android:centerY="13"
+                    android:gradientRadius="150"
+                    android:startColor="#52FFF6D0"
+                    android:centerColor="#26FFF6D0"
+                    android:endColor="#00FFF6D0"
+                    android:type="radial" />
+            </aapt:attr>
+        </path>
+    </group>
+</vector>

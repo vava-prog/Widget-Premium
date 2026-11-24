@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Sinh tự động bởi tools/gen_weather_fx.py, không sửa tay. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="240dp"
+    android:height="120dp"
+    android:viewportWidth="240"
+    android:viewportHeight="120">
+    <clip-path android:pathData="M0,0H240V120H0Z" />
+    <group
+        android:name="a"
+        android:pivotX="120"
+        android:pivotY="24"
+        android:scaleY="0.24">
+        <path android:pathData="M20,24a100,100 0 1,0 200,0a100,100 0 1,0 -200,0Z">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:centerX="120"
+                    android:centerY="24"
+                    android:gradientRadius="100"
+                    android:startColor="#59FFFFFF"
+                    android:centerColor="#33FFFFFF"
+                    android:endColor="#00FFFFFF"
+                    android:type="radial" />
+            </aapt:attr>
+        </path>
+    </group>
+    <group
+        android:name="b"
+        android:pivotX="150"
+        android:pivotY="62"
+        android:scaleY="0.22">
+        <path android:pathData="M40,62a110,110 0 1,0 220,0a110,110 0 1,0 -220,0Z">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:centerX="150"
+                    android:centerY="62"
+                    android:gradientRadius="110"
+                    android:startColor="#59FFFFFF"
+                    android:centerColor="#33FFFFFF"
+                    android:endColor="#00FFFFFF"
+                    android:type="radial" />
+            </aapt:attr>
+        </path>
+    </group>
+    <group
+        android:name="c"
+        android:pivotX="90"
+        android:pivotY="98"
+        android:scaleY="0.24">
+        <path android:pathData="M-10,98a100,100 0 1,0 200,0a100,100 0 1,0 -200,0Z">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:centerX="90"
+                    android:centerY="98"
+                    android:gradientRadius="100"
+                    android:startColor="#59FFFFFF"
+                    android:centerColor="#33FFFFFF"
+                    android:endColor="#00FFFFFF"
+                    android:type="radial" />
+            </aapt:attr>
+        </path>
+    </group>
+</vector>

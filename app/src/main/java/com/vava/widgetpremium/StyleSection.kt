@@ -225,6 +225,14 @@ fun StyleSection(style: WidgetStyle, onChange: (WidgetStyle) -> Unit) {
         toggle(R.string.disp_weather, style.showWeather) { change(style.copy(showWeather = it)) }
         toggle(R.string.disp_location, style.showLocation) { change(style.copy(showLocation = it)) }
         toggle(R.string.disp_weather_detail, style.showWeatherDetail) { change(style.copy(showWeatherDetail = it)) }
+        if (style.theme == WidgetTheme.WEATHER) {
+            toggle(R.string.disp_motion, style.weatherMotion) { change(style.copy(weatherMotion = it)) }
+            Text(
+                stringResource(R.string.disp_motion_hint),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
         toggle(R.string.disp_tap, style.tapEnabled) { change(style.copy(tapEnabled = it)) }
         Text(stringResource(R.string.disp_hour_format), style = MaterialTheme.typography.labelLarge)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {

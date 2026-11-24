@@ -260,4 +260,6 @@
     <string name="alert_low_text">Pin còn %1$d%%. Hãy cắm sạc.</string>
     <string name="alert_hot_title">Máy đang nóng</string>
     <string name="alert_hot_text">Nhiệt độ pin %1$.1f°C. Nên tạm nghỉ và tránh sạc khi đang nóng.</string>
+    <string name="disp_motion">Hiệu ứng thời tiết chuyển động</string>
+    <string name="disp_motion_hint">Mưa, nắng, mây, sao… chạy vài giây khi bạn vuốt tới widget rồi đứng yên. Tự tắt khi bật tiết kiệm pin hoặc tắt hoạt ảnh hệ thống. Cần có thành phố và dữ liệu thời tiết.</string>
 </resources>

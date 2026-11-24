@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Sinh tự động bởi tools/gen_weather_fx.py, không sửa tay. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="240dp"
+    android:height="120dp"
+    android:viewportWidth="240"
+    android:viewportHeight="120">
+    <clip-path android:pathData="M0,0H240V120H0Z" />
+    <group
+        android:name="moon"
+        android:pivotX="201"
+        android:pivotY="24"
+        android:scaleX="0.9"
+        android:scaleY="0.9">
+        <path android:pathData="M159,24a42,42 0 1,0 84,0a42,42 0 1,0 -84,0Z">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:centerX="201"
+                    android:centerY="24"
+                    android:gradientRadius="42"
+                    android:startColor="#59DCE6FF"
+                    android:centerColor="#26DCE6FF"
+                    android:endColor="#00DCE6FF"
+                    android:type="radial" />
+            </aapt:attr>
+        </path>
+    </group>
+    <path
+        android:name="s1"
+        android:fillAlpha="0.25"
+        android:fillColor="#FFFFFF"
+        android:pathData="M60.95,46.67L61.97,49.05L64.35,50.07L61.97,51.09L60.95,53.47L59.93,51.09L57.55,50.07L59.93,49.05ZM24.78,30.6L25.62,32.56L27.58,33.4L25.62,34.24L24.78,36.2L23.94,34.24L21.98,33.4L23.94,32.56ZM47.23,12.91L48.07,14.87L50.03,15.71L48.07,16.55L47.23,18.51L46.39,16.55L44.43,15.71L46.39,14.87Z" />
+    <path
+        android:name="s2"
+        android:fillAlpha="1"
+        android:fillColor="#FFFFFF"
+        android:pathData="M95.04,46.06L95.7,47.6L97.24,48.26L95.7,48.92L95.04,50.46L94.38,48.92L92.84,48.26L94.38,47.6ZM154.45,40.78L155.29,42.74L157.25,43.58L155.29,44.42L154.45,46.38L153.61,44.42L151.65,43.58L153.61,42.74ZM78.88,46.93L79.9,49.31L82.28,50.33L79.9,51.35L78.88,53.73L77.86,51.35L75.48,50.33L77.86,49.31Z" />
+    <path
+        android:name="s3"
+        android:fillAlpha="0.4"
+        android:fillColor="#FFFFFF"
+        android:pathData="M148.4,21.3L149.42,23.68L151.8,24.7L149.42,25.72L148.4,28.1L147.38,25.72L145,24.7L147.38,23.68ZM166.95,12.6L167.61,14.14L169.15,14.8L167.61,15.46L166.95,17L166.29,15.46L164.75,14.8L166.29,14.14ZM114.8,66.86L115.46,68.4L117,69.06L115.46,69.72L114.8,71.26L114.14,69.72L112.6,69.06L114.14,68.4Z" />
+    <path
+        android:name="s4"
+        android:fillAlpha="0.2"
+        android:fillColor="#FFFFFF"
+        android:pathData="M36.79,69.85L37.45,71.39L38.99,72.05L37.45,72.71L36.79,74.25L36.13,72.71L34.59,72.05L36.13,71.39ZM102.14,70.09L102.98,72.05L104.94,72.89L102.98,73.73L102.14,75.69L101.3,73.73L99.34,72.89L101.3,72.05ZM71.27,61.84L72.11,63.8L74.07,64.64L72.11,65.48L71.27,67.44L70.43,65.48L68.47,64.64L70.43,63.8Z" />
+    <path
+        android:name="s5"
+        android:fillAlpha="1"
+        android:fillColor="#FFFFFF"
+        android:pathData="M12.13,14.58L12.79,16.12L14.33,16.78L12.79,17.44L12.13,18.98L11.47,17.44L9.93,16.78L11.47,16.12ZM128.43,19.9L129.45,22.28L131.83,23.3L129.45,24.32L128.43,26.7L127.41,24.32L125.03,23.3L127.41,22.28ZM183.03,29.59L184.05,31.97L186.43,32.99L184.05,34.01L183.03,36.39L182.01,34.01L179.63,32.99L182.01,31.97Z" />
+</vector>
