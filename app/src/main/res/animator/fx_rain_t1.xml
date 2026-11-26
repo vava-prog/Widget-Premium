@@ -4,39 +4,20 @@
     android:duration="60000"
     android:interpolator="@android:interpolator/linear">
     <propertyValuesHolder
-        android:propertyName="scaleY"
+        android:propertyName="translateX"
         android:valueType="floatType">
         <keyframe
             android:fraction="0"
             android:value="0" />
         <keyframe
-            android:fraction="0.6024"
+            android:fraction="1"
             android:value="0" />
+    </propertyValuesHolder>
+    <propertyValuesHolder
+        android:propertyName="translateY"
+        android:valueType="floatType">
         <keyframe
-            android:fraction="0.61506"
-            android:value="0.16"
-            android:interpolator="@android:interpolator/accelerate_decelerate" />
-        <keyframe
-            android:fraction="0.62242"
-            android:value="0.16"
-            android:interpolator="@android:interpolator/accelerate_decelerate" />
-        <keyframe
-            android:fraction="0.64235"
-            android:value="0.63"
-            android:interpolator="@android:interpolator/accelerate_decelerate" />
-        <keyframe
-            android:fraction="0.64851"
-            android:value="0.63"
-            android:interpolator="@android:interpolator/accelerate_decelerate" />
-        <keyframe
-            android:fraction="0.66504"
-            android:value="1"
-            android:interpolator="@android:interpolator/accelerate_decelerate" />
-        <keyframe
-            android:fraction="0.72337"
-            android:value="1" />
-        <keyframe
-            android:fraction="0.72504"
+            android:fraction="0"
             android:value="0" />
         <keyframe
             android:fraction="1"
@@ -47,16 +28,67 @@
         android:valueType="floatType">
         <keyframe
             android:fraction="0"
+            android:value="0" />
+        <keyframe
+            android:fraction="0.08608"
             android:value="1" />
         <keyframe
-            android:fraction="0.66504"
+            android:fraction="0.14933"
             android:value="1" />
         <keyframe
-            android:fraction="0.72337"
+            android:fraction="0.2136"
             android:value="0"
             android:interpolator="@android:interpolator/accelerate_decelerate" />
         <keyframe
             android:fraction="1"
             android:value="0" />
+    </propertyValuesHolder>
+    <propertyValuesHolder
+        android:propertyName="scaleY"
+        android:valueType="floatType">
+        <keyframe
+            android:fraction="0"
+            android:value="0" />
+        <keyframe
+            android:fraction="0.09108"
+            android:value="0" />
+        <keyframe
+            android:fraction="0.09958"
+            android:value="0.19"
+            android:interpolator="@interpolator/fx_fall" />
+        <keyframe
+            android:fraction="0.1017"
+            android:value="0.24"
+            android:interpolator="@interpolator/fx_brake" />
+        <keyframe
+            android:fraction="0.12673"
+            android:value="0.24" />
+        <keyframe
+            android:fraction="0.13585"
+            android:value="0.47"
+            android:interpolator="@interpolator/fx_fall" />
+        <keyframe
+            android:fraction="0.13812"
+            android:value="0.52"
+            android:interpolator="@interpolator/fx_brake" />
+        <keyframe
+            android:fraction="0.2136"
+            android:value="0.52" />
+        <keyframe
+            android:fraction="0.21527"
+            android:value="0" />
+        <keyframe
+            android:fraction="1"
+            android:value="0" />
+    </propertyValuesHolder>
+    <propertyValuesHolder
+        android:propertyName="rotation"
+        android:valueType="floatType">
+        <keyframe
+            android:fraction="0"
+            android:value="-4.81" />
+        <keyframe
+            android:fraction="1"
+            android:value="-4.81" />
     </propertyValuesHolder>
 </objectAnimator>

@@ -8,8 +8,9 @@ và các animator (fx_<tên>_<đích>.xml). Mọi animator chạy đúng TOTAL m
 reverse thì số lượt chẵn) nên hết giờ trở lại đúng khung ban đầu và dừng. Có test kiểm tra điều này.
 
 Để chuyển động bớt "cứng": nhiều lớp tốc độ khác nhau (không đồng bộ), nét mảnh và nhiều mức độ mờ.
-Mưa là giọt nước bám trên kính (như kính xe ôtô): hạt li ti, giọt bóng trượt từng nấc để lại vệt rồi tan,
-giọt mới ngưng tụ lại; sấm chớp ở các thời điểm không đều (lớp fx_flash phủ lên lớp mưa).
+Mưa là giọt nước bám trên kính (như kính xe ôtô): hạt li ti; giọt hình giọt (đuôi nhọn) ngưng tụ ngẫu nhiên nhưng
+trải đều, đứng yên rồi tuột xuống nhanh dần như có trọng lực, để lại vệt nước mảnh rồi khô; sấm chớp ở các thời điểm
+không đều (lớp fx_flash phủ lên lớp mưa). Nội suy rơi/hãm/nảy nằm ở res/interpolator/fx_*.
 Vector 240x120, widget kéo giãn vừa khung; nội dung nằm gọn trong khung để không tràn mép bo góc.
 """
 import math
@@ -40,7 +41,7 @@ def write(kind, name, text):
 
 
 def clean():
-    for kind in ("drawable", "animator"):
+    for kind in ("drawable", "animator", "interpolator"):
         folder = os.path.join(ROOT, kind)
         if os.path.isdir(folder):
             for name in os.listdir(folder):
@@ -152,9 +153,28 @@ def stratified(rng, count, lo, hi):
 
 # ---------------------------------------------------------------- mưa trên kính (kiểu kính xe ôtô)
 
+# Nội suy riêng (res/interpolator) để không phụ thuộc mức API: rơi nhanh dần (trọng lực), hãm lại, nảy khi hiện ra.
+FALL, BRAKE, POP = "fx_fall", "fx_brake", "fx_pop"
+EASE = "accelerate_decelerate"
+DMAX = 80.0  # độ dài vệt nước vẽ sẵn: scaleY của vệt = quãng đường giọt đã đi / DMAX
+XMIN, XMAX, YMIN, YMAX = 10, 230, 10, 110
+PROPS = {"tx": "translateX", "ty": "translateY", "sx": "scaleX", "sy": "scaleY", "rot": "rotation"}
+
+
+def interpolators():
+    ns = 'xmlns:android="http://schemas.android.com/apk/res/android"'
+    write("interpolator", FALL, HEADER + '<accelerateInterpolator %s\n    android:factor="1" />\n' % ns)
+    write("interpolator", BRAKE, HEADER + '<decelerateInterpolator %s\n    android:factor="1" />\n' % ns)
+    write("interpolator", POP, HEADER + '<overshootInterpolator %s\n    android:tension="3" />\n' % ns)
+
+
+def iref(ip):
+    return "@interpolator/%s" % ip if ip.startswith("fx_") else "@android:interpolator/%s" % ip
+
 
 def multi(holders):
-    """Animator keyframe nhiều thuộc tính trong một file. holders: {thuộc tính: [(ms, giá trị, nội suy|None)]}."""
+    """Animator keyframe nhiều thuộc tính trong một file. holders: {thuộc tính: [(ms, giá trị, nội suy|None)]}.
+    Nội suy của một keyframe áp cho đoạn kết thúc tại keyframe đó."""
     out = (
         HEADER
         + '<objectAnimator xmlns:android="http://schemas.android.com/apk/res/android"\n'
@@ -170,120 +190,345 @@ def multi(holders):
         assert all(pts[i][0] < pts[i + 1][0] for i in range(len(pts) - 1)), (prop, [p[0] for p in pts])
         out += '    <propertyValuesHolder\n        android:propertyName="%s"\n        android:valueType="floatType">\n' % prop
         for ms, v, ip in pts:
-            ia = ('\n            android:interpolator="@android:interpolator/%s"' % ip) if ip else ""
+            ia = ('\n            android:interpolator="%s"' % iref(ip)) if ip else ""
             out += '        <keyframe\n            android:fraction="%s"\n            android:value="%s"%s />\n' % (nf(ms / TOTAL), n(v), ia)
         out += "    </propertyValuesHolder>\n"
     return out + "</objectAnimator>\n"
 
 
-def place(rng, placed, r, y_lo=9, y_hi=111):
-    """Chọn chỗ cho giọt bán kính r, không chồng lên giọt đã đặt."""
-    import math as m
-    for _ in range(400):
-        x, y = rng.uniform(9, 231), rng.uniform(y_lo, y_hi)
-        if all(m.hypot(x - px, y - py) >= (r + pr) * 1.2 for px, py, pr in placed):
-            placed.append((x, y, r))
-            return x, y
-    raise RuntimeError("không đặt được giọt")
+def linear(d, x0, y0, x1, y1, start, center, end, stroke=None, sw=0.25, join=False):
+    st = ""
+    if stroke:
+        st = '\n            android:strokeColor="%s"\n            android:strokeWidth="%s"' % (stroke, n(sw))
+        if join:
+            st += '\n            android:strokeLineJoin="round"'
+    return (
+        '        <path\n            android:pathData="%s"%s>\n'
+        '            <aapt:attr name="android:fillColor">\n'
+        '                <gradient\n                    android:startX="%s"\n                    android:startY="%s"\n'
+        '                    android:endX="%s"\n                    android:endY="%s"\n'
+        '                    android:startColor="%s"\n                    android:centerColor="%s"\n                    android:endColor="%s"\n'
+        '                    android:type="linear" />\n'
+        '            </aapt:attr>\n        </path>\n'
+    ) % (d, st, n(x0), n(y0), n(x1), n(y1), start, center, end)
 
 
-def drop_group(name, cx, cy, r):
-    """Giọt nước như thấu kính trên kính: thân trong suốt viền sáng ở mép dưới phải, bóng đổ mềm,
-    điểm sáng phản chiếu ở góc trên trái."""
-    rx, ry = r, r * 1.12
-    out = '    <group\n        android:name="%s"\n        android:pivotX="%s"\n        android:pivotY="%s">\n' % (name, n(cx), n(cy))
-    big = r >= 2.2
-    if big:
-        out += radial(ellipse(cx + 0.3 * r, cy + 0.5 * r, rx * 1.1, ry * 1.05), cx + 0.3 * r, cy + 0.5 * r, r * 1.35, "#40000000", "#1A000000", "#00000000")
-    out += radial(ellipse(cx, cy, rx, ry), cx - 0.18 * r, cy - 0.22 * r, r * 1.15, "#0FFFFFFF", "#22FFFFFF", "#66FFFFFF", "#8CFFFFFF", 0.3)
-    out += solid(ellipse(cx - 0.36 * r, cy - 0.42 * r, 0.27 * r, 0.17 * r), "#E6FFFFFF")
-    if big:
-        out += solid(circle(cx + 0.42 * r, cy + 0.52 * r, 0.12 * r), "#70FFFFFF")
+def drop_path(cx, cy, r, a, tilt):
+    """Giọt nước: thân tròn bán kính r, đuôi nhọn kéo lên phía trên cách tâm a (a > r), nghiêng tilt độ."""
+    k = r / a
+    px, py = r * math.sqrt(1 - k * k), -r * k  # tiếp điểm của hai tiếp tuyến kẻ từ đỉnh đuôi tới đường tròn
+    t = math.radians(tilt)
+
+    def rot(x, y):
+        return cx + x * math.cos(t) - y * math.sin(t), cy + x * math.sin(t) + y * math.cos(t)
+
+    tip, p1, p2 = rot(0, -a), rot(px, py), rot(-px, py)
+    return "M%s,%sL%s,%sA%s,%s 0 1,1 %s,%sZ" % (n(tip[0]), n(tip[1]), n(p1[0]), n(p1[1]), n(r), n(r), n(p2[0]), n(p2[1]))
+
+
+def drop_group(name, cx, cy, r, a, tilt, cls, hidden):
+    """Giọt nước như thấu kính trên kính: đỉnh hơi tối (khúc xạ), đáy sáng, viền mảnh, điểm sáng ở góc trên trái.
+    Đã vẽ sẵn ở dạng giọt có đuôi nhọn (không tròn); chuyển động do animator điều khiển."""
+    hid = '\n        android:scaleX="0"\n        android:scaleY="0"' if hidden else ""
+    out = '    <group\n        android:name="%s"\n        android:pivotX="%s"\n        android:pivotY="%s"%s>\n' % (name, n(cx), n(cy), hid)
+    if cls == "L":
+        out += radial(ellipse(cx + 0.3 * r, cy + 0.55 * r, r * 1.1, r * 1.15), cx + 0.3 * r, cy + 0.55 * r, r * 1.4, "#40000000", "#1A000000", "#00000000")
+    body = drop_path(cx, cy, r, a, tilt)
+    out += linear(body, cx, cy - r, cx, cy + r, "#2E000000", "#0AFFFFFF", "#5CFFFFFF", "#73FFFFFF", 0.24, True)
+    if cls != "S":
+        out += solid(ellipse(cx + 0.02 * r, cy + 0.68 * r, 0.52 * r, 0.18 * r), "#38FFFFFF")
+    out += solid(ellipse(cx - 0.38 * r, cy - 0.3 * r, 0.26 * r, 0.16 * r), "#EEFFFFFF")
+    if cls == "L":
+        out += solid(circle(cx + 0.4 * r, cy + 0.42 * r, 0.1 * r), "#80FFFFFF")
     return out + "    </group>\n"
 
 
-def slide_profile(rng):
-    """Giọt trượt theo từng nấc (dính rồi tuột): (phần thời gian, phần quãng đường)."""
-    a1 = rng.uniform(0.16, 0.24)
-    a2 = a1 + rng.uniform(0.10, 0.16)
-    a3 = a2 + rng.uniform(0.26, 0.34)
-    a4 = a3 + rng.uniform(0.06, 0.12)
-    d1, d2 = rng.uniform(0.12, 0.20), rng.uniform(0.55, 0.65)
-    return [(a1, d1), (a2, d1), (a3, d2), (a4, d2), (1.0, 1.0)]
+def trail_group(name, bx, by, w0, rng):
+    """Vệt nước giọt để lại: dải mảnh hơi uốn, hẹp dần về phía giọt. Vẽ sẵn dài DMAX, scaleY kéo dài theo giọt."""
+    steps = 16
+    phase, amp = rng.uniform(0, 6.28), rng.uniform(0.2, 0.55)
+    left, right = [], []
+    for i in range(steps + 1):
+        f = i / steps
+        w = w0 * (1.0 - 0.55 * f) * (1 + 0.22 * math.sin(i * 1.9 + phase))
+        xc = bx + amp * math.sin(f * 6.5 + phase)
+        left.append((xc - w, by + DMAX * f))
+        right.append((xc + w, by + DMAX * f))
+    pts = left + right[::-1]
+    d = "M" + "L".join("%s,%s" % (n(x), n(y)) for x, y in pts) + "Z"
+    return (
+        '    <group\n        android:name="%s"\n        android:pivotX="%s"\n        android:pivotY="%s"\n        android:scaleX="0"\n        android:scaleY="0">\n'
+        '        <path\n            android:fillColor="#2EFFFFFF"\n            android:pathData="%s"\n            android:strokeColor="#47FFFFFF"\n            android:strokeLineJoin="round"\n            android:strokeWidth="0.16" />\n    </group>\n'
+    ) % (name, n(bx), n(by), d)
+
+
+# ---- sắp xếp các "sự kiện giọt": giọt mới ngưng tụ ngẫu nhiên nhưng trải đều trên kính
+
+def seg_dist(px, py, x0, y0, x1, y1):
+    dx, dy = x1 - x0, y1 - y0
+    l2 = dx * dx + dy * dy
+    u = 0.0 if l2 == 0 else max(0.0, min(1.0, ((px - x0) * dx + (py - y0) * dy) / l2))
+    return math.hypot(px - (x0 + u * dx), py - (y0 + u * dy))
+
+
+def clearance(occs, x, y, r, t0, t1):
+    """Khoảng trống tới các giọt tồn tại cùng lúc (trừ bán kính); càng lớn càng thoáng."""
+    best = 1e9
+    for x0, y0, x1, y1, ro, o0, o1 in occs:
+        if o1 + 500 < t0 or t1 + 500 < o0:
+            continue
+        best = min(best, seg_dist(x, y, x0, y0, x1, y1) - (r + ro) * 1.1)
+    return best
+
+
+def pick(rng, occs, r, t0, t1, tries=30):
+    """Chọn chỗ thoáng nhất trong vài điểm ngẫu nhiên (best-candidate): phân bố đều mà vẫn ngẫu nhiên."""
+    best, best_c = None, -1e9
+    for _ in range(tries):
+        x, y = rng.uniform(XMIN, XMAX), rng.uniform(YMIN, YMAX)
+        border = min(x - XMIN, XMAX - x, y - YMIN, YMAX - y)
+        c = min(clearance(occs, x, y, r, t0, t1), 2 * border + 4)
+        if c > best_c:
+            best, best_c = (x, y), c
+    return best
+
+
+def free_run(occs, x, y, r, theta, t0, t1, limit):
+    """Quãng đường tối đa giọt trượt được mà không đè lên giọt khác."""
+    th = math.radians(theta)
+    d = 0.0
+    while d + 2 <= limit:
+        if clearance(occs, x - (d + 2) * math.sin(th), y + (d + 2) * math.cos(th), r, t0, t1) < 1.0:
+            break
+        d += 2
+    return d
+
+
+def plan(rng, sp, x, y, t_in, initial, occs, force_rest=False):
+    cls, r = sp["cls"], sp["r"]
+    s = 1.0 if initial else rng.uniform(0.88, 1.14)
+    t0 = t_in if initial else t_in + 420
+    th = rng.uniform(-5, 5)
+    ev = {"x": x, "y": y, "s": s, "initial": initial, "t_in": t_in, "runs": [], "theta": th, "D": 0.0}
+    slide = cls != "S" and not force_rest and rng.random() < (0.85 if cls == "L" else 0.65)
+    D = 0.0
+    if slide:
+        dwell = rng.uniform(1500, 30000) if initial else rng.uniform(900, 3800)
+        t_r = int(t0 + dwell)
+        exits = y > 60 and rng.random() < 0.35
+        limit = (126 - y) if exits else min(66.0, 113 - y - r)
+        d_free = free_run(occs, x, y, r * s, th, t_r - 300, t_r + 7000, limit)
+        D = d_free if exits else min(d_free, rng.uniform(24, 62))
+        slide = D >= 18
+    if slide:
+        n_runs = 1 if D < 34 else rng.choice([1, 2, 2, 3])
+        n_runs = max(1, min(n_runs, int(D // 12)))
+        w = [rng.uniform(0.6, 1.4) for _ in range(n_runs)]
+        g = rng.uniform(70, 130)  # gia tốc (đơn vị vector / s²): nhanh dần như rơi có trọng lực
+        t = float(t_r)
+        for i in range(n_runs):
+            d = D * w[i] / sum(w)
+            ta = int(1000 * math.sqrt(2 * 0.8 * d / g))  # 80% quãng đường tăng tốc đều
+            tb = int(ta * 0.25)  # 20% cuối hãm lại để dừng
+            ev["runs"].append((int(t), d, ta, tb))
+            t += ta + tb + rng.uniform(900, 1900)
+        t_run_end = ev["runs"][-1][0] + ev["runs"][-1][2] + ev["runs"][-1][3]
+        ev["t_v"] = t_run_end + int(rng.uniform(1500, 3200))
+        ev["dv"] = int(rng.uniform(1800, 2600))
+        ev["t_th0"] = t_run_end + int(rng.uniform(600, 1400))
+        ev["dth"] = int(rng.uniform(3000, 4000))
+        ev["end"] = max(ev["t_v"] + ev["dv"], ev["t_th0"] + ev["dth"]) + 100
+        ev["D"] = D
+        ev["xe"], ev["ye"] = x - D * math.sin(math.radians(th)), y + D * math.cos(math.radians(th))
+    else:
+        dwell = rng.uniform(1500, 30000) if initial else rng.uniform(3000, 12000)
+        ev["dv"] = int(rng.uniform(1500, 2400))
+        ev["t_v"] = int(t0 + dwell)
+        if not initial:  # đến muộn thì ở lại ngắn hơn để kịp tan trước khi hết chu kỳ
+            ev["t_v"] = int(min(ev["t_v"], TOTAL - 500 - ev["dv"] - 100))
+            if ev["t_v"] < t0 + 700:
+                ev["t_v"] = t0 + 700
+        ev["end"] = ev["t_v"] + ev["dv"] + 100
+        ev["xe"], ev["ye"] = x, y
+    if not initial and ev["end"] > TOTAL - 400 and ev["runs"]:
+        return plan(rng, sp, x, y, t_in, initial, occs, True)
+    return ev
+
+
+def make_sprites(rng):
+    spec = [("L", 7, 5, (3.4, 4.3), (1.35, 2.1)), ("M", 12, 8, (2.3, 3.0), (1.3, 1.9)), ("S", 18, 12, (1.3, 2.0), (1.12, 1.55))]
+    sprites = []
+    for cls, count, visible, (lo, hi), (alo, ahi) in spec:
+        flags = [True] * visible + [False] * (count - visible)
+        rng.shuffle(flags)
+        for flag in flags:
+            r = rng.uniform(lo, hi)
+            sprites.append({"cls": cls, "r": r, "a": r * rng.uniform(alo, ahi), "tilt": rng.uniform(-14, 14),
+                            "initial": flag, "events": [], "busy": [], "base": None})
+    return sprites
+
+
+def free(sp, t0, t1):
+    return all(t1 <= b0 or t0 >= b1 for b0, b1 in sp["busy"])
+
+
+def schedule(rng, sprites):
+    occs = []
+    for sp in sprites:  # lúc đầu một nửa số giọt đã bám sẵn, rải đều
+        if not sp["initial"]:
+            continue
+        x, y = pick(rng, occs, sp["r"], 0, 1500)
+        sp["base"] = (x, y)
+        ev = plan(rng, sp, x, y, 0, True, occs)
+        occs.append((x, y, ev["xe"], ev["ye"], sp["r"], 0, ev["end"]))
+        t_back = int(ev["end"] + rng.uniform(1500, 6000))  # cuối chu kỳ giọt tụ lại đúng chỗ cũ: khung cuối = khung đầu
+        assert t_back + 600 < TOTAL, (t_back, ev["end"])
+        occs.append((x, y, x, y, sp["r"], t_back, TOTAL))
+        sp["events"].append(ev)
+        sp["back"] = t_back
+        sp["busy"] += [(0, ev["end"] + 350), (t_back - 350, TOTAL)]
+    t = 600.0
+    while t < 56500:  # giọt mới ngưng tụ lúc ngẫu nhiên, mỗi ~0,6 s một lần
+        t_in = int(t)
+        t += rng.uniform(320, 880)
+        cls = rng.choices(["S", "M", "L"], weights=[5.0, 3.3, 1.7])[0]
+        cand = [sp for sp in sprites if sp["cls"] == cls and free(sp, t_in - 350, t_in + 6500)]
+        if not cand:
+            continue
+        sp = rng.choice(cand)
+        x, y = pick(rng, occs, sp["r"], t_in, t_in + 7000)
+        ev = plan(rng, sp, x, y, t_in, False, occs)
+        if ev["end"] > TOTAL - 400 or not free(sp, t_in - 350, ev["end"] + 350):
+            continue
+        occs.append((x, y, ev["xe"], ev["ye"], sp["r"] * ev["s"], t_in, ev["end"]))
+        sp["events"].append(ev)
+        sp["busy"].append((t_in - 350, ev["end"] + 350))
+    for sp in sprites:
+        sp["events"].sort(key=lambda e: e["t_in"])
+        if sp["base"] is None and sp["events"]:
+            sp["base"] = (sp["events"][0]["x"], sp["events"][0]["y"])
+
+
+def add(lst, t, v, ip=None):
+    t = int(round(t))
+    assert 0 <= t <= TOTAL
+    assert not lst or t > lst[-1][0], (t, lst[-1])
+    lst.append((t, v, ip))
+
+
+def timelines(sp):
+    """Keyframe cho giọt (H) và vệt nước của nó (T), theo thứ tự thời gian của các sự kiện."""
+    bx, by = sp["base"]
+    H = {k: [] for k in PROPS}
+    T = {k: [] for k in PROPS}
+    for ev in sp["events"]:
+        ox, oy, s, t_in, th = ev["x"] - bx, ev["y"] - by, ev["s"], ev["t_in"], ev["theta"]
+        sn, cs_ = math.sin(math.radians(th)), math.cos(math.radians(th))
+        if ev["initial"]:
+            for k, v in (("tx", 0), ("ty", 0), ("rot", 0), ("sx", 1), ("sy", 1)):
+                add(H[k], 0, v)
+        else:
+            for k, v in (("tx", ox), ("ty", oy), ("rot", 0)):
+                add(H[k], t_in - 100, v)
+            add(H["sx"], t_in, 0)
+            add(H["sy"], t_in, 0)
+            add(H["sx"], t_in + 420, s, POP)  # giọt hiện ra: nảy nhẹ
+            add(H["sy"], t_in + 420, s, POP)
+        cur, cx_, cy_, f = s, ox, oy, 0.0
+        if ev["runs"]:
+            if not T["sy"]:
+                add(T["sy"], 0, 0)
+                add(T["sx"], 0, 0)
+            for k, v in (("tx", 0 if ev["initial"] else ox), ("ty", 0 if ev["initial"] else oy)):
+                add(T[k], 0 if ev["initial"] else t_in - 100, v)
+            add(T["rot"], 0 if ev["initial"] else t_in - 100, th)
+            ts0 = ev["runs"][0][0]
+            add(T["sx"], ts0 - 300, s)
+            for i, (ts, d, ta, tb) in enumerate(ev["runs"]):
+                nxt = max(0.62 * s, cur * 0.9)  # trượt thì giọt nhỏ dần vì để lại nước trên vệt
+                add(H["sx"], ts - 240, cur)  # chuẩn bị: giọt dãn dài theo chiều rơi
+                add(H["sy"], ts - 240, cur)
+                add(H["sx"], ts, 0.9 * cur, EASE)
+                add(H["sy"], ts, 1.22 * cur, EASE)
+                if i == 0:
+                    add(H["rot"], ts - 240, 0)
+                    add(H["rot"], ts, th, EASE)
+                add(H["tx"], ts, cx_)
+                add(H["ty"], ts, cy_)
+                add(H["tx"], ts + ta, cx_ - 0.8 * d * sn, FALL)  # tăng tốc đều: quãng đường ~ t²
+                add(H["ty"], ts + ta, cy_ + 0.8 * d * cs_, FALL)
+                add(H["tx"], ts + ta + tb, cx_ - d * sn, BRAKE)  # hãm lại
+                add(H["ty"], ts + ta + tb, cy_ + d * cs_, BRAKE)
+                add(T["sy"], ts, f)
+                add(T["sy"], ts + ta, f + 0.8 * d / DMAX, FALL)
+                add(T["sy"], ts + ta + tb, f + d / DMAX, BRAKE)
+                end = ts + ta + tb
+                add(H["sx"], end, 0.9 * nxt)
+                add(H["sy"], end, 1.22 * nxt)
+                add(H["sx"], end + 380, nxt, POP)  # dừng: co lại, nảy nhẹ
+                add(H["sy"], end + 380, nxt, POP)
+                cur, cx_, cy_, f = nxt, cx_ - d * sn, cy_ + d * cs_, f + d / DMAX
+            add(T["sx"], ev["t_th0"], s)  # vệt nước khô dần: mỏng lại rồi biến mất
+            add(T["sx"], ev["t_th0"] + ev["dth"], 0, EASE)
+            add(T["sy"], ev["t_th0"] + ev["dth"], f)
+            add(T["sy"], ev["t_th0"] + ev["dth"] + 100, 0)
+        add(H["sx"], ev["t_v"], cur)  # bay hơi: nhỏ dần rồi tan
+        add(H["sy"], ev["t_v"], cur)
+        add(H["sx"], ev["t_v"] + ev["dv"], 0, EASE)
+        add(H["sy"], ev["t_v"] + ev["dv"], 0, EASE)
+    if sp["initial"]:
+        tb = sp["back"]
+        for k in ("tx", "ty", "rot"):
+            add(H[k], tb - 100, 0)
+        add(H["sx"], tb, 0)
+        add(H["sy"], tb, 0)
+        add(H["sx"], tb + 420, 1, POP)
+        add(H["sy"], tb + 420, 1, POP)
+    return H, T
 
 
 def gen_rain():
-    rng = random.Random(11)
-    placed = []
-    large = [(3.4 + rng.random() * 1.0) for _ in range(5)]
-    medium = [(2.2 + rng.random() * 0.8) for _ in range(10)]
-    small = [(1.3 + rng.random() * 0.7) for _ in range(20)]
-    # Giọt trượt cần chỗ trống bên dưới nên đặt ở nửa trên; còn lại rải đều.
-    drops = []  # (tên, x, y, r, loại)
-    kinds = (["slide"] * 3 + ["churn"] + ["wobble"]) + (["slide"] * 3 + ["churn"] * 4 + ["wobble"] * 3) + (["churn"] * 8 + ["wobble"] * 4 + ["still"] * 8)
-    sizes = large + medium + small
-    for kind, r in zip(kinds, sizes):
-        x, y = place(rng, placed, r, 10, 60 if kind == "slide" else 111)
-        drops.append((kind, x, y, r))
-    for i, (kind, x, y, r) in enumerate(drops):
-        drops[i] = ("d%d" % (i + 1), kind, x, y, r)
+    rng = random.Random(23)
+    interpolators()
+    sprites = make_sprites(rng)
+    schedule(rng, sprites)
+    sprites = [sp for sp in sprites if sp["events"]]
 
-    # Các hạt nước li ti bám dày: gộp mỗi loại vào một path để nhẹ.
+    # Các hạt nước li ti bám dày: gộp vào một path để nhẹ.
     beads, glints = [], []
-    for _ in range(46):
-        x, y, r = rng.uniform(6, 234), rng.uniform(6, 114), rng.uniform(0.6, 1.2)
+    for _ in range(60):
+        x, y, r = rng.uniform(6, 234), rng.uniform(6, 114), rng.uniform(0.5, 1.1)
         beads.append(circle(x, y, r))
-        glints.append(circle(x - 0.35 * r, y - 0.4 * r, 0.3))
+        glints.append(circle(x - 0.35 * r, y - 0.4 * r, 0.28))
     body = (
-        '    <path\n        android:fillColor="#1FFFFFFF"\n        android:pathData="%s"\n        android:strokeColor="#4DFFFFFF"\n        android:strokeWidth="0.22" />\n' % "".join(beads)
+        '    <path\n        android:fillColor="#1FFFFFFF"\n        android:pathData="%s"\n        android:strokeColor="#47FFFFFF"\n        android:strokeWidth="0.2" />\n' % "".join(beads)
         + '    <path\n        android:name="glint"\n        android:fillAlpha="0.55"\n        android:fillColor="#FFFFFF"\n        android:pathData="%s" />\n' % "".join(glints)
     )
     targets = [("glint", "fx_rain_glint")]
     anims = {"fx_rain_glint": loop("fillAlpha", 0.55, 1.0, 2500, 24, "accelerate_decelerate", True)}
-    for k, (dur, passes) in enumerate([(2500, 24), (3000, 20), (3750, 16)]):
-        anims["fx_rain_wobble_%s" % "abc"[k]] = anim_set([
-            attrs_of("scaleX", 1, 1.07, dur, passes, "accelerate_decelerate", True),
-            attrs_of("scaleY", 1, 0.93, dur, passes, "accelerate_decelerate", True),
-        ])
 
-    trails, groups, wob = "", "", 0
-    ease = "accelerate_decelerate"
-    for name, kind, x, y, r in sorted(drops, key=lambda d: d[4]):
-        groups += drop_group(name, x, y, r)
-        idx = name[1:]
-        if kind == "slide":
-            D = min(rng.uniform(30, 58), 112 - y - r)
-            ts, dur, gap = rng.uniform(1500, 38000), rng.uniform(3500, 6500), rng.uniform(1500, 6000)
-            t_end = ts + dur
-            t_re = t_end + 800 + gap
-            prof = slide_profile(rng)
-            ty = [(ts, 0, None)] + [(ts + a * dur, d * D, ease) for a, d in prof] + [(t_end + 800, D, None), (t_end + 900, 0, None)]
-            sc = [(0, 1, None), (ts - 1000, 1, None), (ts, 1.12, ease), (t_end, 0.62, ease), (t_end + 800, 0, ease), (t_re, 0, None), (t_re + 2500, 1, ease)]
-            anims["fx_rain_" + name] = multi({"translateY": ty, "scaleX": sc, "scaleY": sc})
-            targets.append((name, "fx_rain_" + name))
-            ty_trail = [(0, 0, None), (ts, 0, None)] + [(ts + a * dur, d, ease) for a, d in prof] + [(t_end + 3500, 1, None), (t_end + 3600, 0, None)]
-            sx_trail = [(0, 1, None), (t_end, 1, None), (t_end + 3500, 0, ease)]
-            anims["fx_rain_t" + idx] = multi({"scaleY": ty_trail, "scaleX": sx_trail})
-            targets.append(("t" + idx, "fx_rain_t" + idx))
-            tw = 0.5 + r * 0.22
-            trails += (
-                '    <group\n        android:name="t%s"\n        android:pivotX="%s"\n        android:pivotY="%s"\n        android:scaleY="0">\n'
-                '        <path\n            android:pathData="M%s,%sL%s,%s"\n            android:strokeAlpha="0.28"\n            android:strokeColor="#FFFFFF"\n'
-                '            android:strokeLineCap="round"\n            android:strokeWidth="%s" />\n    </group>\n'
-            ) % (idx, n(x), n(y), n(x), n(y), n(x), n(y + D), n(tw))
-        elif kind == "churn":
-            t_hide, shrink, gap, grow = rng.uniform(2500, 36000), rng.uniform(1200, 2200), rng.uniform(1500, 9000), rng.uniform(2200, 3500)
-            sc = [(0, 1, None), (t_hide, 1, None), (t_hide + shrink, 0, ease), (t_hide + shrink + gap, 0, None), (t_hide + shrink + gap + grow, 1, ease)]
-            anims["fx_rain_" + name] = multi({"scaleX": sc, "scaleY": sc})
-            targets.append((name, "fx_rain_" + name))
-        elif kind == "wobble":
-            targets.append((name, "fx_rain_wobble_" + "abc"[wob % 3]))
-            wob += 1
+    trails, groups = "", ""
+    for idx, sp in enumerate(sprites, 1):
+        sp["name"] = "d%d" % idx
+        H, T = timelines(sp)
+        bx, by = sp["base"]
+        keep = ("tx", "ty", "sx", "sy", "rot") if sp["cls"] != "S" else ("tx", "ty", "sx", "sy")
+        anims["fx_rain_d%d" % idx] = multi({PROPS[k]: H[k] for k in keep})
+        targets.append(("d%d" % idx, "fx_rain_d%d" % idx))
+        if T["sy"]:
+            anims["fx_rain_t%d" % idx] = multi({PROPS[k]: T[k] for k in PROPS})
+            targets.append(("t%d" % idx, "fx_rain_t%d" % idx))
+            trails += trail_group("t%d" % idx, bx, by, 0.17 * sp["r"] + 0.14, rng)
+        sp["body"] = drop_group("d%d" % idx, bx, by, sp["r"], sp["a"], sp["tilt"], sp["cls"], not sp["initial"])
+    for sp in sorted(sprites, key=lambda s: s["r"]):
+        groups += sp["body"]
 
     write("drawable", "fx_rain_vec", vector(body + trails + groups, gradient=True))
     write("drawable", "fx_rain", avd("rain", targets))
     for res, xml in anims.items():
         write("animator", res, xml)
+    new = sum(len(sp["events"]) - (1 if sp["initial"] else 0) for sp in sprites)
+    print("mưa: %d giọt, %d giọt mới ngưng tụ trong %d s, %d tệp animator" % (len(sprites), new, TOTAL // 1000, len(anims)))
 
 
 def flash_pattern(events):

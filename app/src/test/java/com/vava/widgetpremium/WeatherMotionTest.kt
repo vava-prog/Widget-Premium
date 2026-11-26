@@ -99,6 +99,72 @@ class WeatherMotionTest {
         }
     }
 
+    private val holder = Regex("<propertyValuesHolder\\s+android:propertyName=\"([^\"]+)\"[^>]*>(.*?)</propertyValuesHolder>", RegexOption.DOT_MATCHES_ALL)
+    private val keyframe = Regex("<keyframe[^>]*/>", RegexOption.DOT_MATCHES_ALL)
+
+    private fun animatorFiles(): List<File> =
+        File(resDir(), "animator").listFiles { f -> f.name.startsWith("fx_") }!!.toList()
+
+    @Test
+    fun keyframesGoFromZeroToOneInStrictOrder() {
+        var checked = 0
+        for (f in animatorFiles()) {
+            for (m in holder.findAll(f.readText())) {
+                val fractions = keyframe.findAll(m.groupValues[2]).map { attr(it.value, "fraction")!!.toDouble() }.toList()
+                assertTrue("${f.name}/${m.groupValues[1]}: cần ít nhất 2 keyframe", fractions.size >= 2)
+                assertEquals("${f.name}/${m.groupValues[1]}: keyframe đầu", 0.0, fractions.first(), 0.0)
+                assertEquals("${f.name}/${m.groupValues[1]}: keyframe cuối", 1.0, fractions.last(), 0.0)
+                for (i in 1 until fractions.size) {
+                    assertTrue("${f.name}/${m.groupValues[1]}: fraction phải tăng dần tại #$i", fractions[i] > fractions[i - 1])
+                }
+                checked++
+            }
+        }
+        assertTrue(checked > 0)
+    }
+
+    @Test
+    fun scaleAnimatorsEndOnTheirFirstFrame() {
+        // Giọt/vệt về đúng kích thước ban đầu (hiện hoặc ẩn) nên khung cuối = khung đầu, hiệu ứng dừng không "nhảy".
+        var checked = 0
+        for (f in animatorFiles()) {
+            for (m in holder.findAll(f.readText())) {
+                if (m.groupValues[1] != "scaleX" && m.groupValues[1] != "scaleY") continue
+                val values = keyframe.findAll(m.groupValues[2]).map { attr(it.value, "value")!!.toDouble() }.toList()
+                assertEquals("${f.name}/${m.groupValues[1]}", values.first(), values.last(), 1e-9)
+                checked++
+            }
+        }
+        assertTrue(checked > 0)
+    }
+
+    @Test
+    fun everyReferencedInterpolatorResourceExists() {
+        val res = resDir()
+        val ref = Regex("@interpolator/([A-Za-z0-9_]+)")
+        var used = 0
+        for (f in animatorFiles()) {
+            for (m in ref.findAll(f.readText())) {
+                assertTrue("${f.name}: thiếu interpolator ${m.groupValues[1]}", File(res, "interpolator/${m.groupValues[1]}.xml").isFile)
+                used++
+            }
+        }
+        assertTrue("mưa phải dùng nội suy rơi/hãm/nảy riêng", used > 0)
+    }
+
+    @Test
+    fun rainHasGravityTrailsAndManyDrops() {
+        val res = resDir()
+        val avd = File(res, "drawable/fx_rain.xml").readText()
+        val drops = Regex("android:name=\"d\\d+\"").findAll(avd).count()
+        val trails = Regex("android:name=\"t\\d+\"").findAll(avd).count()
+        assertTrue("cần nhiều giọt, có $drops", drops >= 30)
+        assertTrue("cần các vệt nước, có $trails", trails >= 6)
+        // Ít nhất một giọt rơi nhanh dần: dùng nội suy trọng lực ở tịnh tiến dọc.
+        val anyFall = animatorFiles().any { it.name.startsWith("fx_rain_d") && it.readText().contains("@interpolator/fx_fall") }
+        assertTrue("không có giọt nào rơi nhanh dần", anyFall)
+    }
+
     @Test
     fun everyAnimatorRunsExactlyTotalAndEndsOnItsFirstFrame() {
         val files = File(resDir(), "animator").listFiles { f -> f.name.startsWith("fx_") }!!.toList()

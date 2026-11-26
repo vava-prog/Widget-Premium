@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Sinh tự động bởi tools/gen_weather_fx.py, không sửa tay. -->
+<objectAnimator xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="60000"
+    android:interpolator="@android:interpolator/linear">
+    <propertyValuesHolder
+        android:propertyName="translateX"
+        android:valueType="floatType">
+        <keyframe
+            android:fraction="0"
+            android:value="90.75" />
+        <keyframe
+            android:fraction="0.18717"
+            android:value="90.75" />
+        <keyframe
+            android:fraction="0.68068"
+            android:value="-5.18" />
+        <keyframe
+            android:fraction="1"
+            android:value="-5.18" />
+    </propertyValuesHolder>
+    <propertyValuesHolder
+        android:propertyName="translateY"
+        android:valueType="floatType">
+        <keyframe
+            android:fraction="0"
+            android:value="54.14" />
+        <keyframe
+            android:fraction="0.18717"
+            android:value="54.14" />
+        <keyframe
+            android:fraction="0.68068"
+            android:value="36.56" />
+        <keyframe
+            android:fraction="1"
+            android:value="36.56" />
+    </propertyValuesHolder>
+    <propertyValuesHolder
+        android:propertyName="scaleX"
+        android:valueType="floatType">
+        <keyframe
+            android:fraction="0"
+            android:value="0" />
+        <keyframe
+            android:fraction="0.21473"
+            android:value="0.98" />
+        <keyframe
+            android:fraction="0.24412"
+            android:value="0.98" />
+        <keyframe
+            android:fraction="0.29673"
+            android:value="0"
+            android:interpolator="@android:interpolator/accelerate_decelerate" />
+        <keyframe
+            android:fraction="0.718"
+            android:value="0.92" />
+        <keyframe
+            android:fraction="0.79065"
+            android:value="0.92" />
+        <keyframe
+            android:fraction="0.84853"
+            android:value="0"
+            android:interpolator="@android:interpolator/accelerate_decelerate" />
+        <keyframe
+            android:fraction="1"
+            android:value="0" />
+    </propertyValuesHolder>
+    <propertyValuesHolder
+        android:propertyName="scaleY"
+        android:valueType="floatType">
+        <keyframe
+            android:fraction="0"
+            android:value="0" />
+        <keyframe
+            android:fraction="0.21973"
+            android:value="0" />
+        <keyframe
+            android:fraction="0.23002"
+            android:value="0.28"
+            android:interpolator="@interpolator/fx_fall" />
+        <keyframe
+            android:fraction="0.23258"
+            android:value="0.35"
+            android:interpolator="@interpolator/fx_brake" />
+        <keyframe
+            android:fraction="0.29673"
+            android:value="0.35" />
+        <keyframe
+            android:fraction="0.2984"
+            android:value="0" />
+        <keyframe
+            android:fraction="0.723"
+            android:value="0" />
+        <keyframe
+            android:fraction="0.73303"
+            android:value="0.18"
+            android:interpolator="@interpolator/fx_fall" />
+        <keyframe
+            android:fraction="0.73553"
+            android:value="0.23"
+            android:interpolator="@interpolator/fx_brake" />
+        <keyframe
+            android:fraction="0.7577"
+            android:value="0.23" />
+        <keyframe
+            android:fraction="0.76873"
+            android:value="0.45"
+            android:interpolator="@interpolator/fx_fall" />
+        <keyframe
+            android:fraction="0.77148"
+            android:value="0.5"
+            android:interpolator="@interpolator/fx_brake" />
+        <keyframe
+            android:fraction="0.84853"
+            android:value="0.5" />
+        <keyframe
+            android:fraction="0.8502"
+            android:value="0" />
+        <keyframe
+            android:fraction="1"
+            android:value="0" />
+    </propertyValuesHolder>
+    <propertyValuesHolder
+        android:propertyName="rotation"
+        android:valueType="floatType">
+        <keyframe
+            android:fraction="0"
+            android:value="3.57" />
+        <keyframe
+            android:fraction="0.18717"
+            android:value="3.57" />
+        <keyframe
+            android:fraction="0.68068"
+            android:value="-2.01" />
+        <keyframe
+            android:fraction="1"
+            android:value="-2.01" />
+    </propertyValuesHolder>
+</objectAnimator>

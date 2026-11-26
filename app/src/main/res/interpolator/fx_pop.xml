@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Sinh tự động bởi tools/gen_weather_fx.py, không sửa tay. -->
+<overshootInterpolator xmlns:android="http://schemas.android.com/apk/res/android"
+    android:tension="3" />

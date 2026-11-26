@@ -6,92 +6,11 @@
         android:name="glint"
         android:animation="@animator/fx_rain_glint" />
     <target
-        android:name="d22"
-        android:animation="@animator/fx_rain_d22" />
-    <target
-        android:name="d27"
-        android:animation="@animator/fx_rain_wobble_a" />
-    <target
-        android:name="d16"
-        android:animation="@animator/fx_rain_d16" />
-    <target
-        android:name="d24"
-        android:animation="@animator/fx_rain_wobble_b" />
-    <target
-        android:name="d21"
-        android:animation="@animator/fx_rain_d21" />
-    <target
-        android:name="d25"
-        android:animation="@animator/fx_rain_wobble_c" />
-    <target
-        android:name="d26"
-        android:animation="@animator/fx_rain_wobble_a" />
-    <target
-        android:name="d23"
-        android:animation="@animator/fx_rain_d23" />
-    <target
-        android:name="d20"
-        android:animation="@animator/fx_rain_d20" />
-    <target
-        android:name="d19"
-        android:animation="@animator/fx_rain_d19" />
-    <target
-        android:name="d18"
-        android:animation="@animator/fx_rain_d18" />
-    <target
-        android:name="d17"
-        android:animation="@animator/fx_rain_d17" />
-    <target
-        android:name="d13"
-        android:animation="@animator/fx_rain_wobble_b" />
-    <target
-        android:name="d11"
-        android:animation="@animator/fx_rain_d11" />
-    <target
-        android:name="d7"
-        android:animation="@animator/fx_rain_d7" />
-    <target
-        android:name="t7"
-        android:animation="@animator/fx_rain_t7" />
-    <target
-        android:name="d12"
-        android:animation="@animator/fx_rain_d12" />
-    <target
-        android:name="d8"
-        android:animation="@animator/fx_rain_d8" />
-    <target
-        android:name="t8"
-        android:animation="@animator/fx_rain_t8" />
-    <target
-        android:name="d6"
-        android:animation="@animator/fx_rain_d6" />
-    <target
-        android:name="t6"
-        android:animation="@animator/fx_rain_t6" />
-    <target
-        android:name="d9"
-        android:animation="@animator/fx_rain_d9" />
-    <target
-        android:name="d15"
-        android:animation="@animator/fx_rain_wobble_c" />
-    <target
-        android:name="d10"
-        android:animation="@animator/fx_rain_d10" />
-    <target
-        android:name="d14"
-        android:animation="@animator/fx_rain_wobble_a" />
-    <target
         android:name="d1"
         android:animation="@animator/fx_rain_d1" />
     <target
         android:name="t1"
         android:animation="@animator/fx_rain_t1" />
-    <target
-        android:name="d4"
-        android:animation="@animator/fx_rain_d4" />
-    <target
-        android:name="d5"
-        android:animation="@animator/fx_rain_wobble_b" />
     <target
         android:name="d2"
         android:animation="@animator/fx_rain_d2" />
@@ -104,4 +23,136 @@
     <target
         android:name="t3"
         android:animation="@animator/fx_rain_t3" />
+    <target
+        android:name="d4"
+        android:animation="@animator/fx_rain_d4" />
+    <target
+        android:name="t4"
+        android:animation="@animator/fx_rain_t4" />
+    <target
+        android:name="d5"
+        android:animation="@animator/fx_rain_d5" />
+    <target
+        android:name="t5"
+        android:animation="@animator/fx_rain_t5" />
+    <target
+        android:name="d6"
+        android:animation="@animator/fx_rain_d6" />
+    <target
+        android:name="t6"
+        android:animation="@animator/fx_rain_t6" />
+    <target
+        android:name="d7"
+        android:animation="@animator/fx_rain_d7" />
+    <target
+        android:name="t7"
+        android:animation="@animator/fx_rain_t7" />
+    <target
+        android:name="d8"
+        android:animation="@animator/fx_rain_d8" />
+    <target
+        android:name="d9"
+        android:animation="@animator/fx_rain_d9" />
+    <target
+        android:name="t9"
+        android:animation="@animator/fx_rain_t9" />
+    <target
+        android:name="d10"
+        android:animation="@animator/fx_rain_d10" />
+    <target
+        android:name="t10"
+        android:animation="@animator/fx_rain_t10" />
+    <target
+        android:name="d11"
+        android:animation="@animator/fx_rain_d11" />
+    <target
+        android:name="t11"
+        android:animation="@animator/fx_rain_t11" />
+    <target
+        android:name="d12"
+        android:animation="@animator/fx_rain_d12" />
+    <target
+        android:name="d13"
+        android:animation="@animator/fx_rain_d13" />
+    <target
+        android:name="d14"
+        android:animation="@animator/fx_rain_d14" />
+    <target
+        android:name="d15"
+        android:animation="@animator/fx_rain_d15" />
+    <target
+        android:name="t15"
+        android:animation="@animator/fx_rain_t15" />
+    <target
+        android:name="d16"
+        android:animation="@animator/fx_rain_d16" />
+    <target
+        android:name="t16"
+        android:animation="@animator/fx_rain_t16" />
+    <target
+        android:name="d17"
+        android:animation="@animator/fx_rain_d17" />
+    <target
+        android:name="d18"
+        android:animation="@animator/fx_rain_d18" />
+    <target
+        android:name="t18"
+        android:animation="@animator/fx_rain_t18" />
+    <target
+        android:name="d19"
+        android:animation="@animator/fx_rain_d19" />
+    <target
+        android:name="d20"
+        android:animation="@animator/fx_rain_d20" />
+    <target
+        android:name="d21"
+        android:animation="@animator/fx_rain_d21" />
+    <target
+        android:name="d22"
+        android:animation="@animator/fx_rain_d22" />
+    <target
+        android:name="d23"
+        android:animation="@animator/fx_rain_d23" />
+    <target
+        android:name="d24"
+        android:animation="@animator/fx_rain_d24" />
+    <target
+        android:name="d25"
+        android:animation="@animator/fx_rain_d25" />
+    <target
+        android:name="d26"
+        android:animation="@animator/fx_rain_d26" />
+    <target
+        android:name="d27"
+        android:animation="@animator/fx_rain_d27" />
+    <target
+        android:name="d28"
+        android:animation="@animator/fx_rain_d28" />
+    <target
+        android:name="d29"
+        android:animation="@animator/fx_rain_d29" />
+    <target
+        android:name="d30"
+        android:animation="@animator/fx_rain_d30" />
+    <target
+        android:name="d31"
+        android:animation="@animator/fx_rain_d31" />
+    <target
+        android:name="d32"
+        android:animation="@animator/fx_rain_d32" />
+    <target
+        android:name="d33"
+        android:animation="@animator/fx_rain_d33" />
+    <target
+        android:name="d34"
+        android:animation="@animator/fx_rain_d34" />
+    <target
+        android:name="d35"
+        android:animation="@animator/fx_rain_d35" />
+    <target
+        android:name="d36"
+        android:animation="@animator/fx_rain_d36" />
+    <target
+        android:name="d37"
+        android:animation="@animator/fx_rain_d37" />
 </animated-vector>
