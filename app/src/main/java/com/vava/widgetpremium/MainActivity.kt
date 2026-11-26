@@ -114,11 +114,6 @@ private fun HomeScreen() {
         ) {
             item { Box(Modifier.padding(top = 24.dp)) { Dashboard() } }
             item {
-                Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                    LiveLogo(Modifier.fillMaxWidth(0.8f))
-                }
-            }
-            item {
                 Text(
                     stringResource(R.string.app_name),
                     style = MaterialTheme.typography.headlineLarge,

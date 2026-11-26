@@ -46,8 +46,6 @@
     <string name="cond_snow">Tuyết</string>
     <string name="cond_thunder">Dông</string>
     <string name="cond_unknown">Không rõ</string>
-    <string name="logo_lunar">Âm Lịch</string>
-    <string name="logo_solar">Dương Lịch</string>
     <string name="icon_switch_title">Đổi biểu tượng app theo ngày/đêm</string>
     <string name="icon_switch_hint">Biểu tượng đổi nền khi mặt trời mọc hoặc lặn. Một số launcher có thể làm biểu tượng nhấp nháy khi đổi; hãy tắt nếu bạn gặp tình trạng này.</string>
     <string name="nav_home">Trang chủ</string>
