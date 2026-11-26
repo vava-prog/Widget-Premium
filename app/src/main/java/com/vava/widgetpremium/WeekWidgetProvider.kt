@@ -56,12 +56,13 @@ class WeekWidgetProvider : AppWidgetProvider() {
         }
 
         private fun update(context: Context, manager: AppWidgetManager, id: Int) {
-            manager.updateAppWidget(id, buildViews(context, manager, id))
+            val (w, h) = WidgetBackground.sizeDp(manager, id, 250, 110)
+            manager.updateAppWidget(id, buildViews(context, w, h))
         }
 
-        private fun buildViews(context: Context, manager: AppWidgetManager, id: Int): RemoteViews {
+        /** Dựng widget theo kích thước (dp) cho trước; dùng chung cho widget thật và khung xem trước trong app. */
+        fun buildViews(context: Context, w: Int, h: Int): RemoteViews {
             val views = RemoteViews(context.packageName, R.layout.widget_week)
-            val (w, h) = WidgetBackground.sizeDp(manager, id, 250, 110)
             WidgetBackground.apply(context, views, R.id.week_bg, w, h)
 
             val opts = StyleStore.load(context)

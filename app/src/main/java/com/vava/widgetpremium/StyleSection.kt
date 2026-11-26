@@ -1,11 +1,15 @@
 package com.vava.widgetpremium
 
+import android.content.Context
+import android.view.MotionEvent
+import android.widget.FrameLayout
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,6 +29,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,6 +41,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 
 /**
  * Các điều khiển giao diện widget. Trạng thái `style` do màn hình cha giữ để khung xem trước
@@ -283,43 +289,60 @@ fun StyleSection(style: WidgetStyle, onChange: (WidgetStyle) -> Unit) {
     }
 }
 
-/** Xem trước nền widget trên một hình nền mẫu nhiều màu để thấy rõ độ trong suốt. */
+private enum class PreviewKind(val labelRes: Int, val heightDp: Int) {
+    CLOCK(R.string.preview_kind_clock, 100),
+    INFO(R.string.preview_kind_info, 190),
+    WEEK(R.string.preview_kind_week, 135)
+}
+
+/** Khung chặn chạm: chạm vào bản xem trước không được kích hoạt các thao tác gắn trên widget. */
+private class PreviewFrame(context: Context) : FrameLayout(context) {
+    override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean = true
+}
+
+/**
+ * Xem trước bằng chính widget thật (cùng layout và cùng dữ liệu: giờ, ngày dương/âm, thời tiết, dải tuần hoặc theo giờ,
+ * pin/RAM/bộ nhớ, hiệu ứng mưa) trên một hình nền mẫu nhiều màu để thấy rõ độ trong suốt.
+ * Chọn Đồng hồ, Thông tin hoặc Lịch tuần để xem từng loại.
+ */
 @Composable
 fun StylePreview(style: WidgetStyle) {
-    val isDay = WidgetPalette.resolveDay(style.mode, WidgetUpdater.isDay(LocalContext.current))
-    val sky = if (style.theme == WidgetTheme.WEATHER) WeatherSky.current(LocalContext.current, isDay) else null
-    val palette = WidgetPalette.palette(style, isDay, sky)
-    val shape = RoundedCornerShape(style.cornerDp.dp)
-    Box(
-        Modifier
-            .fillMaxWidth()
-            .height(104.dp)
-            .clip(RoundedCornerShape(12.dp))
-            .background(Brush.horizontalGradient(listOf(Color(0xFF3A8D5C), Color(0xFFE9B949), Color(0xFFD9534F)))),
-        contentAlignment = Alignment.Center
-    ) {
-        Box(
-            Modifier
-                .fillMaxWidth(0.85f)
-                .height(76.dp)
-                .clip(shape)
-                .background(Brush.verticalGradient(listOf(Color(palette.top), Color(palette.bottom))))
-                .then(
-                    if (palette.strokeDp > 0f) Modifier.border(BorderStroke(palette.strokeDp.dp, Color(palette.stroke)), shape)
-                    else Modifier
-                )
-                .padding(8.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            val textColor = WidgetPalette.textColors(style.textTone, style.customTextColor)?.first?.let { Color(it) } ?: Color.White
-            val now = java.time.LocalDateTime.now()
-            val timeText = now.format(java.time.format.DateTimeFormatter.ofPattern(if (style.hourFormat == HourFormat.H12) "h:mm" else "HH:mm"))
-            val dateText = now.format(java.time.format.DateTimeFormatter.ofPattern("EEEE, d/M", java.util.Locale.getDefault()))
-            val soft = WidgetPalette.textColors(style.textTone, style.customTextColor)?.second?.let { Color(it) } ?: Color(0xCCFFFFFF)
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(timeText, color = textColor, fontSize = 32.sp, fontWeight = FontWeight.Bold)
-                Text(dateText, color = soft, fontSize = 13.sp)
+    var kind by rememberSaveable { mutableStateOf(PreviewKind.WEEK) }
+    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            PreviewKind.values().forEach { k ->
+                FilterChip(selected = kind == k, onClick = { kind = k }, label = { Text(stringResource(k.labelRes)) })
             }
+        }
+        BoxWithConstraints(
+            Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(12.dp))
+                .background(Brush.horizontalGradient(listOf(Color(0xFF3A8D5C), Color(0xFFE9B949), Color(0xFFD9534F))))
+                .padding(horizontal = 10.dp, vertical = 8.dp)
+        ) {
+            val widthDp = maxWidth.value.toInt().coerceAtLeast(200)
+            val heightDp = kind.heightDp
+            AndroidView(
+                modifier = Modifier.fillMaxWidth().height(heightDp.dp),
+                factory = { ctx -> PreviewFrame(ctx) },
+                update = { frame ->
+                    val ctx = frame.context
+                    try {
+                        val views = when (kind) {
+                            PreviewKind.CLOCK -> ClockWidgetProvider.buildViews(ctx, widthDp, heightDp)
+                            PreviewKind.INFO -> InfoWidgetProvider.buildViews(ctx, widthDp, heightDp)
+                            PreviewKind.WEEK -> WeekWidgetProvider.buildViews(ctx, widthDp, heightDp)
+                        }
+                        frame.removeAllViews()
+                        frame.addView(views.apply(ctx, frame))
+                    } catch (e: RuntimeException) {
+                        frame.removeAllViews() // không dựng được thì để trống, không làm app dừng
+                    }
+                    // Ghi lại kiểu đang dùng để Compose dựng lại bản xem trước mỗi khi người dùng đổi cài đặt.
+                    frame.tag = style
+                }
+            )
         }
     }
 }

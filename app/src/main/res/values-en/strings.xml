@@ -261,4 +261,7 @@
     <string name="alert_hot_text">Battery temperature %1$.1f°C. Take a break and avoid charging while hot.</string>
     <string name="disp_motion">Animated weather effect</string>
     <string name="disp_motion_hint">Raindrops on glass, sun, clouds, stars… play for about a minute whenever the home screen appears or the widget refreshes, then stop to save battery. Turns itself off in battery saver or when system animations are off. Needs a city and weather data.</string>
+    <string name="preview_kind_clock">Clock</string>
+    <string name="preview_kind_info">Info</string>
+    <string name="preview_kind_week">Week</string>
 </resources>
