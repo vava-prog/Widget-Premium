@@ -127,15 +127,16 @@ class WeatherMotionTest {
     }
 
     @Test
-    fun scaleAnimatorsEndOnTheirFirstFrame() {
-        // Các hiệu ứng lặp về đúng kích thước ban đầu nên khung cuối = khung đầu, hiệu ứng dừng không "nhảy".
-        // Mưa là ngoại lệ: chạy một lượt rồi giữ nguyên khung cuối (vệt nước ở lại như kính vừa ướt), xem test bên dưới.
+    fun loopingScaleAnimatorsReturnToTheirFirstFrame() {
+        // Hiệu ứng lặp (quầng nắng, trăng): nhịp phồng-xẹp đảo chiều với số lượt chẵn nên hết giờ về đúng kích thước ban đầu.
+        // Mưa là ngoại lệ: chạy một lượt rồi giữ khung cuối (vệt nước ở lại như kính vừa ướt), xem test bên dưới.
         var checked = 0
         for (f in animatorFiles().filter { layerOf(it) != "rain" }) {
-            for (m in holder.findAll(f.readText())) {
-                if (m.groupValues[1] != "scaleX" && m.groupValues[1] != "scaleY") continue
-                val values = keyframe.findAll(m.groupValues[2]).map { attr(it.value, "value")!!.toDouble() }.toList()
-                assertEquals("${f.name}/${m.groupValues[1]}", values.first(), values.last(), 1e-9)
+            for (t in tag.findAll(f.readText()).map { it.value }) {
+                val prop = attr(t, "propertyName")
+                if (prop != "scaleX" && prop != "scaleY") continue
+                assertEquals("${f.name}: scale lặp phải đảo chiều", "reverse", attr(t, "repeatMode"))
+                assertEquals("${f.name}: cần số lượt chẵn", 0, ((attr(t, "repeatCount")?.toInt() ?: 0) + 1) % 2)
                 checked++
             }
         }
