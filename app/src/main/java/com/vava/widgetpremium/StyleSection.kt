@@ -292,7 +292,7 @@ fun StyleSection(style: WidgetStyle, onChange: (WidgetStyle) -> Unit) {
 private enum class PreviewKind(val labelRes: Int, val heightDp: Int) {
     CLOCK(R.string.preview_kind_clock, 100),
     INFO(R.string.preview_kind_info, 190),
-    WEEK(R.string.preview_kind_week, 135)
+    WEEK(R.string.preview_kind_week, 176)
 }
 
 /** Khung chặn chạm: chạm vào bản xem trước không được kích hoạt các thao tác gắn trên widget. */

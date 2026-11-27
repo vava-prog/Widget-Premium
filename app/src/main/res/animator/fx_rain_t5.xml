@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Sinh tự động bởi tools/gen_weather_fx.py, không sửa tay. -->
 <objectAnimator xmlns:android="http://schemas.android.com/apk/res/android"
-    android:duration="60000"
+    android:duration="4000"
     android:interpolator="@android:interpolator/linear">
     <propertyValuesHolder
         android:propertyName="translateX"
@@ -30,18 +30,14 @@
             android:fraction="0"
             android:value="0" />
         <keyframe
-            android:fraction="0.34917"
-            android:value="1" />
+            android:fraction="0.41925"
+            android:value="0" />
         <keyframe
-            android:fraction="0.38552"
+            android:fraction="0.44425"
             android:value="1" />
-        <keyframe
-            android:fraction="0.45093"
-            android:value="0"
-            android:interpolator="@android:interpolator/accelerate_decelerate" />
         <keyframe
             android:fraction="1"
-            android:value="0" />
+            android:value="1" />
     </propertyValuesHolder>
     <propertyValuesHolder
         android:propertyName="scaleY"
@@ -50,34 +46,28 @@
             android:fraction="0"
             android:value="0" />
         <keyframe
-            android:fraction="0.35417"
+            android:fraction="0.44425"
             android:value="0" />
         <keyframe
-            android:fraction="0.3645"
-            android:value="0.28"
+            android:fraction="0.5495"
+            android:value="0.43"
             android:interpolator="@interpolator/fx_fall" />
         <keyframe
-            android:fraction="0.36708"
-            android:value="0.35"
+            android:fraction="0.57575"
+            android:value="0.54"
             android:interpolator="@interpolator/fx_brake" />
         <keyframe
-            android:fraction="0.45093"
-            android:value="0.35" />
-        <keyframe
-            android:fraction="0.4526"
-            android:value="0" />
-        <keyframe
             android:fraction="1"
-            android:value="0" />
+            android:value="0.54" />
     </propertyValuesHolder>
     <propertyValuesHolder
         android:propertyName="rotation"
         android:valueType="floatType">
         <keyframe
             android:fraction="0"
-            android:value="3.58" />
+            android:value="-3.54" />
         <keyframe
             android:fraction="1"
-            android:value="3.58" />
+            android:value="-3.54" />
     </propertyValuesHolder>
 </objectAnimator>

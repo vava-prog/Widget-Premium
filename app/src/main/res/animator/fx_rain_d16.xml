@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Sinh tự động bởi tools/gen_weather_fx.py, không sửa tay. -->
 <objectAnimator xmlns:android="http://schemas.android.com/apk/res/android"
-    android:duration="60000"
+    android:duration="4000"
     android:interpolator="@android:interpolator/linear">
     <propertyValuesHolder
         android:propertyName="translateX"
@@ -10,56 +10,30 @@
             android:fraction="0"
             android:value="0" />
         <keyframe
-            android:fraction="0.04532"
+            android:fraction="0.55425"
             android:value="0" />
         <keyframe
-            android:fraction="0.10383"
-            android:value="0" />
-        <keyframe
-            android:fraction="0.11355"
-            android:value="0.65"
+            android:fraction="0.64075"
+            android:value="-1.08"
             android:interpolator="@interpolator/fx_fall" />
         <keyframe
-            android:fraction="0.11597"
-            android:value="0.81"
+            android:fraction="0.66225"
+            android:value="-1.34"
             android:interpolator="@interpolator/fx_brake" />
         <keyframe
-            android:fraction="0.2061"
-            android:value="171.7" />
+            android:fraction="0.791"
+            android:value="-1.34" />
         <keyframe
-            android:fraction="0.43762"
-            android:value="-7.29" />
-        <keyframe
-            android:fraction="0.50063"
-            android:value="-7.29" />
-        <keyframe
-            android:fraction="0.51158"
-            android:value="-7.96"
+            android:fraction="0.86775"
+            android:value="-2.19"
             android:interpolator="@interpolator/fx_fall" />
         <keyframe
-            android:fraction="0.51432"
-            android:value="-8.13"
+            android:fraction="0.88675"
+            android:value="-2.41"
             android:interpolator="@interpolator/fx_brake" />
-        <keyframe
-            android:fraction="0.64812"
-            android:value="186.49" />
-        <keyframe
-            android:fraction="0.71748"
-            android:value="186.49" />
-        <keyframe
-            android:fraction="0.72695"
-            android:value="185.44"
-            android:interpolator="@interpolator/fx_fall" />
-        <keyframe
-            android:fraction="0.72932"
-            android:value="185.18"
-            android:interpolator="@interpolator/fx_brake" />
-        <keyframe
-            android:fraction="0.85278"
-            android:value="116.09" />
         <keyframe
             android:fraction="1"
-            android:value="116.09" />
+            android:value="-2.41" />
     </propertyValuesHolder>
     <propertyValuesHolder
         android:propertyName="translateY"
@@ -68,56 +42,30 @@
             android:fraction="0"
             android:value="0" />
         <keyframe
-            android:fraction="0.04532"
+            android:fraction="0.55425"
             android:value="0" />
         <keyframe
-            android:fraction="0.10383"
-            android:value="0" />
-        <keyframe
-            android:fraction="0.11355"
-            android:value="19.19"
+            android:fraction="0.64075"
+            android:value="17.27"
             android:interpolator="@interpolator/fx_fall" />
         <keyframe
-            android:fraction="0.11597"
-            android:value="23.99"
+            android:fraction="0.66225"
+            android:value="21.58"
             android:interpolator="@interpolator/fx_brake" />
         <keyframe
-            android:fraction="0.2061"
-            android:value="91.19" />
+            android:fraction="0.791"
+            android:value="21.58" />
         <keyframe
-            android:fraction="0.43762"
-            android:value="62.32" />
-        <keyframe
-            android:fraction="0.50063"
-            android:value="62.32" />
-        <keyframe
-            android:fraction="0.51158"
-            android:value="83.1"
+            android:fraction="0.86775"
+            android:value="35.23"
             android:interpolator="@interpolator/fx_fall" />
         <keyframe
-            android:fraction="0.51432"
-            android:value="88.3"
+            android:fraction="0.88675"
+            android:value="38.64"
             android:interpolator="@interpolator/fx_brake" />
-        <keyframe
-            android:fraction="0.64812"
-            android:value="54.96" />
-        <keyframe
-            android:fraction="0.71748"
-            android:value="54.96" />
-        <keyframe
-            android:fraction="0.72695"
-            android:value="72.53"
-            android:interpolator="@interpolator/fx_fall" />
-        <keyframe
-            android:fraction="0.72932"
-            android:value="76.92"
-            android:interpolator="@interpolator/fx_brake" />
-        <keyframe
-            android:fraction="0.85278"
-            android:value="69.58" />
         <keyframe
             android:fraction="1"
-            android:value="69.58" />
+            android:value="38.64" />
     </propertyValuesHolder>
     <propertyValuesHolder
         android:propertyName="scaleX"
@@ -126,120 +74,43 @@
             android:fraction="0"
             android:value="0" />
         <keyframe
-            android:fraction="0.04698"
+            android:fraction="0.15075"
             android:value="0" />
         <keyframe
-            android:fraction="0.05398"
-            android:value="1.11"
+            android:fraction="0.23075"
+            android:value="0.99"
             android:interpolator="@interpolator/fx_pop" />
         <keyframe
-            android:fraction="0.09983"
-            android:value="1.11" />
+            android:fraction="0.50425"
+            android:value="0.99" />
         <keyframe
-            android:fraction="0.10383"
-            android:value="1"
+            android:fraction="0.55425"
+            android:value="0.89"
             android:interpolator="@android:interpolator/accelerate_decelerate" />
         <keyframe
-            android:fraction="0.11597"
-            android:value="0.9" />
+            android:fraction="0.66225"
+            android:value="0.8" />
         <keyframe
-            android:fraction="0.1223"
-            android:value="1"
+            android:fraction="0.71225"
+            android:value="0.89"
+            android:interpolator="@android:interpolator/accelerate_decelerate" />
+        <keyframe
+            android:fraction="0.761"
+            android:value="0.89" />
+        <keyframe
+            android:fraction="0.791"
+            android:value="0.8"
+            android:interpolator="@android:interpolator/accelerate_decelerate" />
+        <keyframe
+            android:fraction="0.88675"
+            android:value="0.72" />
+        <keyframe
+            android:fraction="0.96675"
+            android:value="0.8"
             android:interpolator="@interpolator/fx_pop" />
-        <keyframe
-            android:fraction="0.14995"
-            android:value="1" />
-        <keyframe
-            android:fraction="0.1815"
-            android:value="0"
-            android:interpolator="@android:interpolator/accelerate_decelerate" />
-        <keyframe
-            android:fraction="0.20777"
-            android:value="0" />
-        <keyframe
-            android:fraction="0.21477"
-            android:value="1.07"
-            android:interpolator="@interpolator/fx_pop" />
-        <keyframe
-            android:fraction="0.38038"
-            android:value="1.07" />
-        <keyframe
-            android:fraction="0.41755"
-            android:value="0"
-            android:interpolator="@android:interpolator/accelerate_decelerate" />
-        <keyframe
-            android:fraction="0.43928"
-            android:value="0" />
-        <keyframe
-            android:fraction="0.44628"
-            android:value="0.9"
-            android:interpolator="@interpolator/fx_pop" />
-        <keyframe
-            android:fraction="0.49663"
-            android:value="0.9" />
-        <keyframe
-            android:fraction="0.50063"
-            android:value="0.81"
-            android:interpolator="@android:interpolator/accelerate_decelerate" />
-        <keyframe
-            android:fraction="0.51432"
-            android:value="0.73" />
-        <keyframe
-            android:fraction="0.52065"
-            android:value="0.81"
-            android:interpolator="@interpolator/fx_pop" />
-        <keyframe
-            android:fraction="0.5517"
-            android:value="0.81" />
-        <keyframe
-            android:fraction="0.5853"
-            android:value="0"
-            android:interpolator="@android:interpolator/accelerate_decelerate" />
-        <keyframe
-            android:fraction="0.64978"
-            android:value="0" />
-        <keyframe
-            android:fraction="0.65678"
-            android:value="1.13"
-            android:interpolator="@interpolator/fx_pop" />
-        <keyframe
-            android:fraction="0.71348"
-            android:value="1.13" />
-        <keyframe
-            android:fraction="0.71748"
-            android:value="1.02"
-            android:interpolator="@android:interpolator/accelerate_decelerate" />
-        <keyframe
-            android:fraction="0.72932"
-            android:value="0.92" />
-        <keyframe
-            android:fraction="0.73565"
-            android:value="1.02"
-            android:interpolator="@interpolator/fx_pop" />
-        <keyframe
-            android:fraction="0.75965"
-            android:value="1.02" />
-        <keyframe
-            android:fraction="0.80083"
-            android:value="0"
-            android:interpolator="@android:interpolator/accelerate_decelerate" />
-        <keyframe
-            android:fraction="0.85445"
-            android:value="0" />
-        <keyframe
-            android:fraction="0.86145"
-            android:value="1.13"
-            android:interpolator="@interpolator/fx_pop" />
-        <keyframe
-            android:fraction="0.92547"
-            android:value="1.13" />
-        <keyframe
-            android:fraction="0.96428"
-            android:value="0"
-            android:interpolator="@android:interpolator/accelerate_decelerate" />
         <keyframe
             android:fraction="1"
-            android:value="0" />
+            android:value="0.8" />
     </propertyValuesHolder>
     <propertyValuesHolder
         android:propertyName="scaleY"
@@ -248,120 +119,43 @@
             android:fraction="0"
             android:value="0" />
         <keyframe
-            android:fraction="0.04698"
+            android:fraction="0.15075"
             android:value="0" />
         <keyframe
-            android:fraction="0.05398"
-            android:value="1.11"
+            android:fraction="0.23075"
+            android:value="0.99"
             android:interpolator="@interpolator/fx_pop" />
         <keyframe
-            android:fraction="0.09983"
-            android:value="1.11" />
-        <keyframe
-            android:fraction="0.10383"
-            android:value="1.35"
-            android:interpolator="@android:interpolator/accelerate_decelerate" />
-        <keyframe
-            android:fraction="0.11597"
-            android:value="1.22" />
-        <keyframe
-            android:fraction="0.1223"
-            android:value="1"
-            android:interpolator="@interpolator/fx_pop" />
-        <keyframe
-            android:fraction="0.14995"
-            android:value="1" />
-        <keyframe
-            android:fraction="0.1815"
-            android:value="0"
-            android:interpolator="@android:interpolator/accelerate_decelerate" />
-        <keyframe
-            android:fraction="0.20777"
-            android:value="0" />
-        <keyframe
-            android:fraction="0.21477"
-            android:value="1.07"
-            android:interpolator="@interpolator/fx_pop" />
-        <keyframe
-            android:fraction="0.38038"
-            android:value="1.07" />
-        <keyframe
-            android:fraction="0.41755"
-            android:value="0"
-            android:interpolator="@android:interpolator/accelerate_decelerate" />
-        <keyframe
-            android:fraction="0.43928"
-            android:value="0" />
-        <keyframe
-            android:fraction="0.44628"
-            android:value="0.9"
-            android:interpolator="@interpolator/fx_pop" />
-        <keyframe
-            android:fraction="0.49663"
-            android:value="0.9" />
-        <keyframe
-            android:fraction="0.50063"
-            android:value="1.1"
-            android:interpolator="@android:interpolator/accelerate_decelerate" />
-        <keyframe
-            android:fraction="0.51432"
+            android:fraction="0.50425"
             android:value="0.99" />
         <keyframe
-            android:fraction="0.52065"
-            android:value="0.81"
-            android:interpolator="@interpolator/fx_pop" />
-        <keyframe
-            android:fraction="0.5517"
-            android:value="0.81" />
-        <keyframe
-            android:fraction="0.5853"
-            android:value="0"
+            android:fraction="0.55425"
+            android:value="1.2"
             android:interpolator="@android:interpolator/accelerate_decelerate" />
         <keyframe
-            android:fraction="0.64978"
-            android:value="0" />
+            android:fraction="0.66225"
+            android:value="1.08" />
         <keyframe
-            android:fraction="0.65678"
-            android:value="1.13"
-            android:interpolator="@interpolator/fx_pop" />
-        <keyframe
-            android:fraction="0.71348"
-            android:value="1.13" />
-        <keyframe
-            android:fraction="0.71748"
-            android:value="1.38"
+            android:fraction="0.71225"
+            android:value="0.89"
             android:interpolator="@android:interpolator/accelerate_decelerate" />
         <keyframe
-            android:fraction="0.72932"
-            android:value="1.24" />
+            android:fraction="0.761"
+            android:value="0.89" />
         <keyframe
-            android:fraction="0.73565"
-            android:value="1.02"
-            android:interpolator="@interpolator/fx_pop" />
-        <keyframe
-            android:fraction="0.75965"
-            android:value="1.02" />
-        <keyframe
-            android:fraction="0.80083"
-            android:value="0"
+            android:fraction="0.791"
+            android:value="1.08"
             android:interpolator="@android:interpolator/accelerate_decelerate" />
         <keyframe
-            android:fraction="0.85445"
-            android:value="0" />
+            android:fraction="0.88675"
+            android:value="0.97" />
         <keyframe
-            android:fraction="0.86145"
-            android:value="1.13"
+            android:fraction="0.96675"
+            android:value="0.8"
             android:interpolator="@interpolator/fx_pop" />
-        <keyframe
-            android:fraction="0.92547"
-            android:value="1.13" />
-        <keyframe
-            android:fraction="0.96428"
-            android:value="0"
-            android:interpolator="@android:interpolator/accelerate_decelerate" />
         <keyframe
             android:fraction="1"
-            android:value="0" />
+            android:value="0.8" />
     </propertyValuesHolder>
     <propertyValuesHolder
         android:propertyName="rotation"
@@ -370,43 +164,14 @@
             android:fraction="0"
             android:value="0" />
         <keyframe
-            android:fraction="0.04532"
+            android:fraction="0.50425"
             android:value="0" />
         <keyframe
-            android:fraction="0.09983"
-            android:value="0" />
-        <keyframe
-            android:fraction="0.10383"
-            android:value="-1.94"
+            android:fraction="0.55425"
+            android:value="3.56"
             android:interpolator="@android:interpolator/accelerate_decelerate" />
-        <keyframe
-            android:fraction="0.2061"
-            android:value="0" />
-        <keyframe
-            android:fraction="0.43762"
-            android:value="0" />
-        <keyframe
-            android:fraction="0.49663"
-            android:value="0" />
-        <keyframe
-            android:fraction="0.50063"
-            android:value="1.84"
-            android:interpolator="@android:interpolator/accelerate_decelerate" />
-        <keyframe
-            android:fraction="0.64812"
-            android:value="0" />
-        <keyframe
-            android:fraction="0.71348"
-            android:value="0" />
-        <keyframe
-            android:fraction="0.71748"
-            android:value="3.41"
-            android:interpolator="@android:interpolator/accelerate_decelerate" />
-        <keyframe
-            android:fraction="0.85278"
-            android:value="0" />
         <keyframe
             android:fraction="1"
-            android:value="0" />
+            android:value="3.56" />
     </propertyValuesHolder>
 </objectAnimator>

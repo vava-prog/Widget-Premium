@@ -6,3 +6,4 @@ local.properties
 *.keystore
 *.jks
 *.log
+__pycache__/

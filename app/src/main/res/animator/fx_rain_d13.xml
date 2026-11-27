@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Sinh tự động bởi tools/gen_weather_fx.py, không sửa tay. -->
 <objectAnimator xmlns:android="http://schemas.android.com/apk/res/android"
-    android:duration="60000"
+    android:duration="4000"
     android:interpolator="@android:interpolator/linear">
     <propertyValuesHolder
         android:propertyName="translateX"
         android:valueType="floatType">
         <keyframe
             android:fraction="0"
-            android:value="0" />
-        <keyframe
-            android:fraction="0.52427"
             android:value="0" />
         <keyframe
             android:fraction="1"
@@ -23,9 +20,6 @@
             android:fraction="0"
             android:value="0" />
         <keyframe
-            android:fraction="0.52427"
-            android:value="0" />
-        <keyframe
             android:fraction="1"
             android:value="0" />
     </propertyValuesHolder>
@@ -35,20 +29,6 @@
         <keyframe
             android:fraction="0"
             android:value="1" />
-        <keyframe
-            android:fraction="0.4372"
-            android:value="1" />
-        <keyframe
-            android:fraction="0.47218"
-            android:value="0"
-            android:interpolator="@android:interpolator/accelerate_decelerate" />
-        <keyframe
-            android:fraction="0.52593"
-            android:value="0" />
-        <keyframe
-            android:fraction="0.53293"
-            android:value="1"
-            android:interpolator="@interpolator/fx_pop" />
         <keyframe
             android:fraction="1"
             android:value="1" />
@@ -60,20 +40,6 @@
             android:fraction="0"
             android:value="1" />
         <keyframe
-            android:fraction="0.4372"
-            android:value="1" />
-        <keyframe
-            android:fraction="0.47218"
-            android:value="0"
-            android:interpolator="@android:interpolator/accelerate_decelerate" />
-        <keyframe
-            android:fraction="0.52593"
-            android:value="0" />
-        <keyframe
-            android:fraction="0.53293"
-            android:value="1"
-            android:interpolator="@interpolator/fx_pop" />
-        <keyframe
             android:fraction="1"
             android:value="1" />
     </propertyValuesHolder>
@@ -82,9 +48,6 @@
         android:valueType="floatType">
         <keyframe
             android:fraction="0"
-            android:value="0" />
-        <keyframe
-            android:fraction="0.52427"
             android:value="0" />
         <keyframe
             android:fraction="1"

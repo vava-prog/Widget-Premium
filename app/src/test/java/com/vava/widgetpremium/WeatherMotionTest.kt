@@ -105,6 +105,9 @@ class WeatherMotionTest {
     private fun animatorFiles(): List<File> =
         File(resDir(), "animator").listFiles { f -> f.name.startsWith("fx_") }!!.toList()
 
+    /** Tên lớp hiệu ứng của một tệp animator: fx_rain_d1.xml -> rain. */
+    private fun layerOf(f: File): String = f.name.removePrefix("fx_").substringBefore('.').substringBefore('_')
+
     @Test
     fun keyframesGoFromZeroToOneInStrictOrder() {
         var checked = 0
@@ -125,9 +128,10 @@ class WeatherMotionTest {
 
     @Test
     fun scaleAnimatorsEndOnTheirFirstFrame() {
-        // Giọt/vệt về đúng kích thước ban đầu (hiện hoặc ẩn) nên khung cuối = khung đầu, hiệu ứng dừng không "nhảy".
+        // Các hiệu ứng lặp về đúng kích thước ban đầu nên khung cuối = khung đầu, hiệu ứng dừng không "nhảy".
+        // Mưa là ngoại lệ: chạy một lượt rồi giữ nguyên khung cuối (vệt nước ở lại như kính vừa ướt), xem test bên dưới.
         var checked = 0
-        for (f in animatorFiles()) {
+        for (f in animatorFiles().filter { layerOf(it) != "rain" }) {
             for (m in holder.findAll(f.readText())) {
                 if (m.groupValues[1] != "scaleX" && m.groupValues[1] != "scaleY") continue
                 val values = keyframe.findAll(m.groupValues[2]).map { attr(it.value, "value")!!.toDouble() }.toList()
@@ -136,6 +140,21 @@ class WeatherMotionTest {
             }
         }
         assertTrue(checked > 0)
+    }
+
+    @Test
+    fun rainRunsOnceAndKeepsTheFinalFrameWithinSaneScales() {
+        var checked = 0
+        for (f in animatorFiles().filter { layerOf(it) == "rain" && it.name.startsWith("fx_rain_d") }) {
+            for (m in holder.findAll(f.readText())) {
+                if (m.groupValues[1] != "scaleX" && m.groupValues[1] != "scaleY") continue
+                val values = keyframe.findAll(m.groupValues[2]).map { attr(it.value, "value")!!.toDouble() }.toList()
+                assertTrue("${f.name}: giọt phồng quá lớn", values.all { it in 0.0..1.6 })
+                checked++
+            }
+        }
+        assertTrue(checked > 0)
+        assertEquals(4_000, WeatherMotion.RAIN_MS)
     }
 
     @Test
@@ -166,7 +185,7 @@ class WeatherMotionTest {
     }
 
     @Test
-    fun everyAnimatorRunsExactlyTotalAndEndsOnItsFirstFrame() {
+    fun everyAnimatorRunsExactlyItsLayerDuration() {
         val files = File(resDir(), "animator").listFiles { f -> f.name.startsWith("fx_") }!!.toList()
         assertTrue(files.isNotEmpty())
         for (f in files) {
@@ -175,7 +194,7 @@ class WeatherMotionTest {
             for (t in tags) {
                 val duration = attr(t, "duration")!!.toInt()
                 val passes = (attr(t, "repeatCount")?.toInt() ?: 0) + 1
-                assertEquals("${f.name}: tổng thời gian", WeatherMotion.TOTAL_MS, duration * passes)
+                assertEquals("${f.name}: tổng thời gian", WeatherMotion.durationMs(layerOf(f)), duration * passes)
                 if (attr(t, "repeatMode") == "reverse") {
                     assertEquals("${f.name}: reverse cần số lượt chẵn", 0, passes % 2)
                 }

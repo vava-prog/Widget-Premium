@@ -13,13 +13,20 @@ enum class Motion { SUN, STARS, CLOUDS, RAIN, STORM, SNOW, FOG }
 /**
  * Logic thuần (có test) cho hiệu ứng "bán động": RemoteViews không phát được GIF hay chạy mã, nên mỗi hiệu ứng
  * là một AnimatedVectorDrawable hữu hạn gắn vào ProgressBar. Launcher chạy hoạt ảnh khi view hiện ra (mở màn hình
- * chính, bật màn hình, widget được cập nhật), chạy [TOTAL_MS] rồi đứng yên ở khung hình tĩnh, không tốn thêm pin.
- * Launcher không báo cho app biết khi người dùng vuốt giữa các trang, nên thời lượng đủ dài (khoảng 1 phút) để
- * vẫn thấy chuyển động sau vài lần vuốt.
+ * chính, bật màn hình, widget được cập nhật), chạy hết thời lượng rồi đứng yên ở khung hình tĩnh, không tốn thêm pin.
+ * Mưa kính và chớp sáng chạy một lượt [RAIN_MS] (4 giây); các hiệu ứng còn lại chạy [LONG_MS] (1 phút).
+ * Launcher không báo cho app biết khi người dùng vuốt giữa các trang, nên không thể chạy "đúng lúc vuốt tới và dừng lại":
+ * hiệu ứng chạy lại mỗi khi view được gắn lại hoặc widget được vẽ lại.
  */
 object WeatherMotion {
-    /** Thời lượng mỗi lần chạy; mọi animator trong res/animator/fx_* đều đúng bằng giá trị này (có test). */
-    const val TOTAL_MS = 60_000
+    /** Thời lượng một lượt của mưa kính và chớp sáng (giọt rơi, vệt nước rồi đứng yên). */
+    const val RAIN_MS = 4_000
+
+    /** Thời lượng mỗi lần chạy của các hiệu ứng còn lại (nắng, sao, mây, tuyết, sương). */
+    const val LONG_MS = 60_000
+
+    /** Thời lượng của lớp `fx_<tên>`; mọi animator của lớp đó đều đúng bằng giá trị này (có test). */
+    fun durationMs(layer: String): Int = if (layer == "rain" || layer == "flash") RAIN_MS else LONG_MS
 
     /** Loại hiệu ứng cho bầu trời hiện tại; null nghĩa là không chạy gì. */
     fun choose(sky: Sky?, enabled: Boolean, powerSave: Boolean, animationsOn: Boolean): Motion? {

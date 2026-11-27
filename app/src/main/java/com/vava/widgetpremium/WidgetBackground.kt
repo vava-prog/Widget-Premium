@@ -31,7 +31,7 @@ object WidgetBackground {
         views.setImageViewBitmap(
             imageId,
             // Có lớp hiệu ứng chuyển động thì nền chỉ vẽ ít hạt mưa, tuyết, sao để không bị dày đặc chồng nhau.
-            render(context, widthDp, heightDp, palette, style.cornerDp, sky, style.opacityPercent / 100f, animated = motion != null)
+            render(context, widthDp, heightDp, palette, style.cornerDp, sky, style.opacityPercent / 100f, animated = motion != null, isDay = day)
         )
         WidgetMotion.apply(context, views, style, motion)
     }
@@ -42,6 +42,13 @@ object WidgetBackground {
         val colors = WidgetPalette.textColors(style.textTone, style.customTextColor) ?: return
         primary.forEach { views.setTextColor(it, colors.first) }
         secondary.forEach { views.setTextColor(it, colors.second) }
+    }
+
+    /** Tô màu biểu tượng nhỏ (ví dụ icon lịch cạnh ngày âm) theo màu chữ phụ khi người dùng ép màu chữ; AUTO giữ nguyên. */
+    fun applyIconTint(context: Context, views: RemoteViews, iconIds: List<Int>) {
+        val style = StyleStore.load(context)
+        val colors = WidgetPalette.textColors(style.textTone, style.customTextColor) ?: return
+        iconIds.forEach { views.setInt(it, "setColorFilter", colors.second) }
     }
 
     /** Ẩn hoặc hiện một view theo tùy chọn hiển thị. */
@@ -76,9 +83,39 @@ object WidgetBackground {
         views.setTextViewTextSize(timeId, android.util.TypedValue.COMPLEX_UNIT_SP, sp)
     }
 
+    /**
+     * Mép kính cho nền thời tiết: ánh sáng sau lưng kính làm sáng hai góc chéo (trên trái, dưới phải), vệt sáng
+     * mờ chạy dọc mép trong như khúc xạ và một lớp bóng phản chiếu nhạt phía trên. Độ đậm theo độ mờ nền người dùng chọn.
+     */
+    private fun glassRim(canvas: Canvas, rect: RectF, radius: Float, unit: Float, alpha: Float) {
+        fun white(a: Float) = (((a * alpha) * 255).toInt().coerceIn(0, 255) shl 24) or 0x00FFFFFF
+        val gloss = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            shader = LinearGradient(0f, rect.top, 0f, rect.top + rect.height() * 0.45f, white(0.16f), white(0f), Shader.TileMode.CLAMP)
+        }
+        canvas.drawRoundRect(rect, radius, radius, gloss)
+        val glow = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            style = Paint.Style.STROKE
+            strokeWidth = 3f * unit
+            color = white(0.10f)
+            maskFilter = android.graphics.BlurMaskFilter(2.2f * unit, android.graphics.BlurMaskFilter.Blur.NORMAL)
+        }
+        val inner = RectF(rect.left + 2f * unit, rect.top + 2f * unit, rect.right - 2f * unit, rect.bottom - 2f * unit)
+        canvas.drawRoundRect(inner, maxOf(0f, radius - 2f * unit), maxOf(0f, radius - 2f * unit), glow)
+        val edge = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            style = Paint.Style.STROKE
+            strokeWidth = 1.3f * unit
+            shader = LinearGradient(
+                rect.left, rect.top, rect.right, rect.bottom,
+                intArrayOf(white(0.70f), white(0.16f), white(0.16f), white(0.42f)), floatArrayOf(0f, 0.35f, 0.65f, 1f), Shader.TileMode.CLAMP
+            )
+        }
+        val half = 0.65f * unit
+        canvas.drawRoundRect(RectF(rect.left + half, rect.top + half, rect.right - half, rect.bottom - half), radius, radius, edge)
+    }
+
     fun render(
         context: Context, widthDp: Int, heightDp: Int, palette: Palette, cornerDp: Int,
-        sky: Sky? = null, artAlpha: Float = 1f, animated: Boolean = false
+        sky: Sky? = null, artAlpha: Float = 1f, animated: Boolean = false, isDay: Boolean = true
     ): Bitmap {
         val density = context.resources.displayMetrics.density
         var w = widthDp * density
@@ -102,10 +139,11 @@ object WidgetBackground {
             canvas.save()
             val clip = android.graphics.Path().apply { addRoundRect(rect, radius, radius, android.graphics.Path.Direction.CW) }
             canvas.clipPath(clip)
-            SkyArt.draw(canvas, bitmap.width.toFloat(), bitmap.height.toFloat(), density * k, sky, artAlpha, animated)
+            SkyArt.draw(canvas, bitmap.width.toFloat(), bitmap.height.toFloat(), density * k, sky, artAlpha, animated, night = !isDay)
             canvas.restore()
         }
 
+        if (sky != null) glassRim(canvas, rect, radius, density * k, artAlpha)
         if ((palette.frost ushr 24) > 0) {
             val frost = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = palette.frost }
             canvas.drawRoundRect(rect, radius, radius, frost)
