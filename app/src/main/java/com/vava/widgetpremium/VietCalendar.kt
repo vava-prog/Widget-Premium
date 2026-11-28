@@ -200,6 +200,9 @@ object VietCalendar {
         return List(7) { monday.plusDays(it.toLong()) }
     }
 
+    /** Bảy ngày liên tiếp bắt đầu từ `date` (hôm nay) đến +6 ngày; cột đầu luôn là ngày hiện tại. */
+    fun nextDays(date: LocalDate): List<LocalDate> = List(7) { date.plusDays(it.toLong()) }
+
     /** Nhãn ngày âm trong dải tuần: mùng 1 ghi kèm tháng ("1/10"), ngày khác chỉ ghi số ngày. */
     fun weekLunarLabel(date: LocalDate): String {
         val l = lunarOf(date)

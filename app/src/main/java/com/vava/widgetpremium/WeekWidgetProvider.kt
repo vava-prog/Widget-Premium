@@ -87,9 +87,9 @@ class WeekWidgetProvider : AppWidgetProvider() {
             val lunarRes = if (l.isLeap) R.string.week_lunar_leap_fmt else R.string.week_lunar_fmt
             views.setTextViewText(R.id.week_lunar, context.getString(lunarRes, l.day, l.month))
 
-            // Widget hẹp chỉ hiện 5 cột; dải ngày tuần chọn cửa sổ 5 ngày có chứa hôm nay.
-            val allDays = VietCalendar.weekDays(today)
-            val start = if (cols >= 7) 0 else minOf(allDays.indexOf(today).coerceAtLeast(0), 7 - cols)
+            // Cột đầu là hôm nay, các cột sau là +1..+6 ngày; widget hẹp chỉ hiện 5 cột đầu.
+            val allDays = VietCalendar.nextDays(today)
+            val start = 0
             for (c in 0 until 7) {
                 views.setViewVisibility(CELL[c], if (c < cols) android.view.View.VISIBLE else android.view.View.GONE)
                 if (c > 0) views.setViewVisibility(DIVIDER[c - 1], if (c < cols) android.view.View.VISIBLE else android.view.View.GONE)
@@ -108,7 +108,7 @@ class WeekWidgetProvider : AppWidgetProvider() {
                     WidgetTap.bind(context, views, CELL[i], TapTarget.HOME)
                     return@forEachIndexed
                 }
-                views.setTextViewText(NAME[i], context.getString(NAME_RES[start + i]))
+                views.setTextViewText(NAME[i], context.getString(NAME_RES[date.dayOfWeek.value - 1]))
                 WidgetFont.size(context, views, NAME[i], 11f)
                 if (opts.weekMode == WeekMode.WEATHER) {
                     // Như app mẫu: biểu tượng thời tiết thay cho số ngày, bên dưới là "thấp° cao°".
@@ -129,7 +129,9 @@ class WeekWidgetProvider : AppWidgetProvider() {
 
             val city = WeatherStore.city(context)
             val weather = if (city != null) WeatherStore.cached(context) else null
-            views.setTextViewText(R.id.week_city, if (city != null && opts.showLocation) "📍 " + city.name else "")
+            val showCity = city != null && opts.showLocation
+            views.setViewVisibility(R.id.week_pin, if (showCity) android.view.View.VISIBLE else android.view.View.GONE)
+            views.setTextViewText(R.id.week_city, if (showCity) city!!.name else "")
             if (weather != null) {
                 val condition = Condition.fromWmo(weather.code)
                 val day = WidgetUpdater.widgetIsDay(context)

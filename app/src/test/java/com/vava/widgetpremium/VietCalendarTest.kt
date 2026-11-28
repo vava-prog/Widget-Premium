@@ -230,4 +230,12 @@ class VietCalendarTest {
             .first { VietCalendar.lunarOf(it).day == 1 }
         assertEquals("1/" + VietCalendar.lunarOf(firstDay).month, VietCalendar.weekLunarLabel(firstDay))
     }
+
+    @Test
+    fun nextDaysStartsTodayAndRunsSevenDays() {
+        val d = VietCalendar.nextDays(java.time.LocalDate.of(2026, 11, 28))
+        assertEquals(java.time.LocalDate.of(2026, 11, 28), d.first())
+        assertEquals(java.time.LocalDate.of(2026, 12, 4), d.last())
+        assertEquals(7, d.size)
+    }
 }
