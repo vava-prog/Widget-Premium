@@ -16,6 +16,7 @@ android {
         applicationId = "com.vava.widgetpremium"
         minSdk = 26
         targetSdk = 35
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         // CI phát hành truyền -PversionCode và -PversionName; chạy bình thường dùng giá trị mặc định
         versionCode = (project.findProperty("versionCode") as String?)?.toIntOrNull() ?: 7
         versionName = (project.findProperty("versionName") as String?) ?: "0.7.0"
@@ -77,4 +78,8 @@ dependencies {
 
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.json:json:20240303")
+
+    // Kiểm thử trên máy ảo Android (workflow smoke.yml)
+    androidTestImplementation("androidx.test.ext:junit:1.2.1")
+    androidTestImplementation("androidx.test:runner:1.6.2")
 }
