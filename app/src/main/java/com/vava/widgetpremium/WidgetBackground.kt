@@ -60,7 +60,7 @@ object WidgetBackground {
     fun applySeconds(context: Context, views: RemoteViews, secId: Int, baseTimeSp: Float) {
         val style = StyleStore.load(context)
         setShown(views, secId, style.showSeconds)
-        val sp = WidgetPalette.clockSizeSp(baseTimeSp / 3f, style.clockScalePercent)
+        val sp = WidgetFont.scaled(WidgetPalette.clockSizeSp(baseTimeSp / 3f, style.clockScalePercent), style.fontScalePercent)
         views.setTextViewTextSize(secId, android.util.TypedValue.COMPLEX_UNIT_SP, sp)
     }
 
@@ -72,11 +72,15 @@ object WidgetBackground {
     }
 
     /** Đổi cỡ chữ giờ theo tỉ lệ người dùng chọn; baseSp là cỡ mặc định trong layout. */
-    fun applyClockSize(context: Context, views: RemoteViews, timeId: Int, baseSp: Float, splitSeconds: Boolean = false) {
+    fun applyClockSize(
+        context: Context, views: RemoteViews, timeId: Int, baseSp: Float, splitSeconds: Boolean = false, availDp: Float = 0f
+    ) {
         val style = StyleStore.load(context)
         // splitSeconds: giây là một TextClock nhỏ riêng cạnh giờ, nên giờ giữ nguyên cỡ và không kèm giây.
         val withSeconds = style.showSeconds && !splitSeconds
-        val sp = WidgetPalette.clockSizeSp(baseSp, style.clockScalePercent, withSeconds)
+        var sp = WidgetFont.scaled(WidgetPalette.clockSizeSp(baseSp, style.clockScalePercent, withSeconds), style.fontScalePercent)
+        // Khung hẹp hoặc cỡ chữ lớn: tự co để giờ (kèm giây nhỏ cạnh bên) không tràn sang khối bên cạnh.
+        if (availDp > 0f) sp = WidgetFont.fitSp(sp, availDp, (if (withSeconds) 7.6f else 4.6f) + if (style.showSeconds && splitSeconds) 1.3f else 0f)
         val (f12, f24) = WidgetPalette.timeFormats(withSeconds, style.hourFormat)
         views.setCharSequence(timeId, "setFormat12Hour", f12)
         views.setCharSequence(timeId, "setFormat24Hour", f24)

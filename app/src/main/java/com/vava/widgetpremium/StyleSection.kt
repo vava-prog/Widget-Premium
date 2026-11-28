@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -38,6 +40,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -246,6 +249,49 @@ fun StyleSection(style: WidgetStyle, onChange: (WidgetStyle) -> Unit) {
             FilterChip(selected = style.hourFormat == HourFormat.H24, onClick = { change(style.copy(hourFormat = HourFormat.H24)) }, label = { Text(stringResource(R.string.disp_hour_24)) })
             FilterChip(selected = style.hourFormat == HourFormat.H12, onClick = { change(style.copy(hourFormat = HourFormat.H12)) }, label = { Text(stringResource(R.string.disp_hour_12)) })
         }
+        Text(stringResource(R.string.font_family), style = MaterialTheme.typography.labelLarge)
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.horizontalScroll(rememberScrollState())) {
+            listOf(
+                FontFamilyChoice.DEFAULT to (R.string.font_default to FontFamily.Default),
+                FontFamilyChoice.SANS to (R.string.font_sans to FontFamily.SansSerif),
+                FontFamilyChoice.SERIF to (R.string.font_serif to FontFamily.Serif),
+                FontFamilyChoice.MONO to (R.string.font_mono to FontFamily.Monospace),
+                FontFamilyChoice.ROUNDED to (R.string.font_rounded to FontFamily.Cursive)
+            ).forEach { (choice, pair) ->
+                FilterChip(
+                    selected = style.fontFamily == choice,
+                    onClick = { change(style.copy(fontFamily = choice)) },
+                    label = { Text(stringResource(pair.first), fontFamily = pair.second) }
+                )
+            }
+        }
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                stringResource(R.string.font_size, style.fontScalePercent),
+                style = MaterialTheme.typography.labelLarge, modifier = Modifier.weight(1f)
+            )
+            OutlinedButton(onClick = { change(style.copy(fontScalePercent = WidgetFont.DEFAULT_SCALE)) }) { Text(stringResource(R.string.font_reset)) }
+        }
+        Slider(
+            value = style.fontScalePercent.toFloat(),
+            onValueChange = { change(style.copy(fontScalePercent = WidgetFont.snap(it.toInt()))) },
+            valueRange = WidgetFont.MIN_SCALE.toFloat()..WidgetFont.MAX_SCALE.toFloat(),
+            steps = (WidgetFont.MAX_SCALE - WidgetFont.MIN_SCALE) / WidgetFont.STEP - 1
+        )
+        Text(stringResource(R.string.font_weight), style = MaterialTheme.typography.labelLarge)
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            listOf(
+                FontWeightChoice.LIGHT to (R.string.font_light to FontWeight.Light),
+                FontWeightChoice.NORMAL to (R.string.font_normal to FontWeight.Normal),
+                FontWeightChoice.BOLD to (R.string.font_bold to FontWeight.Bold)
+            ).forEach { (choice, pair) ->
+                FilterChip(
+                    selected = style.fontWeight == choice,
+                    onClick = { change(style.copy(fontWeight = choice)) },
+                    label = { Text(stringResource(pair.first), fontWeight = pair.second) }
+                )
+            }
+        }
         Text(stringResource(R.string.disp_today_color), style = MaterialTheme.typography.labelLarge)
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             WidgetPalette.TODAY_SWATCHES.forEachIndexed { index, color ->
@@ -337,6 +383,7 @@ fun StylePreview(style: WidgetStyle) {
                         frame.removeAllViews()
                         frame.addView(views.apply(ctx, frame))
                     } catch (e: RuntimeException) {
+                        android.util.Log.e("WidgetPreview", "Không dựng được bản xem trước $kind", e)
                         frame.removeAllViews() // không dựng được thì để trống, không làm app dừng
                     }
                     // Ghi lại kiểu đang dùng để Compose dựng lại bản xem trước mỗi khi người dùng đổi cài đặt.

@@ -41,12 +41,15 @@ class ClockWidgetProvider : AppWidgetProvider() {
 
         /** Dựng widget theo kích thước (dp) cho trước; dùng chung cho widget thật và khung xem trước trong app. */
         fun buildViews(context: Context, w: Int, h: Int): RemoteViews {
-            val views = RemoteViews(context.packageName, R.layout.widget_clock)
+            val views = RemoteViews(
+                context.packageName, WidgetLayouts.clock(StyleStore.load(context).fontFamily, StyleStore.load(context).fontWeight)
+            )
             WidgetBackground.apply(context, views, R.id.clock_bg, w, h)
             WidgetBackground.applyText(context, views, listOf(R.id.clock_time), listOf(R.id.clock_sec, R.id.clock_date, R.id.clock_label))
-            WidgetBackground.applyClockSize(context, views, R.id.clock_time, 56f, splitSeconds = true)
+            WidgetBackground.applyClockSize(context, views, R.id.clock_time, 56f, splitSeconds = true, availDp = w - 28f)
             WidgetBackground.applySeconds(context, views, R.id.clock_sec, 56f)
             WidgetBackground.applyLabel(context, views, R.id.clock_label)
+            WidgetFont.sizes(context, views, mapOf(R.id.clock_date to 16f, R.id.clock_label to 13f))
             WidgetBackground.setShown(views, R.id.clock_date, StyleStore.load(context).showSolarDate)
             val open = Intent(context, MainActivity::class.java)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)

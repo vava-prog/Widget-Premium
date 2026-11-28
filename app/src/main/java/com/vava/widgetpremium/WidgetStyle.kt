@@ -9,6 +9,12 @@ enum class WidgetTheme { STANDARD, GLASS, WEATHER }
 /** Kiểu giờ: theo hệ thống, ép 24 giờ hoặc ép 12 giờ. */
 enum class HourFormat { SYSTEM, H24, H12 }
 
+/** Phông chữ widget: DEFAULT dùng phông hệ thống, các loại còn lại là phông có sẵn của Android. */
+enum class FontFamilyChoice { DEFAULT, SANS, SERIF, MONO, ROUNDED }
+
+/** Độ đậm chữ widget. */
+enum class FontWeightChoice { LIGHT, NORMAL, BOLD }
+
 /** Hàng thứ ba của dải tuần: ngày âm hoặc thời tiết từng ngày. */
 enum class WeekMode { LUNAR, WEATHER, HOURLY }
 
@@ -51,7 +57,11 @@ data class WidgetStyle(
     /** Hiện tên thành phố cạnh nhiệt độ trên widget Lịch tuần. */
     val showLocation: Boolean = true,
     /** Hiệu ứng mưa/nắng/mây... chạy vài giây rồi dừng trên nền thời tiết (chỉ giao diện Thời tiết). */
-    val weatherMotion: Boolean = true
+    val weatherMotion: Boolean = true,
+    val fontFamily: FontFamilyChoice = FontFamilyChoice.DEFAULT,
+    /** Tỉ lệ cỡ chữ toàn widget, 80..130 (%), bước 5. */
+    val fontScalePercent: Int = WidgetFont.DEFAULT_SCALE,
+    val fontWeight: FontWeightChoice = FontWeightChoice.NORMAL
 ) {
     fun sanitized(): WidgetStyle = copy(
         accentIndex = accentIndex.coerceIn(0, WidgetPalette.ACCENTS.size - 1),
@@ -61,6 +71,7 @@ data class WidgetStyle(
         borderDp = borderDp.coerceIn(0, WidgetPalette.MAX_BORDER_DP),
         label = WidgetPalette.cleanLabel(label),
         todayColorIndex = todayColorIndex.coerceIn(0, WidgetPalette.TODAY_SWATCHES.size - 1),
+        fontScalePercent = WidgetFont.snap(fontScalePercent),
         glassFrostPercent = glassFrostPercent.coerceIn(0, 100),
         glassReliefPercent = glassReliefPercent.coerceIn(0, 100),
         customTextColor = customTextColor or (0xFF shl 24)
@@ -234,7 +245,10 @@ object StyleStore {
             glassFrostPercent = p.getInt("glass_frost", 0),
             glassReliefPercent = p.getInt("glass_relief", WidgetPalette.DEFAULT_GLASS_RELIEF),
             showLocation = p.getBoolean("show_location", true),
-            weatherMotion = p.getBoolean("weather_motion", true)
+            weatherMotion = p.getBoolean("weather_motion", true),
+            fontFamily = enumOrDefault(p.getString("font_family", null), FontFamilyChoice.DEFAULT),
+            fontScalePercent = p.getInt("font_scale", WidgetFont.DEFAULT_SCALE),
+            fontWeight = enumOrDefault(p.getString("font_weight", null), FontWeightChoice.NORMAL)
         ).sanitized()
     }
 
@@ -270,6 +284,7 @@ object StyleStore {
             .putInt("clock_scale", s.clockScalePercent).putInt("border", s.borderDp).putBoolean("seconds", s.showSeconds).putString("label", s.label).putInt("text_custom", s.customTextColor)
             .putBoolean("show_solar", s.showSolarDate).putBoolean("show_lunar", s.showLunar)
             .putBoolean("show_weather", s.showWeather).putString("hour_format", s.hourFormat.name)
+            .putString("font_family", s.fontFamily.name).putInt("font_scale", s.fontScalePercent).putString("font_weight", s.fontWeight.name)
             .putBoolean("tap_enabled", s.tapEnabled).putString("week_mode", s.weekMode.name)
             .putBoolean("weather_detail", s.showWeatherDetail).putInt("today_color", s.todayColorIndex)
             .putInt("glass_frost", s.glassFrostPercent).putInt("glass_relief", s.glassReliefPercent).putBoolean("show_location", s.showLocation).putBoolean("weather_motion", s.weatherMotion).apply()

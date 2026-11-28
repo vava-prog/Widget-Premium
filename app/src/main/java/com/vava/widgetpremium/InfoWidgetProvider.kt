@@ -95,7 +95,9 @@ class InfoWidgetProvider : AppWidgetProvider() {
 
         /** Dựng widget theo kích thước (dp) cho trước; dùng chung cho widget thật và khung xem trước trong app. */
         fun buildViews(context: Context, w: Int, h: Int): RemoteViews {
-            val views = RemoteViews(context.packageName, R.layout.widget_info)
+            val views = RemoteViews(
+                context.packageName, WidgetLayouts.info(StyleStore.load(context).fontFamily, StyleStore.load(context).fontWeight)
+            )
 
             val now = Calendar.getInstance()
             val lunar = LunarCalendar.fromSolar(
@@ -116,9 +118,16 @@ class InfoWidgetProvider : AppWidgetProvider() {
                 listOf(R.id.info_time, R.id.stat_battery, R.id.stat_temp, R.id.stat_ram, R.id.stat_storage),
                 listOf(R.id.info_sec, R.id.info_date, R.id.info_label, R.id.info_lunar, R.id.info_weather, R.id.info_detail)
             )
-            WidgetBackground.applyClockSize(context, views, R.id.info_time, 60f, splitSeconds = true)
+            WidgetBackground.applyClockSize(context, views, R.id.info_time, 60f, splitSeconds = true, availDp = w - 28f)
             WidgetBackground.applySeconds(context, views, R.id.info_sec, 60f)
             WidgetBackground.applyLabel(context, views, R.id.info_label)
+            WidgetFont.sizes(
+                context, views,
+                mapOf(
+                    R.id.info_date to 16f, R.id.info_label to 13f, R.id.info_lunar to 16f, R.id.info_weather to 16f, R.id.info_detail to 13f,
+                    R.id.stat_battery to 14f, R.id.stat_temp to 14f, R.id.stat_ram to 14f, R.id.stat_storage to 14f
+                )
+            )
 
             val opts = StyleStore.load(context)
             WidgetBackground.setShown(views, R.id.info_date, opts.showSolarDate)
